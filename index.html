@@ -121,6 +121,8 @@
             background: none;
             border: none;
             font-size: 0.7em;
+            flex: 1;
+            max-width: 70px;					
         }
 
         .nav-item.active { color: var(--accent); background: rgba(233, 69, 96, 0.1); }
@@ -144,6 +146,111 @@
             align-items: center;
             gap: 8px;
             color: var(--accent);
+        }
+
+ .about-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, #1a1a3e 100%);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .about-header .logo { font-size: 3em; margin-bottom: 10px; }
+        .about-header h2 { font-size: 1.5em; margin-bottom: 8px; }
+        .about-header .version { color: var(--text-secondary); font-size: 0.8em; }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .feature-card h3 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.8em;
+            line-height: 1.5;
+        }
+
+        .feature-card ul {
+            padding-left: 20px;
+            margin-top: 8px;
+            color: var(--text-secondary);
+            font-size: 0.8em;
+            line-height: 1.4;
+        }
+
+        .feature-card li { margin-bottom: 4px; }
+
+        .install-section {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, #1a1a3e 100%);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .install-section h3 {
+            color: var(--info);
+            margin-bottom: 12px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .install-instructions {
+            background: var(--bg-primary);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .install-instructions h4 {
+            color: var(--warning);
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .install-instructions ol {
+            padding-left: 20px;
+            font-size: 0.8em;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .install-instructions li { margin-bottom: 6px; }
+
+        .install-instructions code {
+            background: var(--bg-card);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn-group-center {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 15px;
         }
 
         .form-group { margin-bottom: 12px; }
@@ -653,6 +760,7 @@
             body { padding: 20px; padding-bottom: 80px; }
             .header { padding: 20px; }
             .header h1 { font-size: 1.6em; }
+            .feature-grid { grid-template-columns: repeat(2, 1fr);}																	
             .preset-grid { grid-template-columns: repeat(2, 1fr); }
             .jar-sizes { grid-template-columns: repeat(5, 1fr); }
             .recipe-list { max-height: 400px; }
@@ -670,6 +778,16 @@
             .proportion-result .result-value { font-size: 1.5em; }
             .header-buttons { flex-wrap: wrap; }
         }
+       .tech-badge {
+            display: inline-block;
+            background: var(--bg-primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            margin: 3px;
+            color: var(--success);
+            border: 1px solid var(--border);
+        }	 
     </style>
 </head>
 <body>
@@ -682,7 +800,8 @@
                     <input type="file" id="importFile" class="file-input" accept=".json,.txt" onchange="importData(event)">
                 </div>
                 <div class="logo">🍳🏠</div>
-                <button class="header-btn" onclick="showInstallModal()">📲</button>
+												
+                <button class="nav-item" onclick="showSection('about')">ℹ️</button>
             </div>
             <h1>В гостях у DKana</h1>
             <p class="subtitle">Помощник по рецептам</p>
@@ -922,6 +1041,246 @@
                 </div>
             </div>
         </section>
+  <section id="aboutSection" class="section">
+
+            <div class="install-section">
+                <h3>📲 Установка приложения</h3>
+                <div class="install-instructions">
+                    <h4>🤖 Android (Chrome)</h4>
+                    <ol>
+                        <li>Нажмите <strong>⋮</strong> вверху справа</li>
+                        <li>Выберите <strong>"Установить приложение"</strong></li>
+                        <li>Подтвердите</li>
+						<li>Актуально если файл загружен на host</li>
+                    </ol>
+                </div>
+                <div class="install-instructions">
+                    <h4>🍎 iPhone (Safari)</h4>
+                    <ol>
+                        <li>Нажмите <strong>⬆️</strong> (Поделиться)</li>
+                        <li>Выберите <strong>"На экран Домой"</strong></li>
+                        <li>Нажмите <strong>"Добавить"</strong></li>
+                    </ol>
+                </div>
+
+            </div>
+            <div class="card">
+                <h2 class="card-title">🛠 Технологии</h2>
+                <div style="padding: 15px;">
+                    <p style="color: var(--text-secondary); font-size: 0.85em; margin-bottom: 15px;">
+                        Приложение написано на чистых веб-технологиях без использования фреймворков:
+                    </p>
+                    <div>
+                        <span class="tech-badge">HTML5</span>
+                        <span class="tech-badge">CSS3</span>
+                        <span class="tech-badge">JavaScript (Vanilla)</span>
+                        <span class="tech-badge">LocalStorage</span>
+                        <span class="tech-badge">PWA</span>
+                        <span class="tech-badge">Flexbox/Grid</span>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>📚 Рецепты</h3>
+                    <p>Создавайте и храните свои любимые рецепты с точными пропорциями и инструкциями.</p>
+                    <ul>
+                        <li>Добавление ингредиентов</li>
+                        <li>Редактирование и удаление</li>
+                        <li>Поиск по названию</li>
+                        <li>Экспорт/импорт данных</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>⚖️ Пропорции</h3>
+                    <p>Мгновенный расчет ингредиентов для любого количества продукта.</p>
+                    <ul>
+                        <li>Калькулятор соли, специй</li>
+                        <li>Шаблоны для частых расчетов</li>
+                        <li>История расчетов</li>
+                        <li>Сохранение своих пропорций</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🫙 Банки</h3>
+                    <p>Адаптируйте рецепты под любой объем банок.</p>
+                    <ul>
+                        <li>Стандартные размеры (0.5л-3л)</li>
+                        <li>Произвольный объем</li>
+                        <li>Расчет для нескольких банок</li>
+                        <li>Автоматическое масштабирование</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>💾 Данные</h3>
+                    <p>Полный контроль над вашими рецептами и настройками.</p>
+                    <ul>
+                        <li>Резервное копирование (JSON)</li>
+                        <li>Импорт из файла</li>
+                        <li>Статистика использования</li>
+                        <li>Безопасное удаление</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📱 PWA Технология</h3>
+                    <p>Работает как нативное приложение на вашем устройстве.</p>
+                    <ul>
+                        <li>Офлайн доступ</li>
+                        <li>Быстрый запуск</li>
+                        <li>Адаптивный дизайн</li>
+                        <li>Темная тема</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🎯 Советы</h3>
+                    <p>Как получить максимум от приложения:</p>
+                    <ul>
+                        <li>Используйте шаблоны для частых расчетов</li>
+                        <li>Добавляйте заметки к рецептам</li>
+                    <li>Регулярно делайте резервные копии</li>
+                        <li>Установите для быстрого доступа</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="about-header">
+                <div class="logo">🍳🏠</div>
+                <h2>В гостях у DKana</h2>
+                <p class="version">Версия 1.8 | PWA Приложение</p>
+                <p style="color: var(--text-secondary); font-size: 0.8em; margin-top: 5px;">Умный помощник для кулинаров</p>
+            </div>
+
+            <div class="card" style="text-align: center;">
+                <h3 style="color: var(--success); margin-bottom: 10px;">🎉 Готово к работе!</h3>
+                <p style="color: var(--text-secondary); font-size: 0.8em; margin-bottom: 15px;">
+                    Сделано с ❤️ для удобства домашних заготовок
+                </p>
+            </div>
+        </section>
+				  
+		  
+
+							
+																		 
+										  
+									   
+				 
+																	  
+											
+										   
+				 
+															   
+										  
+								   
+				 
+																   
+											
+									 
+				 
+
+		  
+
+												 
+						   
+									  
+												
+																					 
+				  
+											  
+											  
+					
+																						  
+													 
+												   
+					 
+				  
+											  
+											 
+					
+																						  
+																						   
+																			   
+					 
+				  
+									  
+																									 
+				  
+			  
+		  
+
+												
+						   
+									  
+																											   
+																					
+				  
+								  
+													   
+										
+											   
+																 
+																														  
+					  
+										
+												   
+																
+					  
+									  
+											
+												  
+																					  
+						  
+											
+											
+												   
+															  
+															  
+															  
+															  
+								 
+						  
+					  
+										
+													   
+																   
+					  
+									  
+											
+													   
+																					   
+						  
+											
+											
+													
+															  
+															  
+														  
+															  
+								 
+						  
+					  
+										
+												 
+																	
+					  
+				   
+									  
+																									
+											   
+				  
+			  
+		  
+
+			
+																			  
+																						   
+																			  
+																					   
+								   
     </div>
 
     <nav class="bottom-nav">
@@ -941,6 +1300,7 @@
             <span class="icon">💾</span>
             <span>Данные</span>
         </button>
+
     </nav>
 
     <div class="modal-overlay" id="installModal">
@@ -1192,6 +1552,8 @@
             document.getElementById(s+'Section').classList.add('active');
             if(s==='jars')populateJarRecipeSelect();
             if(s==='settings')updateStats();
+			if(s==='about')window.scrollTo(0,0);
+																   
         }
 
         function loadSampleRecipes(){
@@ -1321,4 +1683,4 @@
         document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePresetModal();closeInstallModal();}});
     </script>
 </body>
-</html>
+    </html>

@@ -7,7 +7,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DKana Рецепты">
-<meta name="description" content="Домашние рецепты, заготовки, калькулятор пропорций и банок">
 <title>В гостях у DKana — Рецепты</title>
 <style>
 :root{
@@ -222,6 +221,11 @@ select option{background:var(--bg2)}
     <select id="fTag" onchange="renderRecipes()"><option value="">Все теги</option></select>
   </div>
   <div id="recipesList"></div>
+  <!-- Кнопка Показать ещё -->
+  <div id="recipesMoreWrap" style="display:none;text-align:center;margin:14px 0;">
+    <button class="btn btn-blue" onclick="showMoreRecipes()">Показать ещё</button>
+    <div id="recipesMoreInfo" style="margin-top:8px;color:var(--text2);font-size:.82em"></div>
+  </div>
 </div>
 
 <!-- ==================== ДОБАВЛЕНИЕ ==================== -->
@@ -283,6 +287,25 @@ select option{background:var(--bg2)}
     <input type="file" id="importFile" accept=".json,.txt,.csv" style="padding:7px" onchange="importFile(event)">
   </div>
 
+  <!-- Настройки отображения -->
+  <div class="export-card">
+    <h3>⚙️ Настройки отображения</h3>
+    <p>Сколько рецептов показывать на вкладке «Рецепты»</p>
+    <div class="fg" style="margin-top:10px">
+      <label>Лимит вывода</label>
+      <select id="recipesLimitSelect" onchange="setRecipesLimit(this.value)">
+        <option value="5">5 (по умолчанию)</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="0">Все</option>
+      </select>
+    </div>
+    <div class="btn-group" style="margin-top:10px">
+      <button class="btn btn-sm btn-warning" onclick="resetRecipesLimit()">Сбросить (5)</button>
+    </div>
+  </div>
+
   <div class="export-card">
     <h3>ℹ️ О базе данных</h3>
     <p id="dbInfo">Загрузка...</p>
@@ -313,130 +336,32 @@ select option{background:var(--bg2)}
 <div id="infoModal" class="modal-overlay" onclick="if(event.target===this)closeInfoModal()">
 <div class="modal">
   <h3>ℹ️ О приложении <button class="modal-close" onclick="closeInfoModal()">✕</button></h3>
-
-  <div class="info-section">
-    <h4>🏡 В гостях у DKana</h4>
-    <p>Универсальное приложение для домашних заготовок и рецептов. Работает офлайн, устанавливается на телефон как обычное приложение.</p>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📖 Рецепты</h4>
-    <ul>
-      <li>Создание, редактирование и удаление рецептов</li>
-      <li>Добавление до 6 фотографий к каждому рецепту</li>
-      <li>Категории: варенье, маринад, соление, компот, соус, джем, салат и другое</li>
-      <li>Произвольные теги для удобной организации</li>
-      <li>Поиск по названию, фильтрация по типу и тегам</li>
-      <li>Отдельные блоки: ингредиенты, шаги приготовления, заметки</li>
-      <li>Поделиться рецептом как картинка (JPG/PNG) или текст (TXT)</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>🧮 Калькулятор</h4>
-    <ul>
-      <li><b>Калькулятор банок</b> — пересчёт ингредиентов на любой объём банки (500мл, 1л, 1.5л, 2л, 3л или произвольный)</li>
-      <li><b>Расчёт на партию</b> — выберите объём и количество банок, получите полный список продуктов на всю партию</li>
-      <li><b>Калькулятор пропорций</b> — измените количество одного ингредиента, и все остальные пересчитаются автоматически</li>
-      <li><b>Себестоимость</b> — расчёт стоимости партии и одной банки (можно включить/выключить)</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📐 Шаблоны пропорций</h4>
-    <ul>
-      <li>Готовые шаблоны маринадов, сиропов, рассолов</li>
-      <li>Создание, редактирование и удаление своих шаблонов</li>
-      <li>Быстрый расчёт прямо из шаблона</li>
-      <li>Превращение шаблона в полноценный рецепт</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📋 Шаблоны рецептов</h4>
-    <ul>
-      <li>6 готовых шаблонов для быстрого старта</li>
-      <li>Возможность удалять ненужные шаблоны</li>
-      <li>Шаблоны хранятся в базе данных</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📏 Единицы измерения</h4>
-    <p>Поддерживаемые единицы: <b>г</b>, <b>кг</b>, <b>мл</b>, <b>л</b>, <b>шт</b>, <b>ст.л.</b>, <b>ч.л.</b>, <b>зуб.</b>, <b>щеп.</b>, <b>пуч.</b></p>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>💰 Себестоимость</h4>
-    <ul>
-      <li>Включается/выключается переключателем в рецепте и в калькуляторе</li>
-      <li>Указывайте цену за единицу каждого ингредиента</li>
-      <li>Автоматический расчёт стоимости партии и одной банки</li>
-      <li>Себестоимость отображается в карточке рецепта</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📦 Данные</h4>
-    <ul>
-      <li><b>Экспорт</b> — JSON (полная база с фото), TXT (текстовый), CSV (для Excel)</li>
-      <li><b>Импорт</b> — загрузка из JSON, TXT или CSV файла</li>
-      <li><b>Хранение</b> — IndexedDB (без ограничений localStorage)</li>
-      <li>Автоматическая миграция старых данных из localStorage</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📤 Поделиться рецептом</h4>
-    <ul>
-      <li>Выберите формат: JPG (картинка), PNG (картинка) или TXT (текст)</li>
-      <li>Нажмите «Поделиться» — откроется системное меню выбора приложения</li>
-      <li>Или скачайте файл кнопкой «Скачать»</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📱 PWA</h4>
-    <ul>
-      <li>Устанавливается на Android и iOS как обычное приложение</li>
-      <li>Полностью работает без интернета</li>
-      <li>Автоматические обновления при подключении к сети</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section" style="text-align:center;margin-bottom:0">
-    <p style="color:var(--accent2);font-size:1em">🏡 В гостях у DKana — v2.3</p>
-    <p style="font-size:.78em;color:var(--text2);margin-top:4px">Сделано с ❤️ для домашних заготовок</p>
-  </div>
-</div>
-</div>
+  <div class="info-section"><h4>🏡 В гостях у DKana</h4><p>Универсальное приложение для домашних заготовок и рецептов. Работает офлайн, устанавливается на телефон как обычное приложение.</p></div><hr class="info-divider">
+  <div class="info-section"><h4>📖 Рецепты</h4><ul><li>Создание, редактирование и удаление рецептов</li><li>Добавление до 6 фотографий к каждому рецепту</li><li>Категории и произвольные теги</li><li>Отдельные блоки: ингредиенты, шаги, заметки</li><li>Поиск по названию, фильтрация по типу и тегам</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>🧮 Калькулятор</h4><ul><li><b>На одну банку</b> — пересчёт на 500мл, 1л, 1.5л, 2л, 3л и др.</li><li><b>На партию банок</b> — общий список продуктов на всю партию</li><li><b>Пропорции</b> — измените один ингредиент, остальные пересчитаются</li><li><b>Себестоимость</b> — расчёт стоимости партии и одной банки</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📐 Шаблоны пропорций</h4><ul><li>Готовые шаблоны маринадов, сиропов, рассолов</li><li>Создание, редактирование и удаление своих</li><li>Быстрый расчёт и превращение в рецепт</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📋 Шаблоны рецептов</h4><ul><li>6 готовых шаблонов для быстрого старта</li><li>Возможность удалять ненужные шаблоны</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📏 Единицы измерения</h4><p>г, кг, мл, л, шт, ст.л., ч.л., зуб., щеп., пуч.</p></div><hr class="info-divider">
+  <div class="info-section"><h4>💰 Себестоимость</h4><ul><li>Включается переключателем в рецепте и калькуляторе</li><li>Цена за единицу каждого ингредиента</li><li>Автоматический расчёт стоимости</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📦 Данные</h4><ul><li><b>Экспорт</b>: JSON, TXT, CSV</li><li><b>Импорт</b>: JSON, TXT, CSV</li><li><b>Хранение</b>: IndexedDB</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📤 Поделиться</h4><ul><li>Отправка рецепта как картинки (JPG/PNG) или текста</li><li>Системный диалог выбора приложения</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📱 PWA</h4><ul><li>Установка на Android и iOS</li><li>Полный офлайн</li></ul></div><hr class="info-divider">
+  <div class="info-section" style="text-align:center;margin-bottom:0"><p style="color:var(--accent2)">🏡 В гостях у DKana — v2.4</p><p style="font-size:.78em;color:var(--text2);margin-top:4px">Сделано с ❤️ для домашних заготовок</p></div>
+</div></div>
 
 <!-- ==================== CALC TPL MODAL ==================== -->
 <div id="ctModal" class="modal-overlay" onclick="if(event.target===this)closeCalcTplModal()">
-<div class="modal">
-  <h3 id="ctModalTitle">📐 Новый шаблон пропорций <button class="modal-close" onclick="closeCalcTplModal()">✕</button></h3>
-  <div class="fg"><label>Название</label><input type="text" id="ctName" placeholder="Маринад классический"></div>
-  <div class="fg"><label>Ингредиенты</label><div id="ctIngList"></div><button class="btn btn-sm btn-success" onclick="addCtIngRow()" style="margin-top:5px">+ Ингредиент</button></div>
-  <div class="fg"><label>📝 Заметка</label><textarea id="ctNote" style="min-height:50px" placeholder="Универсальный маринад для овощей..."></textarea></div>
-  <div class="btn-group"><button class="btn btn-primary" onclick="saveCalcTpl()">💾 Сохранить</button><button class="btn btn-outline" onclick="closeCalcTplModal()">Отмена</button></div>
-</div>
-</div>
+<div class="modal"><h3 id="ctModalTitle">📐 Новый шаблон <button class="modal-close" onclick="closeCalcTplModal()">✕</button></h3>
+<div class="fg"><label>Название</label><input type="text" id="ctName" placeholder="Маринад классический"></div>
+<div class="fg"><label>Ингредиенты</label><div id="ctIngList"></div><button class="btn btn-sm btn-success" onclick="addCtIngRow()" style="margin-top:5px">+ Ингредиент</button></div>
+<div class="fg"><label>📝 Заметка</label><textarea id="ctNote" style="min-height:50px" placeholder="Универсальный маринад..."></textarea></div>
+<div class="btn-group"><button class="btn btn-primary" onclick="saveCalcTpl()">💾 Сохранить</button><button class="btn btn-outline" onclick="closeCalcTplModal()">Отмена</button></div>
+</div></div>
 
 <!-- ==================== SHARE MODAL ==================== -->
 <div id="shareModal" class="modal-overlay" onclick="if(event.target===this)closeShareModal()">
 <div class="modal">
   <h3>📤 Поделиться рецептом <button class="modal-close" onclick="closeShareModal()">✕</button></h3>
-
   <div class="share-format-row">
     <label>Формат:</label>
     <select id="shareFormat" onchange="generateSharePreview()">
@@ -445,31 +370,29 @@ select option{background:var(--bg2)}
       <option value="txt">📝 TXT (текст)</option>
     </select>
   </div>
-
   <div id="sharePreview" style="text-align:center"></div>
-
   <div class="btn-group" style="justify-content:center;margin-top:14px">
     <button class="btn btn-purple" onclick="shareFile()">📲 Поделиться</button>
     <button class="btn btn-blue" onclick="downloadFile()">💾 Скачать</button>
   </div>
-
   <div id="shareStatus" style="text-align:center;font-size:.82em;color:var(--green);margin-top:10px;min-height:20px"></div>
 </div>
 </div>
-
 <canvas id="shareCanvas" style="display:none"></canvas>
 
 <script>
-// ================================================================
-//  ЕДИНИЦЫ ИЗМЕРЕНИЯ
-// ================================================================
+// ===== UNITS =====
 const UNITS=['г','кг','мл','л','шт','ст.л.','ч.л.','зуб.','щеп.','пуч.'];
 function unitSel(v){return`<select style="min-width:70px">${UNITS.map(u=>`<option${u===(v||'г')?' selected':''}>${u}</option>`).join('')}</select>`}
 
-// ================================================================
-//  СЕБЕСТОИМОСТЬ TOGGLE
-// ================================================================
+// ===== SETTINGS =====
 let costEnabledAdd=false,costEnabledCalc=false;
+// Лимит рецептов
+const RECIPES_LIMIT_KEY='dkana_recipes_limit';
+let recipesLimit=5;
+let recipesShown=0;
+let lastFilteredRecipes=[];
+
 function loadCostSettings(){
   costEnabledAdd=localStorage.getItem('cost_add')==='1';
   costEnabledCalc=localStorage.getItem('cost_calc')==='1';
@@ -477,13 +400,31 @@ function loadCostSettings(){
   document.getElementById('costToggleCalc').checked=costEnabledCalc;
   refreshIngVis();
 }
+function loadRecipesLimit(){
+  const v=localStorage.getItem(RECIPES_LIMIT_KEY);
+  recipesLimit=v===null?5:(parseInt(v,10)||0);
+  const sel=document.getElementById('recipesLimitSelect');
+  if(sel)sel.value=String(recipesLimit);
+}
+function setRecipesLimit(v){
+  recipesLimit=parseInt(v,10)||0;
+  localStorage.setItem(RECIPES_LIMIT_KEY,String(recipesLimit));
+  recipesShown=0;
+  renderRecipes(false);
+  toast('✅ Лимит сохранён');
+}
+function resetRecipesLimit(){setRecipesLimit(5)}
+function showMoreRecipes(){
+  const step=recipesLimit>0?recipesLimit:lastFilteredRecipes.length;
+  recipesShown+=step;
+  renderRecipes(true);
+}
+
 function toggleCostAdd(){costEnabledAdd=document.getElementById('costToggleAdd').checked;localStorage.setItem('cost_add',costEnabledAdd?'1':'0');refreshIngVis()}
 function toggleCostCalc(){costEnabledCalc=document.getElementById('costToggleCalc').checked;localStorage.setItem('cost_calc',costEnabledCalc?'1':'0');document.getElementById('costBox').style.display=costEnabledCalc?'block':'none'}
 function refreshIngVis(){document.querySelectorAll('#ingList .ing-row').forEach(r=>{const p=r.querySelector('.price-input');if(p)p.style.display=costEnabledAdd?'':'none';r.style.gridTemplateColumns=costEnabledAdd?'2fr 1fr 90px 1fr auto':'2fr 1fr 90px auto'})}
 
-// ================================================================
-//  IndexedDB
-// ================================================================
+// ===== IndexedDB =====
 const DB_NAME='DKanaDB',DB_VER=3;let db=null;
 function openDB(){return new Promise((ok,no)=>{const r=indexedDB.open(DB_NAME,DB_VER);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('recipes'))d.createObjectStore('recipes',{keyPath:'id'}).createIndex('type','type',{unique:false});if(!d.objectStoreNames.contains('calcTpls'))d.createObjectStore('calcTpls',{keyPath:'id'});if(!d.objectStoreNames.contains('recipeTpls'))d.createObjectStore('recipeTpls',{keyPath:'id'})};r.onsuccess=e=>{db=e.target.result;ok(db)};r.onerror=e=>no(e.target.error)})}
 function dbAll(s){return new Promise((ok,no)=>{const r=db.transaction(s,'readonly').objectStore(s).getAll();r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
@@ -492,16 +433,14 @@ function dbPut(s,o){return new Promise((ok,no)=>{const r=db.transaction(s,'readw
 function dbDel(s,id){return new Promise((ok,no)=>{const r=db.transaction(s,'readwrite').objectStore(s).delete(id);r.onsuccess=()=>ok();r.onerror=()=>no(r.error)})}
 function dbClear(s){return new Promise((ok,no)=>{const r=db.transaction(s,'readwrite').objectStore(s).clear();r.onsuccess=()=>ok();r.onerror=()=>no(r.error)})}
 
-// ================================================================
-//  PWA
-// ================================================================
+// ===== PWA =====
 let swReg=null,swWaiting=null;
 function registerPWA(){
-  const m={name:"В гостях у DKana — Рецепты",short_name:"DKana Рецепты",description:"Домашние рецепты, заготовки, калькулятор пропорций и банок",start_url:location.href.split('?')[0],display:"standalone",orientation:"portrait",background_color:"#1a1a2e",theme_color:"#1a1a2e",lang:"ru",icons:[72,96,128,144,152,192,384,512].map(s=>({src:makeIcon(s),sizes:s+'x'+s,type:'image/png',purpose:'any maskable'}))};
+  const m={name:"В гостях у DKana",short_name:"DKana",start_url:location.href.split('?')[0],display:"standalone",background_color:"#1a1a2e",theme_color:"#1a1a2e",lang:"ru",icons:[72,96,128,144,152,192,384,512].map(s=>({src:makeIcon(s),sizes:s+'x'+s,type:'image/png',purpose:'any maskable'}))};
   const ml=document.createElement('link');ml.rel='manifest';ml.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(ml);
   if('serviceWorker' in navigator){
-    const sw=`const C='dkana-v7';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['${location.href.split('?')[0]}'])).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.open(C).then(c=>c.match(e.request).then(r=>{const f=fetch(e.request).then(n=>{if(n&&n.status===200)c.put(e.request,n.clone());return n}).catch(()=>{});return r||f})))});self.addEventListener('message',e=>{if(e.data==='skipWaiting')self.skipWaiting()});`;
-    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).then(reg=>{swReg=reg;reg.addEventListener('updatefound',()=>{const nw=reg.installing;nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller){swWaiting=nw;document.getElementById('updateBar').classList.add('show')}})})}).catch(e=>console.warn('SW:',e));
+    const sw=`const C='dkana-v8';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['${location.href.split('?')[0]}'])).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.open(C).then(c=>c.match(e.request).then(r=>{const f=fetch(e.request).then(n=>{if(n&&n.status===200)c.put(e.request,n.clone());return n}).catch(()=>{});return r||f})))});self.addEventListener('message',e=>{if(e.data==='skipWaiting')self.skipWaiting()});`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).then(reg=>{swReg=reg;reg.addEventListener('updatefound',()=>{const nw=reg.installing;nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller){swWaiting=nw;document.getElementById('updateBar').classList.add('show')}})})}).catch(e=>console.warn(e));
     let rf=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!rf){rf=true;location.reload()}});
   }
 }
@@ -509,39 +448,19 @@ function makeIcon(sz){const c=document.createElement('canvas');c.width=sz;c.heig
 function applyUpdate(){if(swWaiting)swWaiting.postMessage('skipWaiting');document.getElementById('updateBar').classList.remove('show')}
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!localStorage.getItem('pwa_d'))document.getElementById('pwaBanner').classList.add('show')});
-window.addEventListener('appinstalled',()=>{deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show');toast('✅ Приложение установлено!')});
-async function installPWA(){if(!deferredPrompt){toast('ℹ️ Откройте меню → На главный экран','var(--blue)');return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show')}
+window.addEventListener('appinstalled',()=>{deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show');toast('✅ Установлено!')});
+async function installPWA(){if(!deferredPrompt){toast('ℹ️ Меню → На главный экран','var(--blue)');return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show')}
 function dismissInstall(){document.getElementById('pwaBanner').classList.remove('show');localStorage.setItem('pwa_d','1')}
 function updateOnline(){document.getElementById('offlineBar').classList.toggle('show',!navigator.onLine)}
 window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);
 
-// ================================================================
-//  MODALS
-// ================================================================
+// ===== NAV =====
+const PAGES=['recipes','add','calc','templates','export'];let curPage='recipes';
+function navigate(p){curPage=p;document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.bottom-nav button')[PAGES.indexOf(p)].classList.add('active');if(p==='recipes')renderRecipes();if(p==='calc'){populateCalcSelect();renderCalcTpls()}if(p==='templates')renderTemplates();if(p==='export')updateDBInfo();if(p==='add'){if(!document.querySelectorAll('#ingList .ing-row').length){addIngRow();addIngRow();addIngRow()}refreshIngVis()}window.scrollTo({top:0,behavior:'smooth'})}
 function openInfoModal(){document.getElementById('infoModal').classList.add('show')}
 function closeInfoModal(){document.getElementById('infoModal').classList.remove('show')}
 
-// ================================================================
-//  НАВИГАЦИЯ
-// ================================================================
-const PAGES=['recipes','add','calc','templates','export'];let curPage='recipes';
-function navigate(p){
-  curPage=p;
-  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
-  document.getElementById('pg-'+p).classList.add('active');
-  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.bottom-nav button')[PAGES.indexOf(p)].classList.add('active');
-  if(p==='recipes')renderRecipes();
-  if(p==='calc'){populateCalcSelect();renderCalcTpls()}
-  if(p==='templates')renderTemplates();
-  if(p==='export')updateDBInfo();
-  if(p==='add'){if(!document.querySelectorAll('#ingList .ing-row').length){addIngRow();addIngRow();addIngRow()}refreshIngVis()}
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ================================================================
-//  УТИЛИТЫ
-// ================================================================
+// ===== UTILS =====
 const genId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc=s=>{const d=document.createElement('div');d.textContent=s||'';return d.innerHTML};
 const csvSafe=s=>(s||'').replace(/"/g,'""').replace(/\n/g,' ');
@@ -550,584 +469,176 @@ function fileDl(n,c,m){const b=new Blob([c],{type:m}),a=document.createElement('
 function compressImg(file,max=800,q=.7){return new Promise(ok=>{const r=new FileReader;r.onload=e=>{const img=new Image;img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=h*max/w;w=max}else{w=w*max/h;h=max}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);ok(c.toDataURL('image/jpeg',q))};img.src=e.target.result};r.readAsDataURL(file)})}
 function openLightbox(s){document.getElementById('lbImg').src=s;document.getElementById('lightbox').classList.add('show')}
 
-// ================================================================
-//  ФОТОГРАФИИ
-// ================================================================
+// ===== PHOTOS =====
 let tempPhotos=[];
 async function previewPhotos(e){const files=[...e.target.files].slice(0,6-tempPhotos.length);for(const f of files){if(tempPhotos.length>=6)break;tempPhotos.push(await compressImg(f))}renderPhotoPreview()}
 function renderPhotoPreview(){document.getElementById('photoPreview').innerHTML=tempPhotos.map((s,i)=>`<div class="photo-thumb"><img src="${s}"><button class="rm" onclick="tempPhotos.splice(${i},1);renderPhotoPreview()">✕</button></div>`).join('')}
 
-// ================================================================
-//  ИНГРЕДИЕНТЫ
-// ================================================================
+// ===== INGREDIENTS =====
 function addIngRow(d={}){const row=document.createElement('div');row.className='ing-row';const sp=costEnabledAdd;row.style.gridTemplateColumns=sp?'2fr 1fr 90px 1fr auto':'2fr 1fr 90px auto';row.innerHTML=`<input type="text" placeholder="Название" value="${esc(d.name||'')}"><input type="number" placeholder="Кол-во" step="any" value="${d.amount||''}">${unitSel(d.unit)}<input type="number" class="price-input" placeholder="₽/ед." step="any" value="${d.price||''}" style="display:${sp?'':'none'}"><button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;document.getElementById('ingList').appendChild(row)}
 function getIngs(){return[...document.querySelectorAll('#ingList .ing-row')].map(r=>{const i=r.querySelectorAll('input');const s=r.querySelector('select');return{name:i[0].value.trim(),amount:parseFloat(i[1].value)||0,unit:s.value,price:parseFloat(i[2].value)||0}}).filter(x=>x.name)}
 
-// ================================================================
-//  РЕЦЕПТЫ CRUD
-// ================================================================
+// ===== RECIPES =====
 let editingId=null;
-async function saveRecipe(){
-  const name=document.getElementById('rName').value.trim();
-  if(!name){toast('❌ Введите название!','var(--accent)');return}
-  let old=null;if(editingId)old=await dbGet('recipes',editingId);
-  const recipe={id:editingId||genId(),name,type:document.getElementById('rType').value,tags:document.getElementById('rTags').value.split(',').map(t=>t.trim()).filter(Boolean),photos:tempPhotos.slice(0,6),baseJar:parseInt(document.getElementById('rBaseJar').value)||1000,ingredients:getIngs(),description:document.getElementById('rDesc').value.trim(),notes:document.getElementById('rNotes').value.trim(),costEnabled:costEnabledAdd,created:old?old.created:new Date().toISOString(),updated:new Date().toISOString()};
-  await dbPut('recipes',recipe);editingId=null;clearForm();navigate('recipes');toast('✅ Рецепт сохранён!');
-}
-async function editRecipe(id){
-  const r=await dbGet('recipes',id);if(!r)return;editingId=id;
-  document.getElementById('addTitle').textContent='✏️ Редактирование';
-  document.getElementById('rName').value=r.name;
-  document.getElementById('rType').value=r.type||'Другое';
-  document.getElementById('rTags').value=(r.tags||[]).join(', ');
-  document.getElementById('rBaseJar').value=r.baseJar||1000;
-  document.getElementById('rDesc').value=r.description||'';
-  document.getElementById('rNotes').value=r.notes||'';
-  costEnabledAdd=r.costEnabled!==undefined?r.costEnabled:(r.ingredients||[]).some(i=>i.price>0);
-  document.getElementById('costToggleAdd').checked=costEnabledAdd;
-  localStorage.setItem('cost_add',costEnabledAdd?'1':'0');
-  tempPhotos=(r.photos||[]).slice();renderPhotoPreview();
-  document.getElementById('ingList').innerHTML='';
-  (r.ingredients||[]).forEach(i=>addIngRow(i));refreshIngVis();navigate('add');
-}
-async function deleteRecipe(id){if(!confirm('Удалить этот рецепт?'))return;await dbDel('recipes',id);renderRecipes();toast('🗑️ Рецепт удалён','var(--accent)')}
+async function saveRecipe(){const name=document.getElementById('rName').value.trim();if(!name){toast('❌ Название!','var(--accent)');return}let old=null;if(editingId)old=await dbGet('recipes',editingId);await dbPut('recipes',{id:editingId||genId(),name,type:document.getElementById('rType').value,tags:document.getElementById('rTags').value.split(',').map(t=>t.trim()).filter(Boolean),photos:tempPhotos.slice(0,6),baseJar:parseInt(document.getElementById('rBaseJar').value)||1000,ingredients:getIngs(),description:document.getElementById('rDesc').value.trim(),notes:document.getElementById('rNotes').value.trim(),costEnabled:costEnabledAdd,created:old?old.created:new Date().toISOString(),updated:new Date().toISOString()});editingId=null;clearForm();navigate('recipes');toast('✅ Сохранён!')}
+async function editRecipe(id){const r=await dbGet('recipes',id);if(!r)return;editingId=id;document.getElementById('addTitle').textContent='✏️ Редактирование';document.getElementById('rName').value=r.name;document.getElementById('rType').value=r.type||'Другое';document.getElementById('rTags').value=(r.tags||[]).join(', ');document.getElementById('rBaseJar').value=r.baseJar||1000;document.getElementById('rDesc').value=r.description||'';document.getElementById('rNotes').value=r.notes||'';costEnabledAdd=r.costEnabled!==undefined?r.costEnabled:(r.ingredients||[]).some(i=>i.price>0);document.getElementById('costToggleAdd').checked=costEnabledAdd;localStorage.setItem('cost_add',costEnabledAdd?'1':'0');tempPhotos=(r.photos||[]).slice();renderPhotoPreview();document.getElementById('ingList').innerHTML='';(r.ingredients||[]).forEach(i=>addIngRow(i));refreshIngVis();navigate('add')}
+async function deleteRecipe(id){if(!confirm('Удалить?'))return;await dbDel('recipes',id);renderRecipes();toast('🗑️','var(--accent)')}
 function clearForm(){editingId=null;document.getElementById('addTitle').textContent='➕ Новый рецепт';['rName','rTags','rDesc','rNotes'].forEach(x=>document.getElementById(x).value='');document.getElementById('rBaseJar').value='1000';document.getElementById('rPhotos').value='';document.getElementById('ingList').innerHTML='';tempPhotos=[];renderPhotoPreview()}
 
-// ================================================================
-//  СПИСОК РЕЦЕПТОВ
-// ================================================================
-async function renderRecipes(){
+// ===== RECIPE LIST =====
+function recipeCardHtml(r){
+  const photos=(r.photos||[]).map(s=>`<img src="${s}" onclick="openLightbox('${s.replace(/'/g,"\\'")}')">`).join('');
+  const tags=[`<span class="tag tag-type">${r.type||'Другое'}</span>`,...(r.tags||[]).map(t=>`<span class="tag tag-custom" onclick="document.getElementById('fTag').value='${t}';renderRecipes(false)">${t}</span>`)].join('');
+  const ingsH=(r.ingredients||[]).map(i=>`<div style="padding:2px 0">• ${esc(i.name)}: <b>${i.amount}</b> ${esc(i.unit)}</div>`).join('');
+  const stepsH=r.description?`<div class="rc-section rc-steps"><div class="rc-label">📋 Шаги приготовления</div><div style="white-space:pre-line">${esc(r.description)}</div></div>`:'';
+  const notesH=r.notes?`<div class="rc-section rc-notes"><div class="rc-label">📌 Заметки</div><div style="white-space:pre-line">${esc(r.notes)}</div></div>`:'';
+  const showC=r.costEnabled!==false;const total=showC?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;
+  const costH=total>0?`<div style="margin-top:5px;color:var(--accent2);font-size:.87em">💰 ≈ ${total.toFixed(2)} ₽</div>`:'';
+  return`<div class="card"><h3>${esc(r.name)}</h3><div class="tags">${tags}</div>
+    ${photos?`<div class="photo-strip">${photos}</div>`:''}
+    <div class="rc-section rc-ingredients"><div class="rc-label">🥕 Ингредиенты (на ${r.baseJar||1000} мл)</div>${ingsH}</div>
+    ${stepsH}${notesH}${costH}
+    <div class="btn-group">
+      <button class="btn btn-sm btn-blue" onclick="openCalcFor('${r.id}')">🧮</button>
+      <button class="btn btn-sm btn-purple" onclick="openShareModal('${r.id}')">📤</button>
+      <button class="btn btn-sm btn-primary" onclick="editRecipe('${r.id}')">✏️</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteRecipe('${r.id}')">🗑️</button>
+    </div></div>`;
+}
+
+async function renderRecipes(append=false){
+  loadRecipesLimit();
   const all=await dbAll('recipes');
   const search=(document.getElementById('fSearch').value||'').toLowerCase();
   const fT=document.getElementById('fType').value;
   const fG=document.getElementById('fTag').value;
-
   const allTags=new Set();all.forEach(r=>(r.tags||[]).forEach(t=>allTags.add(t)));
   const ts=document.getElementById('fTag');const cv=ts.value;
   ts.innerHTML='<option value="">Все теги</option>';
-  [...allTags].sort().forEach(t=>{ts.innerHTML+=`<option value="${t}"${t===cv?' selected':''}>${t}</option>`});
-
-  const recipes=all.filter(r=>{
+  [...allTags].sort().forEach(t=>{ts.innerHTML+=`<option value="${t}" ${t===cv?'selected':''}>${t}</option>`});
+  const filtered=all.filter(r=>{
     if(search&&!r.name.toLowerCase().includes(search))return false;
     if(fT&&r.type!==fT)return false;
-    if(fG&&!(r.tags||[]).includes(fG))return false;
-    return true;
+    if(fG&&!(r.tags||[]).includes(fG))return false;return true;
   }).sort((a,b)=>new Date(b.updated)-new Date(a.updated));
-
+  lastFilteredRecipes=filtered;
   const c=document.getElementById('recipesList');
-  if(!recipes.length){c.innerHTML='<div class="empty"><div class="icon">📖</div><p>Рецептов пока нет</p><p style="font-size:.83em;margin-top:5px">Нажмите ➕ чтобы добавить</p></div>';return}
-
-  c.innerHTML=recipes.map(r=>{
-    const photos=(r.photos||[]).map(s=>`<img src="${s}" onclick="openLightbox('${s.replace(/'/g,"\\'")}')">`).join('');
-    const tags=[`<span class="tag tag-type">${r.type||'Другое'}</span>`,...(r.tags||[]).map(t=>`<span class="tag tag-custom" onclick="document.getElementById('fTag').value='${t}';renderRecipes()">${t}</span>`)].join('');
-    const ingsH=(r.ingredients||[]).map(i=>`<div style="padding:2px 0">• ${esc(i.name)}: <b>${i.amount}</b> ${esc(i.unit)}</div>`).join('');
-    const showC=r.costEnabled!==false;
-    const total=showC?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;
-    const costH=total>0?`<div style="margin-top:5px;color:var(--accent2);font-size:.87em">💰 ≈ ${total.toFixed(2)} ₽</div>`:'';
-    const stepsH=r.description?`<div class="rc-section rc-steps"><div class="rc-label">📋 Шаги приготовления</div><div style="white-space:pre-line">${esc(r.description)}</div></div>`:'';
-    const notesH=r.notes?`<div class="rc-section rc-notes"><div class="rc-label">📌 Заметки</div><div style="white-space:pre-line">${esc(r.notes)}</div></div>`:'';
-
-    return`<div class="card"><h3>${esc(r.name)}</h3><div class="tags">${tags}</div>
-      ${photos?`<div class="photo-strip">${photos}</div>`:''}
-      <div class="rc-section rc-ingredients"><div class="rc-label">🥕 Ингредиенты (на ${r.baseJar||1000} мл)</div>${ingsH}</div>
-      ${stepsH}${notesH}${costH}
-      <div class="btn-group">
-        <button class="btn btn-sm btn-blue" onclick="openCalcFor('${r.id}')">🧮</button>
-        <button class="btn btn-sm btn-purple" onclick="openShareModal('${r.id}')">📤</button>
-        <button class="btn btn-sm btn-primary" onclick="editRecipe('${r.id}')">✏️</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteRecipe('${r.id}')">🗑️</button>
-      </div></div>`;
-  }).join('');
+  const moreW=document.getElementById('recipesMoreWrap');
+  if(!filtered.length){c.innerHTML='<div class="empty"><div class="icon">📖</div><p>Рецептов нет</p></div>';moreW.style.display='none';recipesShown=0;return}
+  if(!append){recipesShown=0;c.innerHTML=''}
+  const step=recipesLimit>0?recipesLimit:filtered.length;
+  if(recipesShown===0)recipesShown=step;
+  const slice=filtered.slice(0,recipesShown);
+  c.innerHTML=slice.map(recipeCardHtml).join('');
+  const hasMore=recipesLimit>0&&recipesShown<filtered.length;
+  moreW.style.display=hasMore?'block':'none';
+  if(hasMore)document.getElementById('recipesMoreInfo').textContent=`Показано: ${Math.min(recipesShown,filtered.length)} из ${filtered.length}`;
 }
 function openCalcFor(id){navigate('calc');setTimeout(()=>{document.getElementById('calcRecipe').value=id;loadCalcRecipe()},100)}
 
-// ================================================================
-//  ПОДЕЛИТЬСЯ РЕЦЕПТОМ
-// ================================================================
+// ===== SHARE =====
 let shareRecipeData=null;
-
-async function openShareModal(id){
-  shareRecipeData=await dbGet('recipes',id);
-  if(!shareRecipeData)return;
-  document.getElementById('shareFormat').value='jpg';
-  document.getElementById('shareStatus').textContent='';
-  document.getElementById('shareModal').classList.add('show');
-  await generateSharePreview();
-}
+async function openShareModal(id){shareRecipeData=await dbGet('recipes',id);if(!shareRecipeData)return;document.getElementById('shareFormat').value='jpg';document.getElementById('shareStatus').textContent='';document.getElementById('shareModal').classList.add('show');await generateSharePreview()}
 function closeShareModal(){document.getElementById('shareModal').classList.remove('show');shareRecipeData=null}
-
-function getRecipeText(r){
-  let t=`🏡 ${r.name}\n📂 ${r.type}`;
-  if((r.tags||[]).length)t+=` | ${r.tags.join(', ')}`;
-  t+=`\n\n🥕 Ингредиенты (на ${r.baseJar||1000} мл):\n`;
-  (r.ingredients||[]).forEach(i=>{t+=`  • ${i.name}: ${i.amount} ${i.unit}\n`});
-  if(r.description)t+=`\n📋 Шаги:\n${r.description}\n`;
-  if(r.notes)t+=`\n📌 Заметки:\n${r.notes}\n`;
-  const showC=r.costEnabled!==false;
-  const total=showC?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;
-  if(total>0)t+=`\n💰 ≈ ${total.toFixed(2)} ₽\n`;
-  t+='\n— В гостях у DKana';
-  return t;
-}
-
+function getRecipeText(r){let t=`🏡 ${r.name}\n📂 ${r.type}`;if((r.tags||[]).length)t+=` | ${r.tags.join(', ')}`;t+=`\n\n🥕 Ингредиенты (на ${r.baseJar||1000} мл):\n`;(r.ingredients||[]).forEach(i=>{t+=`  • ${i.name}: ${i.amount} ${i.unit}\n`});if(r.description)t+=`\n📋 Шаги:\n${r.description}\n`;if(r.notes)t+=`\n📌 Заметки:\n${r.notes}\n`;const showC=r.costEnabled!==false;const total=showC?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;if(total>0)t+=`\n💰 ≈ ${total.toFixed(2)} ₽\n`;t+='\n— В гостях у DKana';return t}
 function renderRecipeToCanvas(r){
   const W=700,P=30,cv=document.getElementById('shareCanvas'),ctx=cv.getContext('2d');
-  // Measure
-  let h=P+30+24+15+22;
-  h+=(r.ingredients||[]).length*22+10;
+  let h=P+30+24+15+22;h+=(r.ingredients||[]).length*22+10;
   if(r.description){h+=22;h+=r.description.split('\n').length*20;h+=10}
   if(r.notes){h+=22;h+=r.notes.split('\n').length*20;h+=10}
   const showC=r.costEnabled!==false;const total=showC?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;
-  if(total>0)h+=24;
-  h+=30+P;
+  if(total>0)h+=24;h+=30+P;
   cv.width=W;cv.height=h;
-  // BG
   const g=ctx.createLinearGradient(0,0,W,h);g.addColorStop(0,'#1a1a2e');g.addColorStop(1,'#0f3460');ctx.fillStyle=g;ctx.fillRect(0,0,W,h);
-  let y=P;
-  ctx.fillStyle='#f5a623';ctx.font='bold 24px Segoe UI,sans-serif';ctx.fillText(r.name,P,y+=24);
+  let y=P;ctx.fillStyle='#f5a623';ctx.font='bold 24px Segoe UI,sans-serif';ctx.fillText(r.name,P,y+=24);
   y+=8;ctx.fillStyle='#27ae60';ctx.font='13px Segoe UI,sans-serif';ctx.fillText([r.type,...(r.tags||[])].join(' • '),P,y+=16);
   y+=10;ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.beginPath();ctx.moveTo(P,y);ctx.lineTo(W-P,y);ctx.stroke();
   y+=8;ctx.fillStyle='#3498db';ctx.font='bold 14px Segoe UI,sans-serif';ctx.fillText(`🥕 Ингредиенты (на ${r.baseJar||1000} мл)`,P,y+=16);
-  ctx.fillStyle='#eee';ctx.font='14px Segoe UI,sans-serif';
-  (r.ingredients||[]).forEach(i=>{ctx.fillText(`• ${i.name}: ${i.amount} ${i.unit}`,P+10,y+=22)});y+=10;
+  ctx.fillStyle='#eee';ctx.font='14px Segoe UI,sans-serif';(r.ingredients||[]).forEach(i=>{ctx.fillText(`• ${i.name}: ${i.amount} ${i.unit}`,P+10,y+=22)});y+=10;
   if(r.description){ctx.fillStyle='#27ae60';ctx.font='bold 14px Segoe UI,sans-serif';ctx.fillText('📋 Шаги приготовления',P,y+=16);ctx.fillStyle='#ddd';ctx.font='13px Segoe UI,sans-serif';r.description.split('\n').forEach(l=>{ctx.fillText(l.trim(),P+10,y+=20)});y+=10}
   if(r.notes){ctx.fillStyle='#f5a623';ctx.font='bold 14px Segoe UI,sans-serif';ctx.fillText('📌 Заметки',P,y+=16);ctx.fillStyle='#ccc';ctx.font='13px Segoe UI,sans-serif';r.notes.split('\n').forEach(l=>{ctx.fillText(l.trim(),P+10,y+=20)});y+=10}
   if(total>0){ctx.fillStyle='#f5a623';ctx.font='bold 14px Segoe UI,sans-serif';ctx.fillText(`💰 ≈ ${total.toFixed(2)} ₽`,P,y+=20)}
   y+=16;ctx.fillStyle='rgba(255,255,255,0.3)';ctx.font='11px Segoe UI,sans-serif';ctx.fillText('🏡 В гостях у DKana',P,y+=14);
 }
-
 async function generateSharePreview(){
-  if(!shareRecipeData)return;
-  const fmt=document.getElementById('shareFormat').value;
-  const preview=document.getElementById('sharePreview');
-
-  if(fmt==='txt'){
-    const text=getRecipeText(shareRecipeData);
-    preview.innerHTML=`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;text-align:left;white-space:pre-line;font-size:.82em;color:var(--text2);max-height:300px;overflow-y:auto;margin:10px 0">${esc(text)}</div>`;
-  } else {
-    renderRecipeToCanvas(shareRecipeData);
-    const mime=fmt==='png'?'image/png':'image/jpeg';
-    const url=document.getElementById('shareCanvas').toDataURL(mime,0.92);
-    preview.innerHTML=`<img src="${url}" class="share-preview-img">`;
-  }
+  if(!shareRecipeData)return;const fmt=document.getElementById('shareFormat').value;const preview=document.getElementById('sharePreview');
+  if(fmt==='txt'){const text=getRecipeText(shareRecipeData);preview.innerHTML=`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;text-align:left;white-space:pre-line;font-size:.82em;color:var(--text2);max-height:300px;overflow-y:auto;margin:10px 0">${esc(text)}</div>`}
+  else{renderRecipeToCanvas(shareRecipeData);const mime=fmt==='png'?'image/png':'image/jpeg';const url=document.getElementById('shareCanvas').toDataURL(mime,0.92);preview.innerHTML=`<img src="${url}" class="share-preview-img">`}
 }
-
 async function getShareBlob(){
   const fmt=document.getElementById('shareFormat').value;
-  if(fmt==='txt'){
-    const text=getRecipeText(shareRecipeData);
-    return new Blob([text],{type:'text/plain'});
-  } else {
-    renderRecipeToCanvas(shareRecipeData);
-    const mime=fmt==='png'?'image/png':'image/jpeg';
-    return new Promise(ok=>document.getElementById('shareCanvas').toBlob(ok,mime,0.92));
-  }
+  if(fmt==='txt'){return new Blob([getRecipeText(shareRecipeData)],{type:'text/plain'})}
+  else{renderRecipeToCanvas(shareRecipeData);const mime=fmt==='png'?'image/png':'image/jpeg';return new Promise(ok=>document.getElementById('shareCanvas').toBlob(ok,mime,0.92))}
 }
-
-function getShareFileName(){
-  const fmt=document.getElementById('shareFormat').value;
-  const name=(shareRecipeData?.name||'recipe').replace(/[^a-zA-Zа-яА-ЯёЁ0-9 _-]/g,'').trim()||'recipe';
-  return`${name}.${fmt}`;
-}
-
 async function shareFile(){
-  if(!shareRecipeData)return;
-  const fmt=document.getElementById('shareFormat').value;
-  const blob=await getShareBlob();
-  const fileName=getShareFileName();
-  const mime=fmt==='txt'?'text/plain':fmt==='png'?'image/png':'image/jpeg';
-
-  // Пробуем Web Share API с файлом
+  if(!shareRecipeData)return;const fmt=document.getElementById('shareFormat').value;const blob=await getShareBlob();const name=(shareRecipeData.name||'recipe').replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g,'')||'recipe';const mime=fmt==='txt'?'text/plain':fmt==='png'?'image/png':'image/jpeg';const file=new File([blob],`${name}.${fmt}`,{type:mime});
   if(navigator.share){
     try{
-      const file=new File([blob],fileName,{type:mime});
-      const shareData={title:shareRecipeData.name};
-
-      // Проверяем поддержку шеринга файлов
-      if(navigator.canShare&&navigator.canShare({files:[file]})){
-        shareData.files=[file];
-      } else {
-        // Файлы не поддерживаются — шерим текст
-        shareData.text=getRecipeText(shareRecipeData);
-      }
-
-      await navigator.share(shareData);
+      if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:shareRecipeData.name});
+      else await navigator.share({title:shareRecipeData.name,text:getRecipeText(shareRecipeData)});
       setShareStatus('✅ Отправлено!');
-      return;
-    }catch(e){
-      if(e.name==='AbortError')return; // Пользователь отменил
-      // Фоллбэк — пробуем только текст
-      try{
-        await navigator.share({title:shareRecipeData.name,text:getRecipeText(shareRecipeData)});
-        setShareStatus('✅ Отправлено (текст)!');
-        return;
-      }catch(e2){
-        if(e2.name==='AbortError')return;
-      }
-    }
-  }
-
-  // Последний фоллбэк — скачиваем файл
-  downloadFile();
-  setShareStatus('💾 Системный шеринг недоступен — файл скачан');
+    }catch(e){if(e.name!=='AbortError')downloadFile()}
+  }else{downloadFile();setShareStatus('💾 Скачано (шеринг недоступен)')}
 }
+async function downloadFile(){if(!shareRecipeData)return;const blob=await getShareBlob();const fmt=document.getElementById('shareFormat').value;const name=(shareRecipeData.name||'recipe').replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g,'')||'recipe';const a=document.createElement('a');a.download=`${name}.${fmt}`;a.href=URL.createObjectURL(blob);a.click();URL.revokeObjectURL(a.href);setShareStatus('✅ Скачано!')}
+function setShareStatus(msg){const el=document.getElementById('shareStatus');el.textContent=msg;setTimeout(()=>{if(el.textContent===msg)el.textContent=''},4000)}
 
-async function downloadFile(){
-  if(!shareRecipeData)return;
-  const blob=await getShareBlob();
-  const fileName=getShareFileName();
-  const a=document.createElement('a');
-  a.download=fileName;
-  a.href=URL.createObjectURL(blob);
-  a.click();
-  URL.revokeObjectURL(a.href);
-  setShareStatus('✅ Файл скачан!');
-  toast('💾 Скачано!');
-}
-
-function setShareStatus(msg){
-  const el=document.getElementById('shareStatus');
-  el.textContent=msg;
-  setTimeout(()=>{if(el.textContent===msg)el.textContent=''},4000);
-}
-
-// ================================================================
-//  КАЛЬКУЛЯТОР
-// ================================================================
+// ===== CALCULATOR =====
 let calcRD=null;
 async function populateCalcSelect(){const all=await dbAll('recipes');const s=document.getElementById('calcRecipe');const cur=s.value;s.innerHTML='<option value="">-- Выберите --</option>';all.sort((a,b)=>a.name.localeCompare(b.name)).forEach(r=>{s.innerHTML+=`<option value="${r.id}"${r.id===cur?' selected':''}>${r.name}</option>`})}
-
 async function loadCalcRecipe(){
-  const id=document.getElementById('calcRecipe').value;
-  if(!id){['jarBox','batchBox','propBox','costBox'].forEach(b=>document.getElementById(b).style.display='none');document.getElementById('costToggleCalcWrap').style.display='none';calcRD=null;return}
+  const id=document.getElementById('calcRecipe').value;if(!id){['jarBox','batchBox','propBox','costBox'].forEach(b=>document.getElementById(b).style.display='none');document.getElementById('costToggleCalcWrap').style.display='none';calcRD=null;return}
   calcRD=await dbGet('recipes',id);if(!calcRD)return;const r=calcRD;
-  ['jarBox','batchBox','propBox'].forEach(b=>document.getElementById(b).style.display='block');
-  document.getElementById('costToggleCalcWrap').style.display='flex';
-  document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';
-  const bj=r.baseJar||1000;
-  document.getElementById('baseJarInfo').textContent=`Рецепт рассчитан на банку ${bj} мл`;
-  document.getElementById('jarBtns').innerHTML=[500,1000,1500,2000,3000].map(s=>`<button class="jar-btn${s===bj?' active':''}" onclick="selectJar(${s},this)">${s>=1000?(s/1000)+'л':s+'мл'}</button>`).join('');
-  document.getElementById('customJar').value='';calcJarFor(bj);
-  document.getElementById('batchJarSize').value='1000';document.getElementById('batchCustomSize').style.display='none';document.getElementById('batchCount').value=1;calcBatch();
-  document.getElementById('propInputs').innerHTML=r.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px"><span style="font-size:.87em">${esc(ing.name)}</span><input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})"><span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span></div>`).join('');
-  document.getElementById('propResult').style.display='none';
-  document.getElementById('costInputs').innerHTML=r.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 1fr 1fr;margin-bottom:5px"><span style="font-size:.82em">${esc(ing.name)}</span><span style="color:var(--text2);font-size:.78em">${ing.amount} ${esc(ing.unit)}</span><input type="number" step="any" placeholder="₽/${esc(ing.unit)}" value="${ing.price||''}" id="cP${i}" oninput="updPrice(${i},this.value);calcCost()"><span id="cPer${i}" style="color:var(--accent2);font-size:.82em"></span></div>`).join('');
-  document.getElementById('costJars').value=1;calcCost();
+  ['jarBox','batchBox','propBox'].forEach(b=>document.getElementById(b).style.display='block');document.getElementById('costToggleCalcWrap').style.display='flex';document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';
+  const bj=r.baseJar||1000;document.getElementById('baseJarInfo').textContent=`Рецепт рассчитан на банку ${bj} мл`;document.getElementById('jarBtns').innerHTML=[500,1000,1500,2000,3000].map(s=>`<button class="jar-btn${s===bj?' active':''}" onclick="selectJar(${s},this)">${s>=1000?(s/1000)+'л':s+'мл'}</button>`).join('');document.getElementById('customJar').value='';calcJarFor(bj);document.getElementById('batchJarSize').value='1000';document.getElementById('batchCustomSize').style.display='none';document.getElementById('batchCount').value=1;calcBatch();
+  document.getElementById('propInputs').innerHTML=r.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px"><span style="font-size:.87em">${esc(ing.name)}</span><input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})"><span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span></div>`).join('');document.getElementById('propResult').style.display='none';
+  document.getElementById('costInputs').innerHTML=r.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 1fr 1fr;margin-bottom:5px"><span style="font-size:.82em">${esc(ing.name)}</span><span style="color:var(--text2);font-size:.78em">${ing.amount} ${esc(ing.unit)}</span><input type="number" step="any" placeholder="₽" value="${ing.price||''}" id="cP${i}" oninput="updPrice(${i},this.value);calcCost()"><span id="cPer${i}" style="color:var(--accent2);font-size:.82em"></span></div>`).join('');document.getElementById('costJars').value=1;calcCost();
 }
-
 function selectJar(ml,el){document.querySelectorAll('.jar-btn').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('customJar').value='';calcJarFor(ml)}
 function calcJar(){const v=parseInt(document.getElementById('customJar').value);if(v>0){document.querySelectorAll('.jar-btn').forEach(b=>b.classList.remove('active'));calcJarFor(v)}}
-function calcJarFor(ml){if(!calcRD)return;const r=calcRD;const ratio=ml/(r.baseJar||1000);const res=document.getElementById('jarResult');res.style.display='block';res.innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">🫙 На ${ml>=1000?(ml/1000)+'л':ml+'мл'} (×${ratio.toFixed(2)}):</div>${r.ingredients.map(i=>`<div class="row"><span>${esc(i.name)}</span><span class="val">${+(i.amount*ratio).toFixed(2)} ${esc(i.unit)}</span></div>`).join('')}`}
-
+function calcJarFor(ml){if(!calcRD)return;const r=calcRD;const ratio=ml/(r.baseJar||1000);document.getElementById('jarResult').style.display='block';document.getElementById('jarResult').innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">🫙 На ${ml>=1000?(ml/1000)+'л':ml+'мл'} (×${ratio.toFixed(2)}):</div>${r.ingredients.map(i=>`<div class="row"><span>${esc(i.name)}</span><span class="val">${+(i.amount*ratio).toFixed(2)} ${esc(i.unit)}</span></div>`).join('')}`}
 function onBatchSizeChange(){document.getElementById('batchCustomSize').style.display=document.getElementById('batchJarSize').value==='custom'?'':'none';calcBatch()}
-function calcBatch(){
-  if(!calcRD)return;const r=calcRD;const base=r.baseJar||1000;
-  const sel=document.getElementById('batchJarSize').value;
-  let jarMl;if(sel==='custom'){jarMl=parseInt(document.getElementById('batchCustomSize').value)||0;if(!jarMl){document.getElementById('batchResult').innerHTML='';return}}else jarMl=parseInt(sel);
-  const count=parseInt(document.getElementById('batchCount').value)||0;
-  if(!count){document.getElementById('batchResult').innerHTML='';return}
-  const totalRatio=(jarMl/base)*count;const sc=costEnabledCalc;let tc=0;
-  const rows=r.ingredients.map(i=>{const a=+(i.amount*totalRatio).toFixed(2);const c=sc?a*(i.price||0):0;tc+=c;return{name:i.name,amount:a,unit:i.unit,cost:c}});
-  const jl=jarMl>=1000?(jarMl/1000)+'л':jarMl+'мл';
-  let h=`<div class="batch-summary"><div class="batch-total-label">📦 На ${count} банок${count>1?'':'у'} по ${jl} (×${totalRatio.toFixed(2)}):</div>${rows.map(r=>`<div class="row"><span>${esc(r.name)}</span><span class="val">${r.amount} ${esc(r.unit)}${sc&&r.cost>0?' <small style="color:var(--text2);font-weight:400">('+r.cost.toFixed(2)+' ₽)</small>':''}</span></div>`).join('')}`;
-  if(sc&&tc>0)h+=`<div style="border-top:1px solid rgba(155,89,182,.2);margin-top:8px;padding-top:8px"><div class="row"><span style="color:var(--purple);font-weight:600">💰 Стоимость партии:</span><span class="val">${tc.toFixed(2)} ₽</span></div><div class="row"><span style="color:var(--purple);font-weight:600">🫙 Одна банка:</span><span class="val">${(tc/count).toFixed(2)} ₽</span></div></div>`;
-  h+='</div>';document.getElementById('batchResult').innerHTML=h;
-}
-
-function calcProp(idx){if(!calcRD)return;const r=calcRD;const orig=r.ingredients[idx].amount;if(!orig)return;const nv=parseFloat(document.getElementById('pA'+idx).value)||0;const ratio=nv/orig;const res=document.getElementById('propResult');res.style.display='block';res.innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">⚖️ Коэффициент: ×${ratio.toFixed(3)}</div>${r.ingredients.map((ing,i)=>{const v=+(ing.amount*ratio).toFixed(2);if(i!==idx)document.getElementById('pA'+i).value=v;return`<div class="row"><span>${esc(ing.name)}</span><span class="val">${v} ${esc(ing.unit)}</span></div>`}).join('')}`}
-
+function calcBatch(){if(!calcRD)return;const r=calcRD;const base=r.baseJar||1000;const sel=document.getElementById('batchJarSize').value;let jarMl;if(sel==='custom'){jarMl=parseInt(document.getElementById('batchCustomSize').value)||0;if(!jarMl){document.getElementById('batchResult').innerHTML='';return}}else jarMl=parseInt(sel);const count=parseInt(document.getElementById('batchCount').value)||0;if(!count){document.getElementById('batchResult').innerHTML='';return}const tr=(jarMl/base)*count;const sc=costEnabledCalc;let tc=0;const rows=r.ingredients.map(i=>{const a=+(i.amount*tr).toFixed(2);const c=sc?a*(i.price||0):0;tc+=c;return{name:i.name,amount:a,unit:i.unit,cost:c}});const jl=jarMl>=1000?(jarMl/1000)+'л':jarMl+'мл';let h=`<div class="batch-summary"><div class="batch-total-label">📦 ${count}×${jl}:</div>${rows.map(r=>`<div class="row"><span>${esc(r.name)}</span><span class="val">${r.amount} ${esc(r.unit)}${sc&&r.cost>0?' <small style="color:var(--text2)">('+r.cost.toFixed(2)+'₽)</small>':''}</span></div>`).join('')}`;if(sc&&tc>0)h+=`<div style="border-top:1px solid rgba(155,89,182,.2);margin-top:8px;padding-top:8px"><div class="row"><span style="color:var(--purple);font-weight:600">💰 Партия:</span><span class="val">${tc.toFixed(2)} ₽</span></div><div class="row"><span style="color:var(--purple);font-weight:600">🫙 Одна:</span><span class="val">${(tc/count).toFixed(2)} ₽</span></div></div>`;h+='</div>';document.getElementById('batchResult').innerHTML=h}
+function calcProp(idx){if(!calcRD)return;const r=calcRD;const orig=r.ingredients[idx].amount;if(!orig)return;const nv=parseFloat(document.getElementById('pA'+idx).value)||0;const ratio=nv/orig;document.getElementById('propResult').style.display='block';document.getElementById('propResult').innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">⚖️ ×${ratio.toFixed(3)}</div>${r.ingredients.map((ing,i)=>{const v=+(ing.amount*ratio).toFixed(2);if(i!==idx)document.getElementById('pA'+i).value=v;return`<div class="row"><span>${esc(ing.name)}</span><span class="val">${v} ${esc(ing.unit)}</span></div>`}).join('')}`}
 async function updPrice(i,v){if(!calcRD)return;calcRD.ingredients[i].price=parseFloat(v)||0;await dbPut('recipes',calcRD)}
-function calcCost(){
-  if(!calcRD)return;const r=calcRD;const jars=parseInt(document.getElementById('costJars').value)||1;
-  let total=0;r.ingredients.forEach((ing,i)=>{const c=ing.amount*(ing.price||0);total+=c;const el=document.getElementById('cPer'+i);if(el)el.textContent=c>0?`= ${c.toFixed(2)} ₽`:''});
-  const pj=jars>0?total/jars:0;
-  document.getElementById('costResult').innerHTML=`<div class="cost-box"><h4>📊 Итого</h4><div class="cost-row"><span>Общая стоимость:</span><span class="cost-total">${total.toFixed(2)} ₽</span></div><div class="cost-row"><span>Количество банок:</span><span>${jars}</span></div><div class="cost-row"><span>Стоимость 1 банки:</span><span class="cost-total">${pj.toFixed(2)} ₽</span></div></div>`;
-}
+function calcCost(){if(!calcRD)return;const r=calcRD;const jars=parseInt(document.getElementById('costJars').value)||1;let total=0;r.ingredients.forEach((ing,i)=>{const c=ing.amount*(ing.price||0);total+=c;const el=document.getElementById('cPer'+i);if(el)el.textContent=c>0?`=${c.toFixed(2)}₽`:''});document.getElementById('costResult').innerHTML=`<div class="cost-box"><h4>📊 Итого</h4><div class="cost-row"><span>Общая:</span><span class="cost-total">${total.toFixed(2)} ₽</span></div><div class="cost-row"><span>Банок:</span><span>${jars}</span></div><div class="cost-row"><span>1 банка:</span><span class="cost-total">${(total/jars).toFixed(2)} ₽</span></div></div>`}
 
-// ================================================================
-//  ШАБЛОНЫ ПРОПОРЦИЙ
-// ================================================================
+// ===== TEMPLATES =====
 let ctEditId=null;
-function openCalcTplModal(id){
-  ctEditId=id||null;
-  document.getElementById('ctModalTitle').innerHTML=(id?'✏️ Редактировать':'📐 Новый')+' шаблон пропорций <button class="modal-close" onclick="closeCalcTplModal()">✕</button>';
-  document.getElementById('ctName').value='';document.getElementById('ctNote').value='';document.getElementById('ctIngList').innerHTML='';
-  if(id){dbGet('calcTpls',id).then(t=>{if(!t)return;document.getElementById('ctName').value=t.name;document.getElementById('ctNote').value=t.note||'';t.ingredients.forEach(i=>addCtIngRow(i));document.getElementById('ctModal').classList.add('show')})}
-  else{addCtIngRow();addCtIngRow();addCtIngRow();document.getElementById('ctModal').classList.add('show')}
-}
+function openCalcTplModal(id){ctEditId=id||null;document.getElementById('ctModalTitle').innerHTML=(id?'✏️':'📐')+' Шаблон <button class="modal-close" onclick="closeCalcTplModal()">✕</button>';document.getElementById('ctName').value='';document.getElementById('ctNote').value='';document.getElementById('ctIngList').innerHTML='';if(id){dbGet('calcTpls',id).then(t=>{if(!t)return;document.getElementById('ctName').value=t.name;document.getElementById('ctNote').value=t.note||'';t.ingredients.forEach(i=>addCtIngRow(i));document.getElementById('ctModal').classList.add('show')})}else{addCtIngRow();addCtIngRow();addCtIngRow();document.getElementById('ctModal').classList.add('show')}}
 function closeCalcTplModal(){document.getElementById('ctModal').classList.remove('show');ctEditId=null}
 function addCtIngRow(d={}){const row=document.createElement('div');row.className='ing-row';row.style.gridTemplateColumns='2fr 1fr 90px auto';row.innerHTML=`<input type="text" placeholder="Название" value="${esc(d.name||'')}"><input type="number" placeholder="Кол-во" step="any" value="${d.amount||''}">${unitSel(d.unit)}<button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;document.getElementById('ctIngList').appendChild(row)}
 function getCtIngs(){return[...document.querySelectorAll('#ctIngList .ing-row')].map(r=>{const i=r.querySelectorAll('input');const s=r.querySelector('select');return{name:i[0].value.trim(),amount:parseFloat(i[1].value)||0,unit:s.value}}).filter(x=>x.name)}
-async function saveCalcTpl(){const name=document.getElementById('ctName').value.trim();if(!name){toast('❌ Введите название!','var(--accent)');return}const ings=getCtIngs();if(!ings.length){toast('❌ Добавьте ингредиенты!','var(--accent)');return}await dbPut('calcTpls',{id:ctEditId||genId(),name,ingredients:ings,note:document.getElementById('ctNote').value.trim(),updated:new Date().toISOString()});closeCalcTplModal();renderCalcTpls();toast('✅ Шаблон сохранён!')}
-async function deleteCalcTpl(id){if(!confirm('Удалить шаблон?'))return;await dbDel('calcTpls',id);renderCalcTpls();toast('🗑️ Удалён','var(--accent)')}
+async function saveCalcTpl(){const name=document.getElementById('ctName').value.trim();if(!name){toast('❌','var(--accent)');return}const ings=getCtIngs();if(!ings.length){toast('❌','var(--accent)');return}await dbPut('calcTpls',{id:ctEditId||genId(),name,ingredients:ings,note:document.getElementById('ctNote').value.trim(),updated:new Date().toISOString()});closeCalcTplModal();renderCalcTpls();toast('✅')}
+async function deleteCalcTpl(id){if(!confirm('Удалить?'))return;await dbDel('calcTpls',id);renderCalcTpls();toast('🗑️','var(--accent)')}
+async function renderCalcTpls(){const all=await dbAll('calcTpls');const c=document.getElementById('calcTplList');if(!all.length){c.innerHTML='<div class="empty" style="padding:20px"><p style="color:var(--text2)">Нет шаблонов</p></div>';return}c.innerHTML=all.map(t=>{const ings=(t.ingredients||[]).map(i=>`• ${esc(i.name)}: ${i.amount} ${esc(i.unit)}`).join('<br>');return`<div class="ct-card"><h4>${esc(t.name)}</h4><div style="margin:5px 0;font-size:.78em;color:var(--text2)">${ings}</div>${t.note?`<p style="font-size:.8em;color:var(--text2);font-style:italic">${esc(t.note)}</p>`:''}<div class="btn-group"><button class="btn btn-sm btn-blue" onclick="useCalcTpl('${t.id}')">⚖️</button><button class="btn btn-sm btn-primary" onclick="openCalcTplModal('${t.id}')">✏️</button><button class="btn btn-sm btn-warning" onclick="calcTplToRecipe('${t.id}')">📖</button><button class="btn btn-sm btn-danger" onclick="deleteCalcTpl('${t.id}')">🗑️</button></div></div>`}).join('')}
+async function useCalcTpl(id){const t=await dbGet('calcTpls',id);if(!t)return;calcRD={id:'_tpl',name:t.name,baseJar:1000,ingredients:t.ingredients.map(i=>({...i,price:0}))};['jarBox','batchBox','propBox'].forEach(b=>document.getElementById(b).style.display='block');document.getElementById('costToggleCalcWrap').style.display='flex';document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';document.getElementById('calcRecipe').value='';document.getElementById('baseJarInfo').textContent=`${t.name} (1000мл)`;document.getElementById('jarBtns').innerHTML=[500,1000,1500,2000,3000].map(s=>`<button class="jar-btn${s===1000?' active':''}" onclick="selectJar(${s},this)">${s>=1000?(s/1000)+'л':s+'мл'}</button>`).join('');document.getElementById('customJar').value='';calcJarFor(1000);document.getElementById('batchJarSize').value='1000';document.getElementById('batchCustomSize').style.display='none';document.getElementById('batchCount').value=1;calcBatch();document.getElementById('propInputs').innerHTML=t.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px"><span style="font-size:.87em">${esc(ing.name)}</span><input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})"><span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span></div>`).join('');document.getElementById('propResult').style.display='none';window.scrollTo({top:0,behavior:'smooth'});toast('⚖️')}
+async function calcTplToRecipe(id){const t=await dbGet('calcTpls',id);if(!t)return;clearForm();document.getElementById('rName').value=t.name;document.getElementById('rDesc').value=t.note||'';document.getElementById('ingList').innerHTML='';t.ingredients.forEach(i=>addIngRow({...i,price:0}));refreshIngVis();navigate('add');toast('📋')}
 
-async function renderCalcTpls(){
-  const all=await dbAll('calcTpls');const c=document.getElementById('calcTplList');
-  if(!all.length){c.innerHTML='<div class="empty" style="padding:20px"><p style="color:var(--text2)">Нет шаблонов пропорций</p></div>';return}
-  c.innerHTML=all.map(t=>{
-    const ings=(t.ingredients||[]).map(i=>`<span style="font-size:.78em;color:var(--text2)">• ${esc(i.name)}: ${i.amount} ${esc(i.unit)}</span>`).join('<br>');
-    return`<div class="ct-card"><h4>${esc(t.name)}</h4><div style="margin:5px 0">${ings}</div>${t.note?`<p style="font-size:.8em;color:var(--text2);font-style:italic;margin-top:4px">${esc(t.note)}</p>`:''}<div class="btn-group"><button class="btn btn-sm btn-blue" onclick="useCalcTpl('${t.id}')">⚖️ Рассчитать</button><button class="btn btn-sm btn-primary" onclick="openCalcTplModal('${t.id}')">✏️</button><button class="btn btn-sm btn-warning" onclick="calcTplToRecipe('${t.id}')">📖 В рецепт</button><button class="btn btn-sm btn-danger" onclick="deleteCalcTpl('${t.id}')">🗑️</button></div></div>`;
-  }).join('');
-}
-
-async function useCalcTpl(id){
-  const t=await dbGet('calcTpls',id);if(!t)return;
-  calcRD={id:'_tpl',name:t.name,baseJar:1000,ingredients:t.ingredients.map(i=>({...i,price:0}))};
-  ['jarBox','batchBox','propBox'].forEach(b=>document.getElementById(b).style.display='block');
-  document.getElementById('costToggleCalcWrap').style.display='flex';
-  document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';
-  document.getElementById('calcRecipe').value='';
-  document.getElementById('baseJarInfo').textContent=`Шаблон: ${t.name} (база 1000 мл)`;
-  document.getElementById('jarBtns').innerHTML=[500,1000,1500,2000,3000].map(s=>`<button class="jar-btn${s===1000?' active':''}" onclick="selectJar(${s},this)">${s>=1000?(s/1000)+'л':s+'мл'}</button>`).join('');
-  document.getElementById('customJar').value='';calcJarFor(1000);
-  document.getElementById('batchJarSize').value='1000';document.getElementById('batchCustomSize').style.display='none';document.getElementById('batchCount').value=1;calcBatch();
-  document.getElementById('propInputs').innerHTML=t.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px"><span style="font-size:.87em">${esc(ing.name)}</span><input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})"><span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span></div>`).join('');
-  document.getElementById('propResult').style.display='none';
-  window.scrollTo({top:0,behavior:'smooth'});toast('⚖️ Шаблон загружен');
-}
-
-async function calcTplToRecipe(id){const t=await dbGet('calcTpls',id);if(!t)return;clearForm();document.getElementById('rName').value=t.name;document.getElementById('rDesc').value=t.note||'';document.getElementById('ingList').innerHTML='';t.ingredients.forEach(i=>addIngRow({...i,price:0}));refreshIngVis();navigate('add');toast('📋 Заполнено из шаблона')}
-
-// ================================================================
-//  ШАБЛОНЫ РЕЦЕПТОВ (в IndexedDB, удаляемые)
-// ================================================================
-const SEED_RTPLS=[
-  {name:'Огурцы маринованные «Классические»',type:'Маринад',tags:['огурцы','лето','маринад'],baseJar:1000,ingredients:[{name:'Огурцы',amount:600,unit:'г'},{name:'Вода',amount:500,unit:'мл'},{name:'Соль',amount:30,unit:'г'},{name:'Сахар',amount:50,unit:'г'},{name:'Уксус 9%',amount:50,unit:'мл'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Перец горошком',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'},{name:'Укроп (зонтик)',amount:1,unit:'шт'}],description:'1. Огурцы замочить на 3–4 часа в холодной воде\n2. Банки стерилизовать\n3. Уложить специи на дно, затем огурцы\n4. Залить кипятком на 15 мин, слить\n5. Из слитой воды сварить маринад с солью, сахаром\n6. Залить маринад, добавить уксус\n7. Закатать, перевернуть, укутать',notes:''},
-  {name:'Варенье клубничное «Пятиминутка»',type:'Варенье',tags:['клубника','лето','варенье','быстрое'],baseJar:500,ingredients:[{name:'Клубника',amount:500,unit:'г'},{name:'Сахар',amount:300,unit:'г'},{name:'Лимонный сок',amount:10,unit:'мл'}],description:'1. Клубнику вымыть, удалить хвостики\n2. Засыпать сахаром на 4–6 часов\n3. На медленном огне довести до кипения\n4. Варить 5 минут, снимая пену\n5. Добавить лимонный сок\n6. Разлить по стерилизованным банкам, закатать',notes:''},
-  {name:'Томатный соус «Домашний»',type:'Соус',tags:['помидоры','соус','лето'],baseJar:500,ingredients:[{name:'Помидоры',amount:1,unit:'кг'},{name:'Лук',amount:100,unit:'г'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Соль',amount:10,unit:'г'},{name:'Сахар',amount:20,unit:'г'},{name:'Масло растительное',amount:30,unit:'мл'},{name:'Базилик сушёный',amount:5,unit:'г'}],description:'1. Помидоры ошпарить, снять кожицу, нарезать\n2. Лук и чеснок обжарить на масле\n3. Добавить помидоры, тушить 30 мин\n4. Пробить блендером до однородности\n5. Добавить специи, варить ещё 10 мин\n6. Разлить по банкам, стерилизовать 15 мин',notes:''},
-  {name:'Компот из вишни',type:'Компот',tags:['вишня','лето','компот'],baseJar:3000,ingredients:[{name:'Вишня',amount:500,unit:'г'},{name:'Сахар',amount:300,unit:'г'},{name:'Вода',amount:2.5,unit:'л'}],description:'1. Вишню промыть (косточки можно не удалять)\n2. Уложить в стерилизованную банку\n3. Залить кипятком, оставить на 15 минут\n4. Слить воду, добавить сахар, довести до кипения\n5. Залить сиропом вишню\n6. Закатать, перевернуть, укутать до остывания',notes:''},
-  {name:'Лечо «Классическое»',type:'Салат',tags:['перец','помидоры','лечо','лето'],baseJar:500,ingredients:[{name:'Перец болгарский',amount:500,unit:'г'},{name:'Помидоры',amount:500,unit:'г'},{name:'Лук',amount:100,unit:'г'},{name:'Масло растительное',amount:50,unit:'мл'},{name:'Сахар',amount:30,unit:'г'},{name:'Соль',amount:15,unit:'г'},{name:'Уксус 9%',amount:25,unit:'мл'}],description:'1. Помидоры пропустить через мясорубку\n2. Перец нарезать соломкой, лук — полукольцами\n3. Томат довести до кипения, добавить масло, соль, сахар\n4. Добавить перец и лук, варить 20 мин\n5. Добавить уксус, варить ещё 5 мин\n6. Разлить по банкам, закатать',notes:''},
-  {name:'Кабачковая икра',type:'Другое',tags:['кабачки','лето','икра'],baseJar:500,ingredients:[{name:'Кабачки',amount:1,unit:'кг'},{name:'Морковь',amount:200,unit:'г'},{name:'Лук',amount:200,unit:'г'},{name:'Томатная паста',amount:50,unit:'г'},{name:'Масло растительное',amount:80,unit:'мл'},{name:'Соль',amount:15,unit:'г'},{name:'Сахар',amount:20,unit:'г'}],description:'1. Кабачки очистить, нарезать кубиками\n2. Морковь натереть, лук нарезать\n3. Обжарить лук и морковь\n4. Добавить кабачки, тушить 30 мин\n5. Добавить томатную пасту и специи\n6. Пробить блендером\n7. Тушить ещё 15 мин, разлить по банкам',notes:''}
-];
-
+const SEED_RTPLS=[{name:'Огурцы маринованные',type:'Маринад',tags:['огурцы','лето'],baseJar:1000,ingredients:[{name:'Огурцы',amount:600,unit:'г'},{name:'Вода',amount:500,unit:'мл'},{name:'Соль',amount:30,unit:'г'},{name:'Сахар',amount:50,unit:'г'},{name:'Уксус 9%',amount:50,unit:'мл'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Перец горошком',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'}],description:'1. Замочить 3ч\n2. Специи+огурцы\n3. Кипяток 15мин\n4. Маринад, закатать',notes:''},{name:'Варенье «Пятиминутка»',type:'Варенье',tags:['клубника'],baseJar:500,ingredients:[{name:'Клубника',amount:500,unit:'г'},{name:'Сахар',amount:300,unit:'г'},{name:'Лимонный сок',amount:10,unit:'мл'}],description:'1. Засыпать сахаром 4ч\n2. Кипятить 5мин\n3. Закатать',notes:''},{name:'Томатный соус',type:'Соус',tags:['помидоры'],baseJar:500,ingredients:[{name:'Помидоры',amount:1,unit:'кг'},{name:'Лук',amount:100,unit:'г'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Соль',amount:10,unit:'г'},{name:'Масло',amount:30,unit:'мл'}],description:'1. Ошпарить, снять кожицу\n2. Тушить 30мин\n3. Блендер, закатать',notes:''},{name:'Компот из вишни',type:'Компот',tags:['вишня'],baseJar:3000,ingredients:[{name:'Вишня',amount:500,unit:'г'},{name:'Сахар',amount:300,unit:'г'},{name:'Вода',amount:2.5,unit:'л'}],description:'1. Вишню в банку\n2. Кипяток 15мин\n3. Сироп, закатать',notes:''},{name:'Лечо',type:'Салат',tags:['перец','помидоры'],baseJar:500,ingredients:[{name:'Перец',amount:500,unit:'г'},{name:'Помидоры',amount:500,unit:'г'},{name:'Лук',amount:100,unit:'г'},{name:'Масло',amount:50,unit:'мл'},{name:'Уксус',amount:25,unit:'мл'}],description:'1. Помидоры—пюре\n2. Перец 20мин\n3. Уксус, закатать',notes:''},{name:'Кабачковая икра',type:'Другое',tags:['кабачки'],baseJar:500,ingredients:[{name:'Кабачки',amount:1,unit:'кг'},{name:'Морковь',amount:200,unit:'г'},{name:'Лук',amount:200,unit:'г'},{name:'Том. паста',amount:50,unit:'г'},{name:'Масло',amount:80,unit:'мл'}],description:'1. Обжарить овощи\n2. Тушить 30мин\n3. Блендер, закатать',notes:''}];
 async function seedRecipeTpls(){const ex=await dbAll('recipeTpls');if(ex.length)return;for(const t of SEED_RTPLS)await dbPut('recipeTpls',{...t,id:genId()})}
-async function deleteRecipeTpl(id){if(!confirm('Удалить этот шаблон?'))return;await dbDel('recipeTpls',id);renderTemplates();toast('🗑️ Шаблон удалён','var(--accent)')}
+async function deleteRecipeTpl(id){if(!confirm('Удалить?'))return;await dbDel('recipeTpls',id);renderTemplates();toast('🗑️','var(--accent)')}
+async function renderTemplates(){const all=await dbAll('recipeTpls');const c=document.getElementById('templatesList');if(!all.length){c.innerHTML='<div class="empty"><div class="icon">📋</div><p>Нет шаблонов</p></div>';return}c.innerHTML=all.map(t=>`<div class="tpl-card"><h3 style="color:var(--accent2);font-size:.95em;cursor:pointer" onclick="useRTpl('${t.id}')">${esc(t.name)}</h3><div class="tags"><span class="tag tag-type">${t.type}</span>${(t.tags||[]).map(g=>`<span class="tag tag-custom">${g}</span>`).join('')}</div><div style="font-size:.77em;color:var(--text2);margin-top:3px">${(t.ingredients||[]).length} ингр. • ${t.baseJar}мл</div><div class="btn-group"><button class="btn btn-sm btn-primary" onclick="useRTpl('${t.id}')">📝</button><button class="btn btn-sm btn-danger" onclick="deleteRecipeTpl('${t.id}')">🗑️</button></div></div>`).join('')}
+async function useRTpl(id){const t=await dbGet('recipeTpls',id);if(!t)return;clearForm();document.getElementById('rName').value=t.name;document.getElementById('rType').value=t.type;document.getElementById('rTags').value=(t.tags||[]).join(', ');document.getElementById('rBaseJar').value=t.baseJar;document.getElementById('rDesc').value=t.description||'';document.getElementById('rNotes').value=t.notes||'';document.getElementById('ingList').innerHTML='';(t.ingredients||[]).forEach(x=>addIngRow({...x,price:0}));refreshIngVis();navigate('add');toast('📋')}
 
-async function renderTemplates(){
-  const all=await dbAll('recipeTpls');const c=document.getElementById('templatesList');
-  if(!all.length){c.innerHTML='<div class="empty"><div class="icon">📋</div><p>Шаблонов нет</p></div>';return}
-  c.innerHTML=all.map(t=>`
-    <div class="tpl-card">
-      <h3 style="color:var(--accent2);font-size:.95em;margin-bottom:3px;cursor:pointer" onclick="useRTpl('${t.id}')">${esc(t.name)}</h3>
-      <div class="tags"><span class="tag tag-type">${t.type}</span>${(t.tags||[]).map(g=>`<span class="tag tag-custom">${g}</span>`).join('')}</div>
-      <div style="font-size:.77em;color:var(--text2);margin-top:3px">${(t.ingredients||[]).length} ингредиентов • банка ${t.baseJar} мл</div>
-      <div class="btn-group">
-        <button class="btn btn-sm btn-primary" onclick="useRTpl('${t.id}')">📝 Использовать</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteRecipeTpl('${t.id}')">🗑️ Удалить</button>
-      </div>
-    </div>`).join('');
-}
+// ===== DATA =====
+async function exportJSON(){const r=await dbAll('recipes');const ct=await dbAll('calcTpls');const rt=await dbAll('recipeTpls');fileDl('dkana.json',JSON.stringify({recipes:r,calcTpls:ct,recipeTpls:rt},null,2),'application/json');toast('📄')}
+async function exportTXT(){const recipes=await dbAll('recipes');let t='════════════════════════════════════════\n  В ГОСТЯХ У DKANA\n  '+new Date().toLocaleString('ru')+'\n════════════════════════════════════════\n\n';recipes.forEach((r,i)=>{t+=`━━━ #${i+1} ━━━━━━━━━━━━━━━━━━━\nНазвание: ${r.name}\nТип: ${r.type}\nТеги: ${(r.tags||[]).join(', ')}\nБанка: ${r.baseJar||1000}мл\n\nИнгредиенты:\n`;(r.ingredients||[]).forEach(x=>{t+=`  • ${x.name}: ${x.amount} ${x.unit}\n`});if(r.description)t+=`\nШаги:\n${r.description}\n`;if(r.notes)t+=`\nЗаметки:\n${r.notes}\n`;t+='\n'});fileDl('dkana.txt',t,'text/plain');toast('📝')}
+async function exportCSV(){const recipes=await dbAll('recipes');const B='\uFEFF';let csv=B+'Название;Тип;Теги;Банка;Ингредиент;Кол-во;Ед.;Цена;Описание;Заметки;Дата\n';recipes.forEach(r=>{if(!(r.ingredients||[]).length)csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"";"";"";"";`+`"${csvSafe(r.description)}";"${csvSafe(r.notes)}";"${r.created?new Date(r.created).toLocaleDateString('ru'):''}"\n`;else r.ingredients.forEach((ing,i)=>{csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"${csvSafe(ing.name)}";${ing.amount};"${ing.unit}";${ing.price||0};`+`"${i===0?csvSafe(r.description):''}";"${i===0?csvSafe(r.notes):''}";"${i===0?(r.created?new Date(r.created).toLocaleDateString('ru'):''):''}"\n`})});fileDl('dkana.csv',csv,'text/csv;charset=utf-8');toast('📊')}
+async function importFile(e){const file=e.target.files[0];if(!file)return;const ext=file.name.split('.').pop().toLowerCase();const text=await file.text();try{if(ext==='json')await impJSON(text);else if(ext==='txt')await impTXT(text);else if(ext==='csv')await impCSV(text);else{toast('❌','var(--accent)');return}renderRecipes()}catch(er){toast('❌','var(--accent)')}e.target.value=''}
+async function impJSON(text){const d=JSON.parse(text);let c=0;if(d.recipes?.length){const m=confirm(`${d.recipes.length} рец.\nOK=Добав. | Отмена=Замен.`);if(!m)await dbClear('recipes');for(const r of d.recipes){if(!r.id)r.id=genId();await dbPut('recipes',r);c++}}if(d.calcTpls?.length)for(const t of d.calcTpls){if(!t.id)t.id=genId();await dbPut('calcTpls',t);c++};if(d.recipeTpls?.length)for(const t of d.recipeTpls){if(!t.id)t.id=genId();await dbPut('recipeTpls',t);c++};toast(`✅ ${c}`)}
+async function impTXT(text){const blocks=text.split(/━━━.*━━━/).filter(b=>b.trim());let c=0;for(const b of blocks){const nm=b.match(/Название:\s*(.+)/);if(!nm)continue;const tm=b.match(/Тип:\s*(.+)/);const tgm=b.match(/Теги:\s*(.+)/);const jm=b.match(/Банка:\s*(\d+)/);const ings=[];(b.match(/• .+/g)||[]).forEach(l=>{const m=l.match(/• (.+?):\s*([\d.,]+)\s*(\S+)/);if(m)ings.push({name:m[1].trim(),amount:parseFloat(m[2])||0,unit:m[3],price:0})});let desc='';const dm=b.match(/Шаги:\n([\s\S]*?)(?=\n(?:Заметки:|Фото:)|$)/);if(dm)desc=dm[1].trim();let notes='';const ntm=b.match(/Заметки:\n([\s\S]*?)(?=\nФото:|$)/);if(ntm)notes=ntm[1].trim();await dbPut('recipes',{id:genId(),name:nm[1].trim(),type:tm?tm[1].trim():'Другое',tags:tgm?tgm[1].split(',').map(t=>t.trim()).filter(Boolean):[],photos:[],baseJar:jm?parseInt(jm[1]):1000,ingredients:ings,description:desc,notes,costEnabled:false,created:new Date().toISOString(),updated:new Date().toISOString()});c++}toast(`✅ ${c}`)}
+async function impCSV(text){const lines=text.replace(/^\uFEFF/,'').split('\n').filter(l=>l.trim());if(lines.length<2)return;const recipes={};for(let i=1;i<lines.length;i++){const cols=[];let cur='',inQ=false;for(let j=0;j<lines[i].length;j++){const ch=lines[i][j];if(ch==='"'){if(inQ&&lines[i][j+1]==='"'){cur+='"';j++}else inQ=!inQ}else if(ch===';'&&!inQ){cols.push(cur);cur=''}else cur+=ch}cols.push(cur);const[name,type,tags,jar,ing,amt,unit,price,desc,notes]=cols.map(c=>(c||'').trim());if(!name)continue;if(!recipes[name])recipes[name]={id:genId(),name,type:type||'Другое',tags:tags?tags.split(',').map(t=>t.trim()).filter(Boolean):[],photos:[],baseJar:parseInt(jar)||1000,ingredients:[],description:desc||'',notes:notes||'',costEnabled:!!parseFloat(price),created:new Date().toISOString(),updated:new Date().toISOString()};if(ing)recipes[name].ingredients.push({name:ing,amount:parseFloat(amt)||0,unit:unit||'г',price:parseFloat(price)||0});if(desc&&!recipes[name].description)recipes[name].description=desc;if(notes&&!recipes[name].notes)recipes[name].notes=notes}const m=confirm(`${Object.keys(recipes).length} рец.\nOK=Доб.|Отм.=Зам.`);if(!m)await dbClear('recipes');let c=0;for(const r of Object.values(recipes)){await dbPut('recipes',r);c++}toast(`✅ ${c}`)}
+async function clearAllData(){if(!confirm('⚠️ Удалить ВСЕ?'))return;if(!confirm('Точно?'))return;await dbClear('recipes');await dbClear('calcTpls');await dbClear('recipeTpls');renderRecipes();toast('🗑️','var(--accent)')}
+async function updateDBInfo(){const all=await dbAll('recipes');const ct=await dbAll('calcTpls');const rt=await dbAll('recipeTpls');let ph=0;all.forEach(r=>ph+=(r.photos||[]).length);const sa=window.matchMedia('(display-mode:standalone)').matches;document.getElementById('dbInfo').innerHTML=`IndexedDB<br>Рецептов: <b>${all.length}</b> | Фото: <b>${ph}</b><br>Шаблонов: <b>${rt.length}</b> рец. / <b>${ct.length}</b> проп.<br>${sa?'📱 PWA':'🌐 Браузер'} | ${navigator.onLine?'🟢':'🔴'}<br>Импорт: <b>JSON, TXT, CSV</b>`}
 
-async function useRTpl(id){
-  const t=await dbGet('recipeTpls',id);if(!t)return;clearForm();
-  document.getElementById('rName').value=t.name;
-  document.getElementById('rType').value=t.type;
-  document.getElementById('rTags').value=(t.tags||[]).join(', ');
-  document.getElementById('rBaseJar').value=t.baseJar;
-  document.getElementById('rDesc').value=t.description||'';
-  document.getElementById('rNotes').value=t.notes||'';
-  document.getElementById('ingList').innerHTML='';
-  (t.ingredients||[]).forEach(x=>addIngRow({...x,price:0}));
-  refreshIngVis();navigate('add');toast('📋 Шаблон загружен — настройте под себя');
-}
+async function migrate(){const old=localStorage.getItem('dkana_recipes_db');if(!old)return;try{const d=JSON.parse(old);if(d.recipes?.length){const ex=await dbAll('recipes');if(!ex.length)for(const r of d.recipes){if(!r.id)r.id=genId();await dbPut('recipes',r)}}localStorage.removeItem('dkana_recipes_db')}catch(e){}}
+async function seedCalcTpls(){const ex=await dbAll('calcTpls');if(ex.length)return;const s=[{id:genId(),name:'Маринад (1л)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:2,unit:'ст.л.'},{name:'Сахар',amount:3,unit:'ст.л.'},{name:'Уксус 9%',amount:70,unit:'мл'},{name:'Перец',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'}],note:'Универсальный',updated:new Date().toISOString()},{id:genId(),name:'Сироп (1л)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Сахар',amount:200,unit:'г'},{name:'Лимонная кислота',amount:3,unit:'г'}],note:'Сахар по вкусу',updated:new Date().toISOString()},{id:genId(),name:'Рассол (1л)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:50,unit:'г'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Укроп',amount:2,unit:'шт'}],note:'Холодный способ',updated:new Date().toISOString()},{id:genId(),name:'Варенье 1:1',ingredients:[{name:'Ягоды',amount:1,unit:'кг'},{name:'Сахар',amount:1,unit:'кг'},{name:'Вода',amount:200,unit:'мл'}],note:'Базовое',updated:new Date().toISOString()}];for(const x of s)await dbPut('calcTpls',x)}
 
-// ================================================================
-//  ЭКСПОРТ
-// ================================================================
-async function exportJSON(){
-  const recipes=await dbAll('recipes');const calcTpls=await dbAll('calcTpls');const recipeTpls=await dbAll('recipeTpls');
-  fileDl('dkana_recipes.json',JSON.stringify({recipes,calcTpls,recipeTpls},null,2),'application/json');
-  toast('📄 JSON сохранён');
-}
-
-async function exportTXT(){
-  const recipes=await dbAll('recipes');
-  let txt='════════════════════════════════════════\n';
-  txt+='  В ГОСТЯХ У DKANA — РЕЦЕПТЫ\n';
-  txt+='  Экспорт: '+new Date().toLocaleString('ru')+'\n';
-  txt+='════════════════════════════════════════\n\n';
-  recipes.forEach((r,idx)=>{
-    txt+=`━━━ Рецепт #${idx+1} ━━━━━━━━━━━━━━━━━━━\n`;
-    txt+=`Название: ${r.name}\nТип: ${r.type}\nТеги: ${(r.tags||[]).join(', ')}\n`;
-    txt+=`Базовая банка: ${r.baseJar||1000} мл\n`;
-    txt+=`Дата: ${r.created?new Date(r.created).toLocaleDateString('ru'):'—'}\n\n`;
-    txt+=`Ингредиенты:\n`;
-    (r.ingredients||[]).forEach(i=>{
-      const c=i.amount*(i.price||0);
-      txt+=`  • ${i.name}: ${i.amount} ${i.unit}`;
-      if(r.costEnabled&&i.price)txt+=` (${i.price} ₽/${i.unit} = ${c.toFixed(2)} ₽)`;
-      txt+='\n';
-    });
-    if(r.costEnabled){const t=(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0);if(t>0)txt+=`  ИТОГО: ${t.toFixed(2)} ₽\n`}
-    if(r.description)txt+=`\nШаги:\n${r.description}\n`;
-    if(r.notes)txt+=`\nЗаметки:\n${r.notes}\n`;
-    txt+=`\nФото: ${(r.photos||[]).length} шт.\n\n`;
-  });
-  fileDl('dkana_recipes.txt',txt,'text/plain');toast('📝 TXT сохранён');
-}
-
-async function exportCSV(){
-  const recipes=await dbAll('recipes');const BOM='\uFEFF';
-  let csv=BOM+'Название;Тип;Теги;Банка (мл);Ингредиент;Количество;Единица;Цена за ед.;Стоимость;Описание;Заметки;Дата\n';
-  recipes.forEach(r=>{
-    const sp=r.costEnabled!==false;
-    if(!(r.ingredients||[]).length){
-      csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"";"";"";"";"";`+
-           `"${csvSafe(r.description)}";"${csvSafe(r.notes)}";"${r.created?new Date(r.created).toLocaleDateString('ru'):''}"\n`;
-    } else {
-      r.ingredients.forEach((ing,i)=>{
-        const c=(ing.amount*(ing.price||0)).toFixed(2);
-        csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"${csvSafe(ing.name)}";${ing.amount};"${ing.unit}";${sp?ing.price||0:''};${sp?c:''};`;
-        csv+=`"${i===0?csvSafe(r.description):''}";"${i===0?csvSafe(r.notes):''}";"${i===0?(r.created?new Date(r.created).toLocaleDateString('ru'):''):''}"\n`;
-      });
-    }
-  });
-  fileDl('dkana_recipes.csv',csv,'text/csv;charset=utf-8');toast('📊 CSV сохранён');
-}
-
-// ================================================================
-//  ИМПОРТ (JSON, TXT, CSV)
-// ================================================================
-async function importFile(e){
-  const file=e.target.files[0];if(!file)return;
-  const ext=file.name.split('.').pop().toLowerCase();
-  const text=await file.text();
-  try{
-    if(ext==='json')await impJSON(text);
-    else if(ext==='txt')await impTXT(text);
-    else if(ext==='csv')await impCSV(text);
-    else{toast('❌ Неизвестный формат файла','var(--accent)');return}
-    renderRecipes();
-  }catch(er){toast('❌ Ошибка: '+er.message,'var(--accent)')}
-  e.target.value='';
-}
-
-async function impJSON(text){
-  const data=JSON.parse(text);let count=0;
-  if(data.recipes&&Array.isArray(data.recipes)){
-    const mode=confirm(`Найдено ${data.recipes.length} рецепт(ов).\n\nOK = Добавить к текущим\nОтмена = Заменить всё`);
-    if(!mode)await dbClear('recipes');
-    for(const r of data.recipes){if(!r.id)r.id=genId();await dbPut('recipes',r);count++}
-  }
-  if(data.calcTpls&&Array.isArray(data.calcTpls))for(const t of data.calcTpls){if(!t.id)t.id=genId();await dbPut('calcTpls',t);count++};
-  if(data.recipeTpls&&Array.isArray(data.recipeTpls))for(const t of data.recipeTpls){if(!t.id)t.id=genId();await dbPut('recipeTpls',t);count++};
-  toast(`✅ Импортировано: ${count}`);
-}
-
-async function impTXT(text){
-  const blocks=text.split(/━━━.*━━━/).filter(b=>b.trim());let count=0;
-  for(const block of blocks){
-    const nameM=block.match(/Название:\s*(.+)/);if(!nameM)continue;
-    const typeM=block.match(/Тип:\s*(.+)/);
-    const tagsM=block.match(/Теги:\s*(.+)/);
-    const jarM=block.match(/(?:Базовая банка|Банка):\s*(\d+)/);
-    const ings=[];
-    (block.match(/• .+/g)||[]).forEach(l=>{const m=l.match(/• (.+?):\s*([\d.,]+)\s*(\S+)/);if(m)ings.push({name:m[1].trim(),amount:parseFloat(m[2])||0,unit:m[3],price:0})});
-    let desc='';const dm=block.match(/Шаги:\n([\s\S]*?)(?=\n(?:Заметки:|Фото:)|$)/);if(dm)desc=dm[1].trim();
-    let notes='';const nm=block.match(/Заметки:\n([\s\S]*?)(?=\nФото:|$)/);if(nm)notes=nm[1].trim();
-    await dbPut('recipes',{id:genId(),name:nameM[1].trim(),type:typeM?typeM[1].trim():'Другое',tags:tagsM?tagsM[1].split(',').map(t=>t.trim()).filter(Boolean):[],photos:[],baseJar:jarM?parseInt(jarM[1]):1000,ingredients:ings,description:desc,notes,costEnabled:false,created:new Date().toISOString(),updated:new Date().toISOString()});
-    count++;
-  }
-  toast(`✅ TXT: ${count} рецепт(ов)`);
-}
-
-async function impCSV(text){
-  const lines=text.replace(/^\uFEFF/,'').split('\n').filter(l=>l.trim());
-  if(lines.length<2){toast('❌ Пустой CSV','var(--accent)');return}
-  const recipes={};
-  for(let i=1;i<lines.length;i++){
-    const cols=[];let cur='',inQ=false;
-    for(let j=0;j<lines[i].length;j++){
-      const ch=lines[i][j];
-      if(ch==='"'){if(inQ&&lines[i][j+1]==='"'){cur+='"';j++}else inQ=!inQ}
-      else if(ch===';'&&!inQ){cols.push(cur);cur=''}
-      else cur+=ch;
-    }
-    cols.push(cur);
-    const[name,type,tags,jar,ing,amt,unit,price,cost,desc,notes]=cols.map(c=>(c||'').trim());
-    if(!name)continue;
-    if(!recipes[name])recipes[name]={id:genId(),name,type:type||'Другое',tags:tags?tags.split(',').map(t=>t.trim()).filter(Boolean):[],photos:[],baseJar:parseInt(jar)||1000,ingredients:[],description:desc||'',notes:notes||'',costEnabled:!!parseFloat(price),created:new Date().toISOString(),updated:new Date().toISOString()};
-    if(ing)recipes[name].ingredients.push({name:ing,amount:parseFloat(amt)||0,unit:unit||'г',price:parseFloat(price)||0});
-    if(desc&&!recipes[name].description)recipes[name].description=desc;
-    if(notes&&!recipes[name].notes)recipes[name].notes=notes;
-  }
-  const mode=confirm(`Найдено ${Object.keys(recipes).length} рецепт(ов).\n\nOK = Добавить\nОтмена = Заменить`);
-  if(!mode)await dbClear('recipes');
-  let count=0;for(const r of Object.values(recipes)){await dbPut('recipes',r);count++}
-  toast(`✅ CSV: ${count} рецепт(ов)`);
-}
-
-// ================================================================
-//  УПРАВЛЕНИЕ ДАННЫМИ
-// ================================================================
-async function clearAllData(){
-  if(!confirm('⚠️ Удалить ВСЕ данные? Это необратимо!'))return;
-  if(!confirm('Вы уверены? Нажмите OK для подтверждения.'))return;
-  await dbClear('recipes');await dbClear('calcTpls');await dbClear('recipeTpls');
-  renderRecipes();toast('🗑️ Все данные удалены','var(--accent)');
-}
-
-async function updateDBInfo(){
-  const all=await dbAll('recipes');
-  const ct=await dbAll('calcTpls');
-  const rt=await dbAll('recipeTpls');
-  let photos=0;all.forEach(r=>photos+=(r.photos||[]).length);
-  const isStandalone=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone===true;
-
-  document.getElementById('dbInfo').innerHTML=`
-    Хранилище: <b>IndexedDB</b><br>
-    Рецептов: <b>${all.length}</b><br>
-    Фотографий: <b>${photos}</b><br>
-    Шаблонов рецептов: <b>${rt.length}</b><br>
-    Шаблонов пропорций: <b>${ct.length}</b><br>
-    Типы: ${[...new Set(all.map(r=>r.type))].join(', ')||'—'}<br>
-    Режим: <b>${isStandalone?'📱 Приложение (PWA)':'🌐 Браузер'}</b><br>
-    SW: <b>${swReg?'✅ Активен':'⏳ Не зарегистрирован'}</b><br>
-    Сеть: <b>${navigator.onLine?'🟢 Онлайн':'🔴 Офлайн'}</b><br>
-    Импорт форматов: <b>JSON, TXT, CSV</b>`;
-}
-
-// ================================================================
-//  МИГРАЦИЯ И SEED
-// ================================================================
-async function migrate(){
-  const old=localStorage.getItem('dkana_recipes_db');if(!old)return;
-  try{const data=JSON.parse(old);
-    if(data.recipes&&data.recipes.length){
-      const ex=await dbAll('recipes');
-      if(!ex.length){for(const r of data.recipes){if(!r.id)r.id=genId();await dbPut('recipes',r)}toast(`📦 Миграция: ${data.recipes.length} рецепт(ов)`)}
-    }
-    localStorage.removeItem('dkana_recipes_db');
-  }catch(e){console.warn('Migration:',e)}
-}
-
-async function seedCalcTpls(){
-  const ex=await dbAll('calcTpls');if(ex.length)return;
-  const seeds=[
-    {id:genId(),name:'Маринад классический (на 1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:2,unit:'ст.л.'},{name:'Сахар',amount:3,unit:'ст.л.'},{name:'Уксус 9%',amount:70,unit:'мл'},{name:'Перец горошком',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'}],note:'Универсальный маринад для огурцов, помидоров, ассорти',updated:new Date().toISOString()},
-    {id:genId(),name:'Сироп для компота (на 1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Сахар',amount:200,unit:'г'},{name:'Лимонная кислота',amount:3,unit:'г'}],note:'Базовый сироп — сахар по вкусу от 150 до 350г',updated:new Date().toISOString()},
-    {id:genId(),name:'Рассол для засолки (на 1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:50,unit:'г'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Укроп',amount:2,unit:'шт'},{name:'Лист хрена',amount:1,unit:'шт'}],note:'Для засолки огурцов холодным способом',updated:new Date().toISOString()},
-    {id:genId(),name:'Варенье базовое (1:1)',ingredients:[{name:'Ягоды/фрукты',amount:1,unit:'кг'},{name:'Сахар',amount:1,unit:'кг'},{name:'Вода',amount:200,unit:'мл'}],note:'Классическая пропорция, для кислых ягод сахар до 1.2кг',updated:new Date().toISOString()},
-    {id:genId(),name:'Аджика домашняя',ingredients:[{name:'Помидоры',amount:2,unit:'кг'},{name:'Перец болгарский',amount:1,unit:'кг'},{name:'Перец острый',amount:200,unit:'г'},{name:'Чеснок',amount:200,unit:'г'},{name:'Соль',amount:50,unit:'г'},{name:'Уксус',amount:100,unit:'мл'}],note:'Острая! Перец острый регулировать по вкусу',updated:new Date().toISOString()}
-  ];
-  for(const s of seeds)await dbPut('calcTpls',s);
-}
-
-// ================================================================
-//  ИНИЦИАЛИЗАЦИЯ
-// ================================================================
 (async function(){
-  await openDB();
-  await migrate();
-  await seedCalcTpls();
-  await seedRecipeTpls();
-  loadCostSettings();
-  renderRecipes();
-  renderTemplates();
-  updateOnline();
-  registerPWA();
-  const p=new URLSearchParams(location.search).get('page');
-  if(p&&PAGES.includes(p))navigate(p);
+  await openDB();await migrate();await seedCalcTpls();await seedRecipeTpls();
+  loadCostSettings();loadRecipesLimit();renderRecipes();renderTemplates();updateOnline();registerPWA();
+  const p=new URLSearchParams(location.search).get('page');if(p&&PAGES.includes(p))navigate(p);
 })();
 </script>
 </body>

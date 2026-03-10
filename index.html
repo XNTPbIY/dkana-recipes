@@ -1,1580 +1,941 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1a1a2e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="DKana">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text x='50' y='65' text-anchor='middle' font-size='50'>🍳</text></svg>">
-    <title>В гостях у DKana</title>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --bg-primary: #1a1a2e;
-            --bg-secondary: #16213e;
-            --bg-card: #0f3460;
-            --accent: #e94560;
-            --accent-hover: #ff6b6b;
-            --text-primary: #eaeaea;
-            --text-secondary: #a0a0a0;
-            --success: #4ecca3;
-            --warning: #ffc107;
-            --info: #17a2b8;
-            --border: #2a2a4a;
-        }
-
-        html { font-size: 16px; overflow-x: hidden; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            min-height: 100vh;
-            color: var(--text-primary);
-            padding: 10px;
-            padding-top: max(10px, env(safe-area-inset-top));
-            padding-bottom: max(70px, calc(60px + env(safe-area-inset-bottom)));
-            line-height: 1.4;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Глобальное правило для исправления переполнения в гридах */
-        input, select, textarea {
-            min-width: 0;
-            max-width: 100%;
-        }
-
-        .container { max-width: 1400px; margin: 0 auto; }
-
-        .header {
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--bg-card) 0%, #1a1a3e 100%);
-            border-radius: 15px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border);
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            gap: 10px;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 5px;
-        }
-
-        .header-btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.7em;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .header-btn:hover { border-color: var(--accent); }
-
-        .header-btn.success { background: linear-gradient(45deg, var(--success), #45b393); border: none; }
-        .header-btn.info { background: linear-gradient(45deg, var(--info), #20c9e0); border: none; }
-
-        .logo { font-size: 1.8em; flex-shrink: 0; }
-        
-        .header h1 {
-            font-size: 1.3em;
-            background: linear-gradient(45deg, var(--accent), var(--accent-hover));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .header .subtitle { color: var(--text-secondary); font-size: 0.8em; }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 5px;
-            padding-bottom: max(8px, env(safe-area-inset-bottom));
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            padding: 8px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            background: none;
-            border: none;
-            font-size: 0.7em;
-            flex: 1;
-            max-width: 70px;					
-        }
-
-        .nav-item.active { color: var(--accent); background: rgba(233, 69, 96, 0.1); }
-        .nav-item .icon { font-size: 1.6em; }
-
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.3s ease; }
-
-        .card {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 15px;
-            border: 1px solid var(--border);
-            margin-bottom: 15px;
-        }
-
-        .card-title {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent);
-        }
-
-        .about-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, #1a1a3e 100%);
-            border-radius: 15px;
-            border: 1px solid var(--border);
-        }
-
-        .about-header .logo { font-size: 3em; margin-bottom: 10px; }
-        .about-header h2 { font-size: 1.5em; margin-bottom: 8px; }
-        .about-header .version { color: var(--text-secondary); font-size: 0.8em; }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .feature-card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid var(--border);
-        }
-
-        .feature-card h3 {
-            color: var(--accent);
-            margin-bottom: 8px;
-            font-size: 1em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .feature-card p {
-            color: var(--text-secondary);
-            font-size: 0.8em;
-            line-height: 1.5;
-        }
-
-        .feature-card ul {
-            padding-left: 20px;
-            margin-top: 8px;
-            color: var(--text-secondary);
-            font-size: 0.8em;
-            line-height: 1.4;
-        }
-
-        .feature-card li { margin-bottom: 4px; }
-
-        .install-section {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, #1a1a3e 100%);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border);
-        }
-
-        .install-section h3 {
-            color: var(--info);
-            margin-bottom: 12px;
-            font-size: 1em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .install-instructions {
-            background: var(--bg-primary);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-
-        .install-instructions h4 {
-            color: var(--warning);
-            margin-bottom: 8px;
-            font-size: 0.9em;
-        }
-
-        .install-instructions ol {
-            padding-left: 20px;
-            font-size: 0.8em;
-            line-height: 1.5;
-            color: var(--text-secondary);
-        }
-
-        .install-instructions li { margin-bottom: 6px; }
-
-        .install-instructions code {
-            background: var(--bg-card);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .btn-group-center {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; margin-bottom: 5px; color: var(--text-secondary); font-size: 0.85em; }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 16px;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus { outline: none; border-color: var(--accent); }
-
-        .form-group textarea { min-height: 70px; resize: vertical; }
-
-        .ingredient-row {
-            display: grid;
-            grid-template-columns: 1fr 60px 70px 35px;
-            gap: 5px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-
-        .ingredient-row input,
-        .ingredient-row select {
-            padding: 10px 4px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
-            min-width: 0;
-        }
-
-        .btn-remove {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--accent);
-            font-size: 1.1em;
-            cursor: pointer;
-            padding: 8px 0;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .btn {
-            padding: 12px 18px;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.9em;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn:active { transform: scale(0.97); }
-        .btn-primary { background: linear-gradient(45deg, var(--accent), var(--accent-hover)); color: white; }
-        .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); }
-        .btn-success { background: linear-gradient(45deg, var(--success), #45b393); color: white; }
-        .btn-info { background: linear-gradient(45deg, var(--info), #20c9e0); color: white; }
-        .btn-danger { background: linear-gradient(45deg, var(--accent), #ff4757); color: white; }
-        .btn-warning { background: linear-gradient(45deg, var(--warning), #ffca2c); color: #000; }
-        .btn-small { padding: 8px 12px; font-size: 0.8em; }
-
-        .btn-group { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-        .btn-group .btn { flex: 1; min-width: 100px; }
-
-        .recipe-list { max-height: 300px; overflow-y: auto; }
-
-        .recipe-item {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border);
-        }
-
-        .recipe-item.active { border-color: var(--success); }
-        .recipe-item h3 { font-size: 0.95em; margin-bottom: 4px; }
-        .recipe-item .meta { font-size: 0.75em; color: var(--text-secondary); }
-
-        .recipe-actions { display: flex; gap: 6px; margin-top: 8px; }
-        .recipe-actions button { flex: 1; padding: 8px; font-size: 0.8em; }
-
-        .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
-
-        .tab {
-            flex: 1;
-            padding: 10px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.85em;
-        }
-
-        .tab.active { background: var(--accent); color: white; border-color: var(--accent); }
-
-        .search-box { margin-bottom: 12px; }
-        .search-box input {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 16px;
-        }
-
-        .recipe-view { display: none; }
-        .recipe-view.active { display: block; }
-
-        .ingredients-list, .instructions-list {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-
-        .ingredients-list h4, .instructions-list h4 { margin-bottom: 10px; color: var(--success); font-size: 0.9em; }
-
-        .ingredients-list li, .instructions-list li {
-            padding: 5px 0;
-            border-bottom: 1px solid var(--border);
-            list-style: none;
-            font-size: 0.85em;
-        }
-
-        .ingredients-list li:last-child, .instructions-list li:last-child { border-bottom: none; }
-
-        .empty-state { text-align: center; padding: 25px; color: var(--text-secondary); }
-        .empty-state .icon { font-size: 2.2em; margin-bottom: 8px; }
-
-        .proportion-calc {
-            background: linear-gradient(135deg, #1a2a4a 0%, #0f2460 100%);
-            border-radius: 12px;
-            padding: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 15px;
-        }
-
-        .proportion-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .proportion-header .icon { font-size: 1.5em; }
-        .proportion-header h3 { color: var(--info); font-size: 1em; }
-        .proportion-header p { color: var(--text-secondary); font-size: 0.75em; }
-
-        .proportion-section {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        .proportion-section-title { color: var(--text-secondary); font-size: 0.75em; margin-bottom: 8px; text-align: center; }
-
-        .proportion-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .proportion-input-group { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-        .proportion-input-group label { font-size: 0.7em; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .proportion-input-group input,
-        .proportion-input-group select {
-            padding: 10px 6px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 15px;
-            min-width: 0;
-            width: 100%;
-        }
-
-        .proportion-input-group.full-width { grid-column: 1 / -1; }
-        .proportion-arrow { text-align: center; font-size: 1.2em; color: var(--info); padding: 6px 0; }
-
-        .product-amount-section {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 2px solid var(--warning);
-        }
-
-        .product-amount-section > label {
-            display: block;
-            color: var(--warning);
-            font-size: 0.8em;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .product-amount-input-wrap { display: flex; gap: 10px; align-items: center; width: 100%; }
-
-        .product-amount-input-wrap input {
-            flex: 1;
-            padding: 12px;
-            font-size: 1.3em;
-            text-align: center;
-            background: var(--bg-primary);
-            border: 2px solid var(--warning);
-            border-radius: 10px;
-            color: var(--text-primary);
-            min-width: 0;
-        }
-
-        .product-amount-input-wrap .unit-label { font-size: 1em; color: var(--text-secondary); }
-
-        .proportion-result {
-            background: linear-gradient(135deg, rgba(78, 204, 163, 0.2) 0%, rgba(78, 204, 163, 0.1) 100%);
-            border: 2px solid var(--success);
-            border-radius: 12px;
-            padding: 15px 10px;
-            text-align: center;
-            margin-bottom: 10px;
-            overflow-wrap: break-word;
-        }
-
-        .proportion-result .result-label { color: var(--text-secondary); font-size: 0.8em; }
-        .proportion-result .result-value { font-size: 1.8em; font-weight: bold; color: var(--success); margin: 5px 0; }
-
-        .presets { margin-top: 15px; }
-
-        .presets-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .presets-header h4 { color: var(--warning); font-size: 0.9em; }
-        .presets-header .btn-group { margin: 0; }
-
-        .preset-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
-
-        .preset-item {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px;
-            min-width: 0;
-        }
-
-        .preset-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; min-width: 0; }
-        .preset-item .preset-icon { font-size: 1.2em; flex-shrink: 0; }
-        .preset-item .preset-name { font-weight: 600; font-size: 0.85em; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .preset-item .preset-ratio {
-            font-size: 0.75em;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            padding: 5px;
-            background: var(--bg-primary);
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .preset-item .preset-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
-        .preset-item .preset-actions button { padding: 7px 4px; font-size: 0.7em; }
-
-        .custom-proportions { margin-top: 15px; }
-
-        .proportion-item {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 8px;
-            border: 1px solid var(--border);
-            min-width: 0;
-        }
-
-        .proportion-item .info { margin-bottom: 8px; min-width: 0; }
-        .proportion-item .info h4 { font-size: 0.85em; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .proportion-item .info p { font-size: 0.75em; color: var(--text-secondary); }
-        .proportion-item .actions { display: flex; gap: 6px; }
-        .proportion-item .actions button { flex: 1; }
-
-        .quick-history {
-            margin-top: 15px;
-            padding: 10px;
-            background: var(--bg-secondary);
-            border-radius: 10px;
-        }
-
-        .quick-history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .quick-history h5 { color: var(--text-secondary); font-size: 0.8em; }
-
-        .history-item {
-            padding: 5px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.75em;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .history-item:last-child { border-bottom: none; }
-
-        .calculator {
-            background: linear-gradient(135deg, #1a3a4a 0%, #0f3460 100%);
-            border-radius: 12px;
-            padding: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .calc-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-        .calc-header h3 { color: var(--success); font-size: 0.95em; }
-
-        .jar-sizes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
-
-        .jar-btn {
-            padding: 10px 6px;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            cursor: pointer;
-            font-size: 0.8em;
-            text-align: center;
-        }
-
-        .jar-btn.active { border-color: var(--success); background: rgba(78, 204, 163, 0.1); }
-
-        .custom-jar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 0.85em; }
-
-        .custom-jar input {
-            width: 70px;
-            padding: 10px 8px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 16px;
-        }
-
-        .jar-count {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 12px;
-            padding: 10px;
-            background: rgba(255, 193, 7, 0.1);
-            border-radius: 10px;
-            border: 1px solid var(--warning);
-            font-size: 0.85em;
-        }
-
-        .jar-count input {
-            width: 55px;
-            padding: 8px;
-            text-align: center;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 16px;
-        }
-
-        .calc-results {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 12px;
-        }
-
-        .calc-results h4 { margin-bottom: 10px; color: var(--warning); font-size: 0.9em; }
-
-        .calc-ingredient {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.85em;
-        }
-
-        .calc-ingredient:last-child { border-bottom: none; }
-        .calc-ingredient .amount { color: var(--success); font-weight: 600; }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: flex-start;
-            z-index: 1000;
-            padding: 15px;
-            padding-top: max(15px, env(safe-area-inset-top));
-            overflow-y: auto;
-        }
-
-        .modal-overlay.active { display: flex; }
-
-        .modal {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-            border: 1px solid var(--border);
-            margin: auto;
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .modal-header h3 { color: var(--accent); font-size: 1em; }
-
-        .modal-close {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            font-size: 1.2em;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 8px;
-        }
-
-        .modal-footer { display: flex; gap: 10px; margin-top: 15px; }
-        .modal-footer .btn { flex: 1; }
-
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-        .emoji-grid { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
-
-        .emoji-btn {
-            width: 34px;
-            height: 34px;
-            padding: 0;
-            font-size: 1em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-        }
-
-        .emoji-btn.selected { border-color: var(--success); background: rgba(78, 204, 163, 0.2); }
-
-        .install-instructions {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .install-instructions h4 { color: var(--info); margin-bottom: 10px; }
-        .install-instructions ol { padding-left: 20px; font-size: 0.9em; line-height: 1.6; }
-        .install-instructions li { margin-bottom: 8px; }
-        .install-instructions code { background: var(--bg-primary); padding: 2px 6px; border-radius: 4px; }
-
-        .file-input { display: none; }
-
-        .data-info {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 15px;
-            font-size: 0.85em;
-        }
-
-        .data-info .stat {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .data-info .stat:last-child { border-bottom: none; }
-        .data-info .stat-value { color: var(--success); font-weight: 600; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in { animation: fadeIn 0.3s ease; }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--bg-secondary); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
-
-        @media (min-width: 600px) {
-            body { padding: 20px; padding-bottom: 80px; }
-            .header { padding: 20px; }
-            .header h1 { font-size: 1.6em; }
-            .feature-grid { grid-template-columns: repeat(2, 1fr);}																	
-            .preset-grid { grid-template-columns: repeat(2, 1fr); }
-            .jar-sizes { grid-template-columns: repeat(5, 1fr); }
-            .recipe-list { max-height: 400px; }
-        }
-
-        @media (min-width: 900px) {
-            .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-            .main-content .card { margin-bottom: 0; }
-        }
-
-        @media (max-width: 350px) {
-            .header h1 { font-size: 1.1em; }
-            .nav-item { padding: 6px 10px; font-size: 0.65em; }
-            .ingredient-row { grid-template-columns: 1fr 50px 60px 30px; }
-            .proportion-result .result-value { font-size: 1.5em; }
-            .header-buttons { flex-wrap: wrap; }
-            .proportion-input-group input, .proportion-input-group select { font-size: 13px; padding: 10px 4px; }
-        }
-       .tech-badge {
-            display: inline-block;
-            background: var(--bg-primary);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.8em;
-            margin: 3px;
-            color: var(--success);
-            border: 1px solid var(--border);
-        }	 
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DKana Рецепты">
+<meta name="description" content="Домашние рецепты, заготовки, калькулятор пропорций и банок">
+<title>В гостях у DKana — Рецепты</title>
+<style>
+:root{
+  --bg:#1a1a2e;--bg2:#16213e;--card:#0f3460;--card2:#1a3a6e;
+  --accent:#e94560;--accent2:#f5a623;--text:#eee;--text2:#aab;
+  --green:#27ae60;--blue:#3498db;--radius:14px;
+  --shadow:0 4px 24px rgba(0,0,0,.35);--tr:.3s ease;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;padding-bottom:80px;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:contain}
+
+/* HEADER */
+header{background:linear-gradient(135deg,var(--bg2),var(--card));padding:16px 16px 12px;text-align:center;box-shadow:var(--shadow);position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:10px}
+.header-center{flex:1;text-align:center}
+header h1{font-size:1.25em;font-weight:700}
+header h1 span{color:var(--accent)}
+header .sub{font-size:.72em;color:var(--text2);margin-top:2px}
+.info-btn{background:none;border:2px solid var(--blue);color:var(--blue);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1.1em;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.info-btn:hover{background:var(--blue);color:#fff}
+
+/* OFFLINE */
+.offline-bar{display:none;background:var(--accent);color:#fff;text-align:center;padding:5px;font-size:.78em;position:sticky;top:64px;z-index:99}
+.offline-bar.show{display:block}
+
+/* PWA BANNER */
+.pwa-banner{display:none;background:linear-gradient(135deg,var(--card),var(--card2));padding:10px 14px;margin:10px 14px;border-radius:var(--radius);border:1px solid rgba(233,69,96,.3);align-items:center;gap:10px;animation:fadeIn .3s}
+.pwa-banner.show{display:flex}
+.pwa-banner-text{flex:1;font-size:.82em}
+.pwa-banner-text b{color:var(--accent2)}
+.pwa-close{background:none;border:none;color:var(--text2);font-size:1.1em;cursor:pointer;padding:4px}
+
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);display:flex;justify-content:space-around;padding:5px 0;padding-bottom:max(5px,env(safe-area-inset-bottom));box-shadow:0 -2px 20px rgba(0,0,0,.5);z-index:100}
+.bottom-nav button{background:none;border:none;color:var(--text2);font-size:.68em;padding:5px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color var(--tr);flex:1;min-width:0}
+.bottom-nav button .ni{font-size:1.5em}
+.bottom-nav button.active{color:var(--accent)}
+
+/* CONTAINER */
+.container{max-width:800px;margin:0 auto;padding:10px 14px}
+.page{display:none;animation:fadeIn .25s}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:var(--shadow);transition:transform .15s}
+.card:active{transform:scale(.99)}
+.card h3{color:var(--accent2);margin-bottom:5px;font-size:1.05em}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin:5px 0}
+.tag{padding:3px 9px;border-radius:12px;font-size:.73em;cursor:pointer;transition:all .2s}
+.tag-type{background:rgba(39,174,96,.2);color:var(--green)}
+.tag-custom{background:rgba(233,69,96,.15);color:var(--accent)}
+
+/* PHOTOS */
+.photo-strip{display:flex;gap:7px;overflow-x:auto;padding:7px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.photo-strip::-webkit-scrollbar{display:none}
+.photo-strip img{height:100px;border-radius:9px;object-fit:cover;cursor:pointer;flex-shrink:0;transition:transform .2s}
+.photo-strip img:hover{transform:scale(1.04)}
+
+/* FORMS */
+.fg{margin-bottom:12px}
+.fg label{display:block;margin-bottom:3px;color:var(--text2);font-size:.83em}
+input,textarea,select{width:100%;padding:9px 11px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:9px;color:var(--text);font-size:.92em;outline:none;transition:border var(--tr)}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:85px;font-family:inherit}
+select option{background:var(--bg2)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 18px;border:none;border-radius:25px;cursor:pointer;font-size:.88em;font-weight:500;transition:all .2s;color:#fff}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:var(--accent)}.btn-primary:hover{background:#d13a52}
+.btn-success{background:var(--green)}.btn-success:hover{background:#1f8e50}
+.btn-warning{background:var(--accent2);color:#222}
+.btn-danger{background:#c0392b}
+.btn-blue{background:var(--blue)}
+.btn-outline{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
+.btn-sm{padding:6px 13px;font-size:.8em}
+.btn-group{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+
+/* INGREDIENT ROWS */
+.ing-row{display:grid;grid-template-columns:2fr 1fr 90px 1fr auto;gap:5px;margin-bottom:5px;align-items:center}
+.ing-row input,.ing-row select{padding:7px 8px;font-size:.83em}
+.ing-row-no-price{grid-template-columns:2fr 1fr 90px auto}
+.del-btn{background:rgba(192,57,43,.6);color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.95em;display:flex;align-items:center;justify-content:center}
+
+/* PHOTO PREVIEW */
+.photo-preview{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
+.photo-thumb{position:relative;width:85px;height:85px}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;border-radius:7px}
+.photo-thumb .rm{position:absolute;top:-4px;right:-4px;background:var(--accent);color:#fff;border:none;width:19px;height:19px;border-radius:50%;cursor:pointer;font-size:.65em}
+
+/* TOGGLE SWITCH */
+.toggle-wrap{display:flex;align-items:center;gap:10px;margin:10px 0}
+.toggle-wrap span{font-size:.88em;color:var(--text2)}
+.toggle{position:relative;width:48px;height:26px;cursor:pointer;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle .slider{position:absolute;inset:0;background:rgba(255,255,255,.15);border-radius:26px;transition:.3s}
+.toggle .slider:before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#888;border-radius:50%;transition:.3s}
+.toggle input:checked+.slider{background:var(--green)}
+.toggle input:checked+.slider:before{transform:translateX(22px);background:#fff}
+
+/* CALC */
+.calc-box{background:rgba(52,152,219,.1);border:1px solid rgba(52,152,219,.3);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.calc-box h4{color:var(--blue);margin-bottom:8px}
+.jar-btns{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
+.jar-btn{background:rgba(52,152,219,.15);border:1.5px solid var(--blue);color:var(--blue);padding:7px 13px;border-radius:20px;cursor:pointer;font-size:.83em;transition:all .2s}
+.jar-btn:hover,.jar-btn.active{background:var(--blue);color:#fff}
+.prop-result{background:rgba(0,0,0,.2);border-radius:9px;padding:10px;margin-top:9px}
+.prop-result .row{display:flex;justify-content:space-between;padding:3px 0;font-size:.88em;border-bottom:1px solid rgba(255,255,255,.04)}
+.prop-result .row:last-child{border:none}
+.prop-result .val{color:var(--accent2);font-weight:600}
+
+/* COST */
+.cost-box{background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.3);border-radius:var(--radius);padding:14px;margin-top:10px}
+.cost-box h4{color:var(--green);margin-bottom:7px}
+.cost-row{display:flex;justify-content:space-between;padding:3px 0;font-size:.88em;border-bottom:1px solid rgba(255,255,255,.04)}
+.cost-total{font-size:1.12em;font-weight:bold;color:var(--accent2);padding-top:7px}
+
+/* FILTER */
+.filter-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.filter-bar input,.filter-bar select{flex:1;min-width:110px}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;cursor:pointer}
+.lightbox.show{display:flex}
+.lightbox img{max-width:92%;max-height:92%;border-radius:9px}
+
+/* EXPORT */
+.export-card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.export-card h3{margin-bottom:8px;color:var(--accent2);font-size:.95em}
+
+/* EMPTY */
+.empty{text-align:center;padding:45px 20px;color:var(--text2)}
+.empty .icon{font-size:2.8em;margin-bottom:8px}
+
+/* TEMPLATES */
+.tpl-card{background:var(--card2);border:1px dashed rgba(245,166,35,.3);border-radius:var(--radius);padding:12px;margin-bottom:9px;cursor:pointer;transition:all .2s}
+.tpl-card:hover{border-color:var(--accent2);background:rgba(245,166,35,.08)}
+
+/* CALC TEMPLATE */
+.ct-card{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:10px;border:1px solid rgba(52,152,219,.2)}
+.ct-card h4{color:var(--accent2);font-size:.95em;margin-bottom:6px}
+
+/* TOAST */
+.toast{position:fixed;bottom:94px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green);color:#fff;padding:10px 22px;border-radius:25px;font-size:.87em;z-index:2000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* UPDATE */
+.update-bar{display:none;position:fixed;top:0;left:0;right:0;background:var(--blue);color:#fff;text-align:center;padding:9px;z-index:2000;font-size:.87em;cursor:pointer}
+.update-bar.show{display:block}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:900;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg2);border-radius:var(--radius);padding:20px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow)}
+.modal h3{color:var(--accent2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.modal-close{background:none;border:none;color:var(--text2);font-size:1.4em;cursor:pointer;margin-left:auto;padding:0 4px;transition:color .2s}
+.modal-close:hover{color:var(--accent)}
+
+/* INFO MODAL */
+.info-section{margin-bottom:16px}
+.info-section h4{color:var(--blue);font-size:.95em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.info-section p,.info-section li{color:var(--text2);font-size:.85em;line-height:1.5}
+.info-section ul{padding-left:18px;margin-top:4px}
+.info-section li{margin-bottom:3px}
+.info-badge{display:inline-block;background:rgba(233,69,96,.15);color:var(--accent);padding:2px 8px;border-radius:8px;font-size:.75em;margin-left:4px}
+.info-divider{border:none;border-top:1px solid rgba(255,255,255,.06);margin:14px 0}
+
+/* RESPONSIVE */
+@media(max-width:500px){
+  .ing-row{grid-template-columns:1fr 1fr}
+  .ing-row input:first-child{grid-column:1/-1}
+  .ing-row-no-price{grid-template-columns:1fr 1fr}
+  .ing-row-no-price input:first-child{grid-column:1/-1}
+  header h1{font-size:1.08em}
+  .info-btn{width:32px;height:32px;font-size:.95em}
+}
+@media(display-mode:standalone){
+  header{padding-top:max(16px,env(safe-area-inset-top))}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="header-top">
-                <div class="header-buttons">
-                    <button class="header-btn info" onclick="exportData()">📤 Экспорт</button>
-                    <button class="header-btn success" onclick="document.getElementById('importFile').click()">📥 Импорт</button>
-                    <input type="file" id="importFile" class="file-input" accept=".json,.txt" onchange="importData(event)">
-                </div>
-                <div class="logo">🍳🏠</div>
-												
-                <button class="nav-item" onclick="showSection('about')">ℹ️</button>
-            </div>
-            <h1>В гостях у DKana</h1>
-            <p class="subtitle">Помощник по рецептам</p>
-        </header>
 
-        <section id="recipesSection" class="section active">
-            <div class="main-content">
-                <div class="card">
-                    <div class="tabs">
-                        <button class="tab active" onclick="showTab('create')">➕ Создать</button>
-                        <button class="tab" onclick="showTab('view')">📖 Просмотр</button>
-                    </div>
-                    <div id="createTab">
-                        <h2 class="card-title">🍽️ <span id="formTitle">Новый рецепт</span></h2>
-                        <form id="recipeForm">
-                            <input type="hidden" id="recipeId">
-                            <div class="form-group">
-                                <label>Название</label>
-                                <input type="text" id="recipeName" placeholder="Маринованные огурцы" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Базовый объем (мл)</label>
-                                <input type="number" id="baseVolume" value="1000" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Ингредиенты</label>
-                                <div id="ingredientsList"></div>
-                                <button type="button" class="btn btn-secondary btn-small" onclick="addIngredient()">➕ Добавить</button>
-                            </div>
-                            <div class="form-group">
-                                <label>Инструкция</label>
-                                <textarea id="instructions" placeholder="Шаги..."></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Заметки</label>
-                                <textarea id="notes" placeholder="Заметки..." style="min-height:50px;"></textarea>
-                            </div>
-                            <div class="btn-group">
-                                <button type="submit" class="btn btn-primary">💾 Сохранить</button>
-                                <button type="button" class="btn btn-secondary" onclick="clearForm()">🔄</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div id="viewTab" class="recipe-view">
-                        <div id="recipeViewContent">
-                            <div class="empty-state"><div class="icon">📋</div><p>Выберите рецепт</p></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <h2 class="card-title">📚 Мои рецепты</h2>
-                    <div class="search-box">
-                        <input type="text" id="searchInput" placeholder="🔍 Поиск..." oninput="searchRecipes()">
-                    </div>
-                    <div class="recipe-list" id="recipeList"></div>
-                </div>
-            </div>
-        </section>
+<div id="updateBar" class="update-bar" onclick="applyUpdate()">🔄 Новая версия! Нажмите для обновления</div>
 
-        <section id="proportionsSection" class="section">
-            <div class="card">
-                <div class="proportion-calc">
-                    <div class="proportion-header">
-                        <span class="icon">⚖️</span>
-                        <div>
-                            <h3>Калькулятор пропорций</h3>
-                            <p>Расчет ингредиентов</p>
-                        </div>
-                    </div>
-                    <div class="proportion-section">
-                        <div class="proportion-section-title">📐 Базовая пропорция</div>
-                        <div class="proportion-inputs">
-                            <div class="proportion-input-group">
-                                <label>Кол-во</label>
-                                <input type="number" id="baseIngredientAmount" value="30" step="0.1" oninput="calculateProportion()">
-                            </div>
-                            <div class="proportion-input-group">
-                                <label>Ед.</label>
-                                <select id="baseIngredientUnit" onchange="calculateProportion()">
-                                    <option value="гр">гр</option>
-                                    <option value="мл">мл</option>
-                                    <option value="шт">шт</option>
-                                    <option value="ст.л.">ст.л.</option>
-                                    <option value="ч.л.">ч.л.</option>
-                                </select>
-                            </div>
-                            <div class="proportion-input-group full-width">
-                                <label>Ингредиент</label>
-                                <input type="text" id="ingredientName" value="Соль" oninput="calculateProportion()">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="proportion-arrow">⬇️ на ⬇️</div>
-                    <div class="proportion-section">
-                        <div class="proportion-section-title">📦 На продукт</div>
-                        <div class="proportion-inputs">
-                            <div class="proportion-input-group">
-                                <label>Кол-во</label>
-                                <input type="number" id="baseProductAmount" value="1" step="0.1" oninput="calculateProportion()">
-                            </div>
-                            <div class="proportion-input-group">
-                                <label>Ед.</label>
-                                <select id="baseProductUnit" onchange="calculateProportion()">
-                                    <option value="кг">кг</option>
-                                    <option value="гр">гр</option>
-                                    <option value="л">л</option>
-                                    <option value="мл">мл</option>
-                                    <option value="шт">шт</option>
-                                </select>
-                            </div>
-                            <div class="proportion-input-group full-width">
-                                <label>Продукт</label>
-                                <input type="text" id="productName" value="Мясо" oninput="calculateProportion()">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-amount-section">
-                        <label>🥩 Сколько у вас?</label>
-                        <div class="product-amount-input-wrap">
-                            <input type="number" id="actualProductAmount" value="2.5" step="0.1" oninput="calculateProportion()">
-                            <span class="unit-label" id="actualProductUnitLabel">кг</span>
-                        </div>
-                    </div>
-                    <div class="proportion-result">
-                        <div class="result-label">Нужно <span id="resultIngredientName">соли</span>:</div>
-                        <div class="result-value"><span id="proportionResult">75</span> <span id="resultUnit">гр</span></div>
-                        <div class="result-label">на <span id="resultProductAmount">2.5</span> <span id="resultProductUnit">кг</span> <span id="resultProductName">мяса</span></div>
-                    </div>
-                    <div class="btn-group" style="justify-content:center;">
-                        <button class="btn btn-info btn-small" onclick="saveAsPreset()">📌</button>
-                        <button class="btn btn-success btn-small" onclick="saveToProportion()">💾</button>
-                        <button class="btn btn-secondary btn-small" onclick="resetProportion()">🔄</button>
-                    </div>
-                </div>
-                <div class="presets">
-                    <div class="presets-header">
-                        <h4>📌 Шаблоны</h4>
-                        <div class="btn-group">
-                            <button class="btn btn-small btn-info" onclick="openPresetModal()">➕</button>
-                            <button class="btn btn-small btn-warning" onclick="resetToDefaultPresets()">🔄</button>
-                        </div>
-                    </div>
-                    <div class="preset-grid" id="presetGrid"></div>
-                </div>
-                <div class="custom-proportions">
-                    <div class="presets-header">
-                        <h4 style="color:var(--success);">💾 Мои</h4>
-                        <button class="btn btn-small btn-danger" onclick="clearAllProportions()" id="clearProportionsBtn" style="display:none;">🗑️</button>
-                    </div>
-                    <div id="savedProportionsList"></div>
-                </div>
-                <div class="quick-history">
-                    <div class="quick-history-header">
-                        <h5>📜 История</h5>
-                        <button class="btn btn-small btn-secondary" onclick="clearHistory()" id="clearHistoryBtn" style="display:none;">🗑️</button>
-                    </div>
-                    <div id="calcHistory"><p style="color:var(--text-secondary);font-size:0.75em;">Пусто</p></div>
-                </div>
-            </div>
-        </section>
+<!-- HEADER -->
+<header>
+  <div class="header-center">
+    <h1>🏡 В гостях у <span>DKana</span></h1>
+    <div class="sub">Рецепты • Пропорции • Заготовки</div>
+  </div>
+  <button class="info-btn" onclick="openInfoModal()" title="О приложении">ℹ</button>
+</header>
 
-        <section id="jarsSection" class="section">
-            <div class="main-content">
-                <div class="card">
-                    <h2 class="card-title">🫙 Расчёт для банок</h2>
-                    <div class="form-group">
-                        <label>Рецепт:</label>
-                        <select id="jarRecipeSelect" onchange="selectJarRecipe()">
-                            <option value="">-- Выберите --</option>
-                        </select>
-                    </div>
-                    <div class="calculator">
-                        <div class="calc-header">
-                            <span style="font-size:1.2em;">🧮</span>
-                            <h3>Калькулятор</h3>
-                        </div>
-                        <p style="margin-bottom:8px;color:var(--text-secondary);font-size:0.8em;">Объем:</p>
-                        <div class="jar-sizes">
-                            <button class="jar-btn" onclick="selectJar(500)">500мл</button>
-                            <button class="jar-btn active" onclick="selectJar(1000)">1л</button>
-                            <button class="jar-btn" onclick="selectJar(1500)">1.5л</button>
-                            <button class="jar-btn" onclick="selectJar(2000)">2л</button>
-                            <button class="jar-btn" onclick="selectJar(3000)">3л</button>
-                        </div>
-                        <div class="custom-jar">
-                            <span>Свой:</span>
-                            <input type="number" id="customJar" placeholder="мл" onchange="selectJar(this.value)">
-                            <span>мл</span>
-                        </div>
-                        <div class="jar-count">
-                            <span>🫙</span>
-                            <span>Банок:</span>
-                            <input type="number" id="jarCount" value="1" min="1" onchange="calculateIngredients()">
-                        </div>
-                        <div class="calc-results" id="calcResults">
-                            <h4>📊 Ингредиенты</h4>
-                            <p style="color:var(--text-secondary);font-size:0.8em;">Выберите рецепт</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <h2 class="card-title">📋 Рецепт</h2>
-                    <div id="jarRecipeView">
-                        <div class="empty-state"><div class="icon">📖</div><p>Выберите рецепт</p></div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<div id="offlineBar" class="offline-bar">📴 Офлайн режим</div>
 
-        <section id="settingsSection" class="section">
-            <div class="card">
-                <h2 class="card-title">⚙️ Данные</h2>
-                
-                <div class="data-info" id="dataInfo">
-                    <div class="stat">
-                        <span>📚 Рецептов</span>
-                        <span class="stat-value" id="statRecipes">0</span>
-                    </div>
-                    <div class="stat">
-                        <span>📌 Шаблонов</span>
-                        <span class="stat-value" id="statPresets">0</span>
-                    </div>
-                    <div class="stat">
-                        <span>💾 Пропорций</span>
-                        <span class="stat-value" id="statProportions">0</span>
-                    </div>
-                </div>
+<div id="pwaBanner" class="pwa-banner">
+  <div class="pwa-banner-text">📲 Установите <b>DKana Рецепты</b> на телефон</div>
+  <button class="btn btn-sm btn-primary" onclick="installPWA()">Установить</button>
+  <button class="pwa-close" onclick="dismissInstall()">✕</button>
+</div>
 
-                <div class="btn-group">
-                    <button class="btn btn-info" onclick="exportData()">📤 Экспорт в файл</button>
-                    <button class="btn btn-success" onclick="document.getElementById('importFile').click()">📥 Импорт из файла</button>
-                </div>
+<div class="container">
 
-                <div style="margin-top:20px;">
-                    <h4 style="color:var(--warning);margin-bottom:10px;">⚠️ Опасная зона</h4>
-                    <button class="btn btn-danger btn-small" onclick="clearAllData()">🗑️ Удалить все данные</button>
-                </div>
-            </div>
-        </section>
-  <section id="aboutSection" class="section">
+<!-- ===== РЕЦЕПТЫ ===== -->
+<div id="pg-recipes" class="page active">
+  <div class="filter-bar">
+    <input type="text" id="fSearch" placeholder="🔍 Поиск..." oninput="renderRecipes()">
+    <select id="fType" onchange="renderRecipes()">
+      <option value="">Все типы</option>
+      <option value="Варенье">🍓 Варенье</option>
+      <option value="Маринад">🥒 Маринад</option>
+      <option value="Соление">🧂 Соление</option>
+      <option value="Компот">🥤 Компот</option>
+      <option value="Соус">🍅 Соус</option>
+      <option value="Джем">🫙 Джем</option>
+      <option value="Салат">🥗 Салат</option>
+      <option value="Другое">📦 Другое</option>
+    </select>
+    <select id="fTag" onchange="renderRecipes()"><option value="">Все теги</option></select>
+  </div>
+  <div id="recipesList"></div>
+</div>
 
-            <div class="install-section">
-                <h3>📲 Установка приложения</h3>
-                <div class="install-instructions">
-                    <h4>🤖 Android (Chrome)</h4>
-                    <ol>
-                        <li>Нажмите <strong>⋮</strong> вверху справа</li>
-                        <li>Выберите <strong>"Установить приложение"</strong></li>
-                        <li>Подтвердите</li>
-						<li>Актуально если файл загружен на host</li>
-                    </ol>
-                </div>
-                <div class="install-instructions">
-                    <h4>🍎 iPhone (Safari)</h4>
-                    <ol>
-                        <li>Нажмите <strong>⬆️</strong> (Поделиться)</li>
-                        <li>Выберите <strong>"На экран Домой"</strong></li>
-                        <li>Нажмите <strong>"Добавить"</strong></li>
-                    </ol>
-                </div>
+<!-- ===== ДОБАВЛЕНИЕ ===== -->
+<div id="pg-add" class="page">
+  <h2 style="margin-bottom:12px" id="addTitle">➕ Новый рецепт</h2>
+  <div class="fg"><label>📝 Название</label><input type="text" id="rName" placeholder="Огурцы маринованные «Хрустящие»"></div>
+  <div class="fg"><label>📂 Тип</label>
+    <select id="rType">
+      <option value="Варенье">🍓 Варенье</option><option value="Маринад" selected>🥒 Маринад</option>
+      <option value="Соление">🧂 Соление</option><option value="Компот">🥤 Компот</option>
+      <option value="Соус">🍅 Соус</option><option value="Джем">🫙 Джем</option>
+      <option value="Салат">🥗 Салат</option><option value="Другое">📦 Другое</option>
+    </select>
+  </div>
+  <div class="fg"><label>🏷️ Теги (запятая)</label><input type="text" id="rTags" placeholder="огурцы, лето, хрустящие"></div>
+  <div class="fg">
+    <label>📸 Фото (до 6)</label>
+    <input type="file" id="rPhotos" accept="image/*" multiple style="padding:7px" onchange="previewPhotos(event)">
+    <div id="photoPreview" class="photo-preview"></div>
+  </div>
+  <div class="fg"><label>🫙 Базовая банка (мл)</label><input type="number" id="rBaseJar" value="1000" min="100" step="100"></div>
 
-            </div>
-            <div class="card">
-                <h2 class="card-title">🛠 Технологии</h2>
-                <div style="padding: 15px;">
-                    <p style="color: var(--text-secondary); font-size: 0.85em; margin-bottom: 15px;">
-                        Приложение написано на чистых веб-технологиях без использования фреймворков:
-                    </p>
-                    <div>
-                        <span class="tech-badge">HTML5</span>
-                        <span class="tech-badge">CSS3</span>
-                        <span class="tech-badge">JavaScript (Vanilla)</span>
-                        <span class="tech-badge">LocalStorage</span>
-                        <span class="tech-badge">PWA</span>
-                        <span class="tech-badge">Flexbox/Grid</span>
-                    </div>
-                </div>
-            </div>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>📚 Рецепты</h3>
-                    <p>Создавайте и храните свои любимые рецепты с точными пропорциями и инструкциями.</p>
-                    <ul>
-                        <li>Добавление ингредиентов</li>
-                        <li>Редактирование и удаление</li>
-                        <li>Поиск по названию</li>
-                        <li>Экспорт/импорт данных</li>
-                    </ul>
-                </div>
+  <!-- ПЕРЕКЛЮЧАТЕЛЬ СЕБЕСТОИМОСТИ -->
+  <div class="toggle-wrap">
+    <label class="toggle"><input type="checkbox" id="costToggleAdd" onchange="toggleCostAdd()"><span class="slider"></span></label>
+    <span>💰 Расчёт себестоимости</span>
+  </div>
 
-                <div class="feature-card">
-                    <h3>⚖️ Пропорции</h3>
-                    <p>Мгновенный расчет ингредиентов для любого количества продукта.</p>
-                    <ul>
-                        <li>Калькулятор соли, специй</li>
-                        <li>Шаблоны для частых расчетов</li>
-                        <li>История расчетов</li>
-                        <li>Сохранение своих пропорций</li>
-                    </ul>
-                </div>
+  <div class="fg">
+    <label>🥕 Ингредиенты <span style="color:var(--text2);font-size:.78em">(на базовую банку)</span></label>
+    <div id="ingList"></div>
+    <button class="btn btn-sm btn-success" onclick="addIngRow()" style="margin-top:5px">+ Ингредиент</button>
+  </div>
+  <div class="fg"><label>📋 Описание / Шаги</label><textarea id="rDesc" placeholder="1. Помыть...&#10;2. Уложить..."></textarea></div>
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="saveRecipe()">💾 Сохранить</button>
+    <button class="btn btn-outline" onclick="clearForm();navigate('recipes')">✕ Отмена</button>
+  </div>
+</div>
 
-                <div class="feature-card">
-                    <h3>🫙 Банки</h3>
-                    <p>Адаптируйте рецепты под любой объем банок.</p>
-                    <ul>
-                        <li>Стандартные размеры (0.5л-3л)</li>
-                        <li>Произвольный объем</li>
-                        <li>Расчет для нескольких банок</li>
-                        <li>Автоматическое масштабирование</li>
-                    </ul>
-                </div>
+<!-- ===== КАЛЬКУЛЯТОР ===== -->
+<div id="pg-calc" class="page">
+  <h2 style="margin-bottom:12px">🧮 Калькулятор</h2>
+  <div class="fg"><label>Выберите рецепт</label>
+    <select id="calcRecipe" onchange="loadCalcRecipe()"><option value="">-- Выберите --</option></select>
+  </div>
 
-                <div class="feature-card">
-                    <h3>💾 Данные</h3>
-                    <p>Полный контроль над вашими рецептами и настройками.</p>
-                    <ul>
-                        <li>Резервное копирование (JSON)</li>
-                        <li>Импорт из файла</li>
-                        <li>Статистика использования</li>
-                        <li>Безопасное удаление</li>
-                    </ul>
-                </div>
+  <div class="calc-box" id="jarBox" style="display:none">
+    <h4>🫙 Калькулятор банок</h4>
+    <p style="font-size:.82em;color:var(--text2);margin-bottom:7px" id="baseJarInfo"></p>
+    <div class="jar-btns" id="jarBtns"></div>
+    <div class="fg" style="margin-top:8px"><label>Произвольный (мл)</label><input type="number" id="customJar" min="100" step="100" placeholder="750" oninput="calcJar()"></div>
+    <div id="jarResult" class="prop-result" style="display:none"></div>
+  </div>
 
-                <div class="feature-card">
-                    <h3>📱 PWA Технология</h3>
-                    <p>Работает как нативное приложение на вашем устройстве.</p>
-                    <ul>
-                        <li>Офлайн доступ</li>
-                        <li>Быстрый запуск</li>
-                        <li>Адаптивный дизайн</li>
-                        <li>Темная тема</li>
-                    </ul>
-                </div>
+  <div class="calc-box" id="propBox" style="display:none">
+    <h4>⚖️ Пропорции</h4>
+    <p style="font-size:.82em;color:var(--text2);margin-bottom:7px">Измените один — остальные пересчитаются</p>
+    <div id="propInputs"></div>
+    <div id="propResult" class="prop-result" style="display:none"></div>
+  </div>
 
-                <div class="feature-card">
-                    <h3>🎯 Советы</h3>
-                    <p>Как получить максимум от приложения:</p>
-                    <ul>
-                        <li>Используйте шаблоны для частых расчетов</li>
-                        <li>Добавляйте заметки к рецептам</li>
-                    <li>Регулярно делайте резервные копии</li>
-                        <li>Установите для быстрого доступа</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="about-header">
-                <div class="logo">🍳🏠</div>
-                <h2>В гостях у DKana</h2>
-                <p class="version">Версия 1.9 | PWA Приложение</p>
-                <p style="color: var(--text-secondary); font-size: 0.8em; margin-top: 5px;">Умный помощник для кулинаров</p>
-            </div>
+  <!-- ПЕРЕКЛЮЧАТЕЛЬ СЕБЕСТОИМОСТИ В КАЛЬКУЛЯТОРЕ -->
+  <div class="toggle-wrap" id="costToggleCalcWrap" style="display:none">
+    <label class="toggle"><input type="checkbox" id="costToggleCalc" onchange="toggleCostCalc()"><span class="slider"></span></label>
+    <span>💰 Показать расчёт себестоимости</span>
+  </div>
 
-            <div class="card" style="text-align: center;">
-                <h3 style="color: var(--success); margin-bottom: 10px;">🎉 Готово к работе!</h3>
-                <p style="color: var(--text-secondary); font-size: 0.8em; margin-bottom: 15px;">
-                    Сделано с ❤️ для удобства домашних заготовок
-                </p>
-            </div>
-        </section>
+  <div class="calc-box" id="costBox" style="display:none;border-color:rgba(39,174,96,.3);background:rgba(39,174,96,.06)">
+    <h4 style="color:var(--green)">💰 Себестоимость</h4>
+    <div id="costInputs"></div>
+    <div class="fg" style="margin-top:8px"><label>🫙 Банок в партии</label><input type="number" id="costJars" value="1" min="1" oninput="calcCost()"></div>
+    <div id="costResult"></div>
+  </div>
+
+  <!-- ШАБЛОНЫ КАЛЬКУЛЯТОРА -->
+  <div style="margin-top:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <h3 style="color:var(--accent2);font-size:1em">📐 Шаблоны пропорций</h3>
+      <button class="btn btn-sm btn-success" onclick="openCalcTplModal()">+ Новый</button>
+    </div>
+    <div id="calcTplList"></div>
+  </div>
+</div>
+
+<!-- ===== ШАБЛОНЫ РЕЦЕПТОВ ===== -->
+<div id="pg-templates" class="page">
+  <h2 style="margin-bottom:12px">📋 Шаблоны рецептов</h2>
+  <p style="color:var(--text2);font-size:.85em;margin-bottom:12px">Выберите и настройте под себя</p>
+  <div id="templatesList"></div>
+</div>
+
+<!-- ===== ДАННЫЕ ===== -->
+<div id="pg-export" class="page">
+  <h2 style="margin-bottom:12px">📦 Данные</h2>
+  <div class="export-card"><h3>📤 Экспорт</h3>
+    <div class="btn-group">
+      <button class="btn btn-primary btn-sm" onclick="exportJSON()">📄 JSON</button>
+      <button class="btn btn-success btn-sm" onclick="exportTXT()">📝 TXT</button>
+      <button class="btn btn-warning btn-sm" onclick="exportCSV()">📊 CSV</button>
+    </div>
+  </div>
+  <div class="export-card"><h3>📥 Импорт</h3><input type="file" id="importFile" accept=".json" style="padding:7px" onchange="importJSON(event)"></div>
+  <div class="export-card"><h3>ℹ️ Информация</h3><p style="color:var(--text2);font-size:.83em" id="dbInfo">Загрузка...</p></div>
+  <div class="export-card"><h3>🗑️ Опасная зона</h3><button class="btn btn-danger btn-sm" onclick="clearAllData()">Удалить всё</button></div>
+</div>
+
+</div>
+
+<!-- NAV -->
+<nav class="bottom-nav">
+  <button class="active" onclick="navigate('recipes')"><span class="ni">📖</span>Рецепты</button>
+  <button onclick="navigate('add')"><span class="ni">➕</span>Добавить</button>
+  <button onclick="navigate('calc')"><span class="ni">🧮</span>Калькулятор</button>
+  <button onclick="navigate('templates')"><span class="ni">📋</span>Шаблоны</button>
+  <button onclick="navigate('export')"><span class="ni">📦</span>Данные</button>
+</nav>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox" onclick="this.classList.remove('show')"><img id="lbImg" src="" alt=""></div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- ===== МОДАЛКА — ИНФОРМАЦИЯ О ПРИЛОЖЕНИИ ===== -->
+<div id="infoModal" class="modal-overlay" onclick="if(event.target===this)closeInfoModal()">
+  <div class="modal">
+    <h3>ℹ️ О приложении <button class="modal-close" onclick="closeInfoModal()">✕</button></h3>
+
+    <div class="info-section">
+      <h4>🏡 В гостях у DKana</h4>
+      <p>Универсальное приложение для домашних заготовок и рецептов. Работает офлайн, устанавливается на телефон как обычное приложение.</p>
     </div>
 
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="showSection('recipes')">
-            <span class="icon">📚</span>
-            <span>Рецепты</span>
-        </button>
-        <button class="nav-item" onclick="showSection('proportions')">
-            <span class="icon">⚖️</span>
-            <span>Пропорции</span>
-        </button>
-        <button class="nav-item" onclick="showSection('jars')">
-            <span class="icon">🫙</span>
-            <span>Банки</span>
-        </button>
-        <button class="nav-item" onclick="showSection('settings')">
-            <span class="icon">💾</span>
-            <span>Данные</span>
-        </button>
+    <hr class="info-divider">
 
-    </nav>
-
-    <div class="modal-overlay" id="installModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>📲 Установка</h3>
-                <button class="modal-close" onclick="closeInstallModal()">×</button>
-            </div>
-            <div class="install-instructions">
-                <h4>🤖 Android (Chrome)</h4>
-                <ol>
-                    <li>Нажмите <strong>⋮</strong> вверху справа</li>
-                    <li>Выберите <strong>"Установить приложение"</strong></li>
-                    <li>Подтвердите</li>
-                </ol>
-            </div>
-            <div class="install-instructions">
-                <h4>🍎 iPhone (Safari)</h4>
-                <ol>
-                    <li>Нажмите <strong>⬆️</strong> (Поделиться)</li>
-                    <li>Выберите <strong>"На экран Домой"</strong></li>
-                    <li>Нажмите <strong>"Добавить"</strong></li>
-                </ol>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeInstallModal()">Понятно</button>
-            </div>
-        </div>
+    <div class="info-section">
+      <h4>📖 Рецепты</h4>
+      <ul>
+        <li>Создание, редактирование и удаление рецептов</li>
+        <li>Добавление до 6 фотографий к каждому рецепту</li>
+        <li>Категории: варенье, маринад, соление, компот, соус, джем, салат и другое</li>
+        <li>Произвольные теги для удобной организации</li>
+        <li>Поиск по названию, фильтрация по типу и тегам</li>
+      </ul>
     </div>
 
-    <div class="modal-overlay" id="presetModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3><span id="presetModalIcon">📌</span> <span id="presetModalTitle">Шаблон</span></h3>
-                <button class="modal-close" onclick="closePresetModal()">×</button>
-            </div>
-            <form id="presetForm">
-                <input type="hidden" id="presetEditId">
-                <div class="form-group">
-                    <label>Иконка</label>
-                    <div class="emoji-grid" id="emojiGrid"></div>
-                    <input type="text" id="presetIcon" value="🧂" style="width:55px;text-align:center;font-size:1.1em;">
-                </div>
-                <div class="form-group">
-                    <label>Название</label>
-                    <input type="text" id="presetName" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Кол-во</label>
-                        <input type="number" id="presetIngAmount" step="0.1" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Ед.</label>
-                        <select id="presetIngUnit">
-                            <option value="гр">гр</option>
-                            <option value="кг">кг</option>
-                            <option value="мл">мл</option>
-                            <option value="шт">шт</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Ингредиент</label>
-                    <input type="text" id="presetIngName" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>На кол-во</label>
-                        <input type="number" id="presetProdAmount" step="0.1" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Ед.</label>
-                        <select id="presetProdUnit">
-                            <option value="кг">кг</option>
-                            <option value="гр">гр</option>
-                            <option value="л">л</option>
-                            <option value="шт">шт</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Продукт</label>
-                    <input type="text" id="presetProdName" required>
-                </div>
-            </form>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closePresetModal()">Отмена</button>
-                <button class="btn btn-primary" onclick="savePresetFromModal()">💾</button>
-            </div>
-        </div>
+    <hr class="info-divider">
+
+    <div class="info-section">
+      <h4>🧮 Калькулятор</h4>
+      <ul>
+        <li><b>Калькулятор банок</b> — пересчёт ингредиентов на любой объём банки (500мл, 1л, 1.5л, 2л, 3л или произвольный)</li>
+        <li><b>Калькулятор пропорций</b> — измените количество одного ингредиента, и все остальные пересчитаются автоматически</li>
+        <li><b>Себестоимость</b> — расчёт стоимости партии и одной банки (можно включить/выключить)</li>
+      </ul>
     </div>
 
-    <script>
-        let recipes = JSON.parse(localStorage.getItem('dkana_recipes')) || [];
-        let savedProportions = JSON.parse(localStorage.getItem('dkana_proportions')) || [];
-        let presets = JSON.parse(localStorage.getItem('dkana_presets')) || [];
-        let calcHistory = JSON.parse(localStorage.getItem('dkana_calc_history')) || [];
-        let currentRecipeId = null;
-        let selectedJarVolume = 1000;
-        let jarSelectedRecipeId = null;
+    <hr class="info-divider">
 
-        const emojis = ['🧂','🐟','🍖','🥬','🍓','🥒','🫙','🍯','🧈','🌶️','🧄','🍋'];
-        const defaultPresets = [
-            {id:1,icon:'🧂',name:'Соль/мясо',ingredientAmount:30,ingredientUnit:'гр',ingredientName:'Соль',productAmount:1,productUnit:'кг',productName:'Мясо'},
-            {id:2,icon:'🐟',name:'Соль/рыба',ingredientAmount:50,ingredientUnit:'гр',ingredientName:'Соль',productAmount:1,productUnit:'кг',productName:'Рыба'},
-            {id:3,icon:'🍓',name:'Варенье',ingredientAmount:1,ingredientUnit:'кг',ingredientName:'Сахар',productAmount:1,productUnit:'кг',productName:'Ягоды'},
-            {id:4,icon:'🥬',name:'Капуста',ingredientAmount:20,ingredientUnit:'гр',ingredientName:'Соль',productAmount:1,productUnit:'кг',productName:'Капуста'},
-            {id:5,icon:'🥒',name:'Рассол',ingredientAmount:50,ingredientUnit:'гр',ingredientName:'Соль',productAmount:1,productUnit:'л',productName:'Вода'},
-            {id:6,icon:'🫙',name:'Уксус',ingredientAmount:70,ingredientUnit:'мл',ingredientName:'Уксус 9%',productAmount:1,productUnit:'л',productName:'Маринад'}
-        ];
+    <div class="info-section">
+      <h4>📐 Шаблоны пропорций</h4>
+      <ul>
+        <li>Готовые шаблоны маринадов, сиропов, рассолов</li>
+        <li>Создание, редактирование и удаление своих шаблонов</li>
+        <li>Быстрый расчёт прямо из шаблона</li>
+        <li>Превращение шаблона в полноценный рецепт</li>
+      </ul>
+    </div>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initEmojiGrid();
-            if(!presets.length){presets=JSON.parse(JSON.stringify(defaultPresets));savePresets();}
-            renderRecipeList();addIngredient();renderPresets();renderSavedProportions();renderCalcHistory();populateJarRecipeSelect();calculateProportion();updateStats();
-            if(!recipes.length)loadSampleRecipes();
-        });
+    <hr class="info-divider">
 
-        // ===== ЭКСПОРТ / ИМПОРТ =====
-        function exportData() {
-            const data = {
-                version: '1.0',
-                exportDate: new Date().toISOString(),
-                recipes: recipes,
-                presets: presets,
-                proportions: savedProportions,
-                history: calcHistory
-            };
-            
-            const json = JSON.stringify(data, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `dkana_recipes_${new Date().toISOString().slice(0,10)}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showToast('Данные экспортированы 📤');
-        }
+    <div class="info-section">
+      <h4>📏 Единицы измерения</h4>
+      <p>Поддерживаемые единицы: <b>г</b>, <b>кг</b>, <b>мл</b>, <b>л</b>, <b>шт</b>, <b>ст.л.</b>, <b>ч.л.</b>, <b>зуб.</b>, <b>щеп.</b>, <b>пуч.</b></p>
+    </div>
 
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    if (data.recipes) {
-                        const mode = confirm(
-                            `Найдено ${data.recipes.length} рецептов.\n\n` +
-                            `OK = Заменить все данные\n` +
-                            `Отмена = Добавить к существующим`
-                        );
-                        
-                        if (mode) {
-                            // Заменить
-                            recipes = data.recipes || [];
-                            presets = data.presets || defaultPresets;
-                            savedProportions = data.proportions || [];
-                            calcHistory = data.history || [];
-                        } else {
-                            // Добавить
-                            const existingIds = new Set(recipes.map(r => r.id));
-                            const newRecipes = (data.recipes || []).filter(r => !existingIds.has(r.id));
-                            recipes = [...recipes, ...newRecipes];
-                            
-                            if (data.presets) {
-                                const existingPresetIds = new Set(presets.map(p => p.id));
-                                const newPresets = data.presets.filter(p => !existingPresetIds.has(p.id));
-                                presets = [...presets, ...newPresets];
-                            }
-                            
-                            if (data.proportions) {
-                                savedProportions = [...savedProportions, ...data.proportions];
-                            }
-                        }
-                        
-                        saveAll();
-                        renderRecipeList();
-                        renderPresets();
-                        renderSavedProportions();
-                        renderCalcHistory();
-                        populateJarRecipeSelect();
-                        updateStats();
-                        
-                        showToast(`Импортировано! 📥`);
-                    } else {
-                        showToast('Неверный формат файла ⚠️');
-                    }
-                } catch (err) {
-                    showToast('Ошибка чтения файла ⚠️');
-                    console.error(err);
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
+    <hr class="info-divider">
 
-        function saveAll() {
-            localStorage.setItem('dkana_recipes', JSON.stringify(recipes));
-            localStorage.setItem('dkana_presets', JSON.stringify(presets));
-            localStorage.setItem('dkana_proportions', JSON.stringify(savedProportions));
-            localStorage.setItem('dkana_calc_history', JSON.stringify(calcHistory));
-        }
+    <div class="info-section">
+      <h4>💰 Себестоимость</h4>
+      <ul>
+        <li>Включается/выключается переключателем в рецепте и в калькуляторе</li>
+        <li>Указывайте цену за единицу каждого ингредиента</li>
+        <li>Автоматический расчёт стоимости партии и одной банки</li>
+        <li>Себестоимость отображается в карточке рецепта</li>
+      </ul>
+    </div>
 
-        function clearAllData() {
-            if (confirm('Удалить ВСЕ данные? Это действие нельзя отменить!')) {
-                if (confirm('Вы уверены? Все рецепты, шаблоны и пропорции будут удалены!')) {
-                    recipes = [];
-                    presets = JSON.parse(JSON.stringify(defaultPresets));
-                    savedProportions = [];
-                    calcHistory = [];
-                    saveAll();
-                    renderRecipeList();
-                    renderPresets();
-                    renderSavedProportions();
-                    renderCalcHistory();
-                    populateJarRecipeSelect();
-                    updateStats();
-                    showToast('Все данные удалены 🗑️');
-                }
-            }
-        }
+    <hr class="info-divider">
 
-        function updateStats() {
-            document.getElementById('statRecipes').textContent = recipes.length;
-            document.getElementById('statPresets').textContent = presets.length;
-            document.getElementById('statProportions').textContent = savedProportions.length;
-        }
+    <div class="info-section">
+      <h4>📦 Данные</h4>
+      <ul>
+        <li><b>Экспорт</b> — JSON (полная база с фото), TXT (текстовый), CSV (для Excel)</li>
+        <li><b>Импорт</b> — загрузка из JSON файла (добавить или заменить)</li>
+        <li><b>Хранение</b> — IndexedDB (без ограничений localStorage)</li>
+        <li>Автоматическая миграция старых данных</li>
+      </ul>
+    </div>
 
-        // ===== ОСТАЛЬНОЙ КОД =====
-        function initEmojiGrid(){document.getElementById('emojiGrid').innerHTML=emojis.map(e=>`<button type="button" class="btn btn-secondary emoji-btn" onclick="selectEmoji('${e}')">${e}</button>`).join('');}
-        function selectEmoji(e){document.getElementById('presetIcon').value=e;document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.toggle('selected',b.textContent===e));}
+    <hr class="info-divider">
 
-        function showInstallModal(){document.getElementById('installModal').classList.add('active');}
-        function closeInstallModal(){document.getElementById('installModal').classList.remove('active');}
+    <div class="info-section">
+      <h4>📱 PWA</h4>
+      <ul>
+        <li>Устанавливается на Android и iOS как обычное приложение</li>
+        <li>Полностью работает без интернета</li>
+        <li>Автоматические обновления</li>
+      </ul>
+    </div>
 
-        function showSection(s){
-            document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(sec=>sec.classList.remove('active'));
-            event.target.closest('.nav-item').classList.add('active');
-            document.getElementById(s+'Section').classList.add('active');
-            if(s==='jars')populateJarRecipeSelect();
-            if(s==='settings')updateStats();
-			if(s==='about')window.scrollTo(0,0);
-																   
-        }
+    <hr class="info-divider">
 
-        function loadSampleRecipes(){
-            recipes=[{id:Date.now(),name:"Маринованные огурцы",baseVolume:1000,ingredients:[{name:"Огурцы",amount:600,unit:"гр"},{name:"Чеснок",amount:3,unit:"шт"},{name:"Соль",amount:30,unit:"гр"},{name:"Сахар",amount:50,unit:"гр"},{name:"Уксус",amount:50,unit:"мл"}],instructions:"1. Замочить\n2. Уложить\n3. Залить\n4. Закатать",notes:"Хранить в прохладе",createdAt:new Date().toISOString()}];
-            saveRecipes();renderRecipeList();populateJarRecipeSelect();updateStats();
-        }
+    <div class="info-section" style="text-align:center;margin-bottom:0">
+      <p style="color:var(--accent2)">🏡 В гостях у DKana — v2.0</p>
+      <p style="font-size:.78em;color:var(--text2);margin-top:4px">Сделано с ❤️ для домашних заготовок</p>
+    </div>
+  </div>
+</div>
 
-        function showTab(t){
-            document.querySelectorAll('.tabs .tab').forEach(tab=>tab.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('createTab').style.display=t==='create'?'block':'none';
-            document.getElementById('viewTab').style.display=t==='view'?'block':'none';
-            document.getElementById('viewTab').classList.toggle('active',t==='view');
-        }
+<!-- ===== МОДАЛКА — ШАБЛОН КАЛЬКУЛЯТОРА ===== -->
+<div id="ctModal" class="modal-overlay" onclick="if(event.target===this)closeCalcTplModal()">
+  <div class="modal">
+    <h3 id="ctModalTitle">📐 Новый шаблон <button class="modal-close" onclick="closeCalcTplModal()">✕</button></h3>
+    <div class="fg"><label>Название</label><input type="text" id="ctName" placeholder="Маринад классический"></div>
+    <div class="fg">
+      <label>Ингредиенты</label>
+      <div id="ctIngList"></div>
+      <button class="btn btn-sm btn-success" onclick="addCtIngRow()" style="margin-top:5px">+ Ингредиент</button>
+    </div>
+    <div class="fg"><label>📝 Заметка</label><textarea id="ctNote" style="min-height:50px" placeholder="Универсальный маринад..."></textarea></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="saveCalcTpl()">💾 Сохранить</button>
+      <button class="btn btn-outline" onclick="closeCalcTplModal()">Отмена</button>
+    </div>
+  </div>
+</div>
 
-        function addIngredient(d=null){
-            const row=document.createElement('div');row.className='ingredient-row fade-in';
-            row.innerHTML=`<input type="text" placeholder="Название" value="${d?.name||''}" required><input type="number" step="0.1" placeholder="Кол" value="${d?.amount||''}" required><select><option value="гр" ${d?.unit==='гр'?'selected':''}>гр</option><option value="кг" ${d?.unit==='кг'?'selected':''}>кг</option><option value="шт" ${d?.unit==='шт'?'selected':''}>шт</option><option value="мл" ${d?.unit==='мл'?'selected':''}>мл</option><option value="л" ${d?.unit==='л'?'selected':''}>л</option></select><button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>`;
-            document.getElementById('ingredientsList').appendChild(row);
-        }
+<script>
+// ================================================================
+//  ЕДИНИЦЫ ИЗМЕРЕНИЯ
+// ================================================================
+const UNITS=['г','кг','мл','л','шт','ст.л.','ч.л.','зуб.','щеп.','пуч.'];
+function unitSel(val,cls){return`<select class="${cls||''}" style="min-width:70px">${UNITS.map(u=>`<option${u===(val||'г')?' selected':''}>${u}</option>`).join('')}</select>`}
 
-        function getIngredients(){return Array.from(document.querySelectorAll('.ingredient-row')).map(r=>{const[n,a]=r.querySelectorAll('input');const u=r.querySelector('select');return n.value&&a.value?{name:n.value,amount:parseFloat(a.value),unit:u.value}:null;}).filter(Boolean);}
+// ================================================================
+//  СЕБЕСТОИМОСТЬ — TOGGLE
+// ================================================================
+let costEnabledAdd=false;
+let costEnabledCalc=false;
 
-        document.getElementById('recipeForm').addEventListener('submit',e=>{
-            e.preventDefault();
-            const recipe={id:document.getElementById('recipeId').value||Date.now(),name:document.getElementById('recipeName').value,baseVolume:parseInt(document.getElementById('baseVolume').value),ingredients:getIngredients(),instructions:document.getElementById('instructions').value,notes:document.getElementById('notes').value,createdAt:new Date().toISOString()};
-            const idx=recipes.findIndex(r=>r.id==recipe.id);
-            if(idx>=0){recipes[idx]=recipe;showToast('Обновлено ✅');}else{recipes.push(recipe);showToast('Сохранено 🎉');}
-            saveRecipes();renderRecipeList();populateJarRecipeSelect();clearForm();updateStats();
-        });
+function loadCostSettings(){
+  costEnabledAdd=localStorage.getItem('cost_add')==='1';
+  costEnabledCalc=localStorage.getItem('cost_calc')==='1';
+  document.getElementById('costToggleAdd').checked=costEnabledAdd;
+  document.getElementById('costToggleCalc').checked=costEnabledCalc;
+  refreshIngRowsVisibility();
+}
 
-        function clearForm(){document.getElementById('recipeForm').reset();document.getElementById('recipeId').value='';document.getElementById('formTitle').textContent='Новый рецепт';document.getElementById('ingredientsList').innerHTML='';addIngredient();currentRecipeId=null;}
-        function saveRecipes(){localStorage.setItem('dkana_recipes',JSON.stringify(recipes));}
-        function savePresets(){localStorage.setItem('dkana_presets',JSON.stringify(presets));}
+function toggleCostAdd(){
+  costEnabledAdd=document.getElementById('costToggleAdd').checked;
+  localStorage.setItem('cost_add',costEnabledAdd?'1':'0');
+  refreshIngRowsVisibility();
+}
 
-        function renderRecipeList(f=''){
-            const list=document.getElementById('recipeList');
-            const filtered=recipes.filter(r=>r.name.toLowerCase().includes(f.toLowerCase()));
-            if(!filtered.length){list.innerHTML='<div class="empty-state"><div class="icon">📝</div><p>Нет рецептов</p></div>';return;}
-            list.innerHTML=filtered.map(r=>`<div class="recipe-item ${currentRecipeId==r.id?'active':''}" onclick="selectRecipe(${r.id})"><h3>${r.name}</h3><div class="meta">📦${r.ingredients.length} • 🫙${r.baseVolume}мл</div><div class="recipe-actions"><button class="btn btn-secondary btn-small" onclick="event.stopPropagation();editRecipe(${r.id})">✏️</button><button class="btn btn-danger btn-small" onclick="event.stopPropagation();deleteRecipe(${r.id})">🗑️</button></div></div>`).join('');
-        }
+function toggleCostCalc(){
+  costEnabledCalc=document.getElementById('costToggleCalc').checked;
+  localStorage.setItem('cost_calc',costEnabledCalc?'1':'0');
+  document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';
+}
 
-        function searchRecipes(){renderRecipeList(document.getElementById('searchInput').value);}
-        function selectRecipe(id){currentRecipeId=id;const r=recipes.find(x=>x.id==id);if(r){renderRecipeList();showRecipeView(r);}}
+function refreshIngRowsVisibility(){
+  document.querySelectorAll('#ingList .ing-row').forEach(row=>{
+    const priceInput=row.querySelector('.price-input');
+    if(priceInput)priceInput.style.display=costEnabledAdd?'':'none';
+    if(costEnabledAdd){
+      row.style.gridTemplateColumns='2fr 1fr 90px 1fr auto';
+    }else{
+      row.style.gridTemplateColumns='2fr 1fr 90px auto';
+    }
+  });
+}
 
-        function showRecipeView(r){
-            document.getElementById('recipeViewContent').innerHTML=`<h2 style="color:var(--accent);margin-bottom:10px;font-size:1em;">${r.name}</h2><p style="color:var(--text-secondary);margin-bottom:10px;font-size:0.8em;">📦${r.baseVolume}мл</p><div class="ingredients-list"><h4>🥗 Ингредиенты</h4><ul>${r.ingredients.map(i=>`<li>${i.name}: <b>${i.amount}${i.unit}</b></li>`).join('')}</ul></div>${r.instructions?`<div class="instructions-list"><h4>📝</h4><p style="white-space:pre-wrap;font-size:0.8em;">${r.instructions}</p></div>`:''} ${r.notes?`<div style="background:rgba(255,193,7,0.1);padding:10px;border-radius:8px;font-size:0.8em;"><b>💡</b> ${r.notes}</div>`:''}`;
-            showTab('view');
-        }
+// ================================================================
+//  IndexedDB
+// ================================================================
+const DB_NAME='DKanaDB',DB_VER=2;let db=null;
+function openDB(){return new Promise((ok,no)=>{const r=indexedDB.open(DB_NAME,DB_VER);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('recipes')){const s=d.createObjectStore('recipes',{keyPath:'id'});s.createIndex('type','type',{unique:false})}if(!d.objectStoreNames.contains('calcTpls'))d.createObjectStore('calcTpls',{keyPath:'id'})};r.onsuccess=e=>{db=e.target.result;ok(db)};r.onerror=e=>no(e.target.error)})}
+function dbAll(s){return new Promise((ok,no)=>{const r=db.transaction(s,'readonly').objectStore(s).getAll();r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
+function dbGet(s,id){return new Promise((ok,no)=>{const r=db.transaction(s,'readonly').objectStore(s).get(id);r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
+function dbPut(s,o){return new Promise((ok,no)=>{const r=db.transaction(s,'readwrite').objectStore(s).put(o);r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
+function dbDel(s,id){return new Promise((ok,no)=>{const r=db.transaction(s,'readwrite').objectStore(s).delete(id);r.onsuccess=()=>ok();r.onerror=()=>no(r.error)})}
+function dbClear(s){return new Promise((ok,no)=>{const r=db.transaction(s,'readwrite').objectStore(s).clear();r.onsuccess=()=>ok();r.onerror=()=>no(r.error)})}
 
-        function editRecipe(id){
-            const r=recipes.find(x=>x.id==id);if(!r)return;
-            document.getElementById('recipeId').value=r.id;document.getElementById('recipeName').value=r.name;document.getElementById('baseVolume').value=r.baseVolume;document.getElementById('instructions').value=r.instructions||'';document.getElementById('notes').value=r.notes||'';document.getElementById('formTitle').textContent='Редактирование';
-            document.getElementById('ingredientsList').innerHTML='';r.ingredients.forEach(i=>addIngredient(i));
-            document.querySelectorAll('.tabs .tab')[0].click();currentRecipeId=id;renderRecipeList();
-        }
+// ================================================================
+//  PWA INLINE
+// ================================================================
+let swReg=null,swWaiting=null;
+function registerPWA(){
+  const manifest={name:"В гостях у DKana — Рецепты",short_name:"DKana Рецепты",description:"Домашние рецепты и заготовки",start_url:location.href.split('?')[0],display:"standalone",orientation:"portrait",background_color:"#1a1a2e",theme_color:"#1a1a2e",lang:"ru",icons:[72,96,128,144,152,192,384,512].map(s=>({src:makeIcon(s),sizes:s+'x'+s,type:'image/png',purpose:'any maskable'}))};
+  const ml=document.createElement('link');ml.rel='manifest';ml.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'}));document.head.appendChild(ml);
+  if('serviceWorker' in navigator){
+    const swC=`const CN='dkana-v3';self.addEventListener('install',e=>{e.waitUntil(caches.open(CN).then(c=>c.addAll(['${location.href.split('?')[0]}'])).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CN).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.open(CN).then(c=>c.match(e.request).then(r=>{const f=fetch(e.request).then(nr=>{if(nr&&nr.status===200)c.put(e.request,nr.clone());return nr}).catch(()=>{});return r||f})))});self.addEventListener('message',e=>{if(e.data==='skipWaiting')self.skipWaiting()});`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([swC],{type:'application/javascript'}))).then(reg=>{swReg=reg;reg.addEventListener('updatefound',()=>{const nw=reg.installing;nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller){swWaiting=nw;document.getElementById('updateBar').classList.add('show')}})})}).catch(e=>console.warn('SW:',e));
+    let rf=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!rf){rf=true;location.reload()}});
+  }
+}
+function makeIcon(sz){const c=document.createElement('canvas');c.width=sz;c.height=sz;const x=c.getContext('2d');const g=x.createLinearGradient(0,0,sz,sz);g.addColorStop(0,'#1a1a2e');g.addColorStop(1,'#0f3460');x.fillStyle=g;const r=sz*.18;x.beginPath();x.moveTo(r,0);x.lineTo(sz-r,0);x.quadraticCurveTo(sz,0,sz,r);x.lineTo(sz,sz-r);x.quadraticCurveTo(sz,sz,sz-r,sz);x.lineTo(r,sz);x.quadraticCurveTo(0,sz,0,sz-r);x.lineTo(0,r);x.quadraticCurveTo(0,0,r,0);x.closePath();x.fill();x.font=`${sz*.35}px serif`;x.textAlign='center';x.textBaseline='middle';x.fillText('🏡',sz/2,sz*.35);x.fillStyle='#e94560';x.font=`bold ${sz*.22}px sans-serif`;x.fillText('DK',sz/2,sz*.68);x.strokeStyle='#f5a623';x.lineWidth=sz*.02;x.beginPath();x.moveTo(sz*.25,sz*.78);x.lineTo(sz*.75,sz*.78);x.stroke();return c.toDataURL('image/png')}
+function applyUpdate(){if(swWaiting)swWaiting.postMessage('skipWaiting');document.getElementById('updateBar').classList.remove('show')}
 
-        function deleteRecipe(id){if(confirm('Удалить?')){recipes=recipes.filter(r=>r.id!=id);saveRecipes();renderRecipeList();populateJarRecipeSelect();updateStats();showToast('Удалено 🗑️');}}
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!localStorage.getItem('pwa_d'))document.getElementById('pwaBanner').classList.add('show')});
+window.addEventListener('appinstalled',()=>{deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show');toast('✅ Установлено!')});
+async function installPWA(){if(!deferredPrompt){toast('ℹ️ Меню → На главный экран','var(--blue)');return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show')}
+function dismissInstall(){document.getElementById('pwaBanner').classList.remove('show');localStorage.setItem('pwa_d','1')}
+function updateOnline(){document.getElementById('offlineBar').classList.toggle('show',!navigator.onLine)}
+window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);
 
-        function renderPresets(){
-            const grid=document.getElementById('presetGrid');
-            if(!presets.length){grid.innerHTML='<p style="color:var(--text-secondary);text-align:center;padding:12px;font-size:0.8em;">Нет шаблонов</p>';return;}
-            grid.innerHTML=presets.map(p=>`<div class="preset-item fade-in"><div class="preset-item-header"><span class="preset-icon">${p.icon}</span><span class="preset-name">${p.name}</span></div><div class="preset-ratio">${p.ingredientAmount}${p.ingredientUnit}/${p.productAmount}${p.productUnit}</div><div class="preset-actions"><button class="btn btn-success btn-small" onclick="applyPreset(${p.id})">📥</button><button class="btn btn-secondary btn-small" onclick="editPreset(${p.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deletePreset(${p.id})">🗑️</button></div></div>`).join('');
-        }
+// ================================================================
+//  INFO MODAL
+// ================================================================
+function openInfoModal(){document.getElementById('infoModal').classList.add('show')}
+function closeInfoModal(){document.getElementById('infoModal').classList.remove('show')}
 
-        function applyPreset(id){const p=presets.find(x=>x.id===id);if(!p)return;document.getElementById('baseIngredientAmount').value=p.ingredientAmount;document.getElementById('baseIngredientUnit').value=p.ingredientUnit;document.getElementById('ingredientName').value=p.ingredientName;document.getElementById('baseProductAmount').value=p.productAmount;document.getElementById('baseProductUnit').value=p.productUnit;document.getElementById('productName').value=p.productName;calculateProportion();showToast(p.name+' ✅');}
+// ================================================================
+//  НАВИГАЦИЯ
+// ================================================================
+const PAGES=['recipes','add','calc','templates','export'];let curPage='recipes';
+function navigate(p){
+  curPage=p;
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('pg-'+p).classList.add('active');
+  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav button')[PAGES.indexOf(p)].classList.add('active');
+  if(p==='recipes')renderRecipes();
+  if(p==='calc'){populateCalcSelect();renderCalcTpls()}
+  if(p==='templates')renderTemplates();
+  if(p==='export')updateDBInfo();
+  if(p==='add'){
+    if(!document.querySelectorAll('#ingList .ing-row').length){addIngRow();addIngRow();addIngRow()}
+    refreshIngRowsVisibility();
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
-        function openPresetModal(p=null){
-            document.getElementById('presetForm').reset();document.getElementById('presetEditId').value='';document.getElementById('presetIcon').value='🧂';document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
-            if(p){document.getElementById('presetModalTitle').textContent='Редактировать';document.getElementById('presetEditId').value=p.id;document.getElementById('presetIcon').value=p.icon;document.getElementById('presetName').value=p.name;document.getElementById('presetIngAmount').value=p.ingredientAmount;document.getElementById('presetIngUnit').value=p.ingredientUnit;document.getElementById('presetIngName').value=p.ingredientName;document.getElementById('presetProdAmount').value=p.productAmount;document.getElementById('presetProdUnit').value=p.productUnit;document.getElementById('presetProdName').value=p.productName;}
-            else{document.getElementById('presetModalTitle').textContent='Новый';}
-            document.getElementById('presetModal').classList.add('active');
-        }
+// ================================================================
+//  УТИЛИТЫ
+// ================================================================
+const genId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>{const d=document.createElement('div');d.textContent=s||'';return d.innerHTML};
+const csvSafe=s=>(s||'').replace(/"/g,'""').replace(/\n/g,' ');
+function toast(m,c){const t=document.getElementById('toast');t.textContent=m;t.style.background=c||'var(--green)';t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500)}
+function download(n,c,m){const b=new Blob([c],{type:m}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();URL.revokeObjectURL(a.href)}
+function compressImg(file,max=800,q=.7){return new Promise(ok=>{const r=new FileReader;r.onload=e=>{const img=new Image;img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=h*max/w;w=max}else{w=w*max/h;h=max}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);ok(c.toDataURL('image/jpeg',q))};img.src=e.target.result};r.readAsDataURL(file)})}
+function openLightbox(s){document.getElementById('lbImg').src=s;document.getElementById('lightbox').classList.add('show')}
 
-        function closePresetModal(){document.getElementById('presetModal').classList.remove('active');}
+// ================================================================
+//  ФОТОГРАФИИ
+// ================================================================
+let tempPhotos=[];
+async function previewPhotos(e){const files=[...e.target.files].slice(0,6-tempPhotos.length);for(const f of files){if(tempPhotos.length>=6)break;tempPhotos.push(await compressImg(f))}renderPhotoPreview()}
+function renderPhotoPreview(){document.getElementById('photoPreview').innerHTML=tempPhotos.map((s,i)=>`<div class="photo-thumb"><img src="${s}" alt=""><button class="rm" onclick="tempPhotos.splice(${i},1);renderPhotoPreview()">✕</button></div>`).join('')}
 
-        function savePresetFromModal(){
-            const id=document.getElementById('presetEditId').value;const name=document.getElementById('presetName').value.trim();const ingAmount=parseFloat(document.getElementById('presetIngAmount').value);const ingName=document.getElementById('presetIngName').value.trim();const prodAmount=parseFloat(document.getElementById('presetProdAmount').value);const prodName=document.getElementById('presetProdName').value.trim();
-            if(!name||!ingAmount||!ingName||!prodAmount||!prodName){showToast('Заполните все ⚠️');return;}
-            const preset={id:id?parseInt(id):Date.now(),icon:document.getElementById('presetIcon').value||'📌',name,ingredientAmount:ingAmount,ingredientUnit:document.getElementById('presetIngUnit').value,ingredientName:ingName,productAmount:prodAmount,productUnit:document.getElementById('presetProdUnit').value,productName:prodName};
-            if(id){const idx=presets.findIndex(x=>x.id===parseInt(id));if(idx>=0)presets[idx]=preset;showToast('Обновлено ✅');}else{presets.push(preset);showToast('Добавлено 📌');}
-            savePresets();renderPresets();closePresetModal();updateStats();
-        }
+// ================================================================
+//  ИНГРЕДИЕНТЫ (рецепт)
+// ================================================================
+function addIngRow(d={}){
+  const row=document.createElement('div');row.className='ing-row';
+  const showPrice=costEnabledAdd;
+  row.style.gridTemplateColumns=showPrice?'2fr 1fr 90px 1fr auto':'2fr 1fr 90px auto';
+  row.innerHTML=`
+    <input type="text" placeholder="Название" value="${esc(d.name||'')}">
+    <input type="number" placeholder="Кол-во" step="any" value="${d.amount||''}">
+    ${unitSel(d.unit)}
+    <input type="number" class="price-input" placeholder="₽/ед." step="any" value="${d.price||''}" style="display:${showPrice?'':'none'}">
+    <button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('ingList').appendChild(row);
+}
+function getIngs(){
+  return[...document.querySelectorAll('#ingList .ing-row')].map(r=>{
+    const i=r.querySelectorAll('input');const s=r.querySelector('select');
+    return{name:i[0].value.trim(),amount:parseFloat(i[1].value)||0,unit:s.value,price:parseFloat(i[2].value)||0}}).filter(x=>x.name);
+}
 
-        function editPreset(id){const p=presets.find(x=>x.id===id);if(p)openPresetModal(p);}
-        function deletePreset(id){if(confirm('Удалить?')){presets=presets.filter(p=>p.id!==id);savePresets();renderPresets();updateStats();showToast('Удалено 🗑️');}}
-        function resetToDefaultPresets(){if(confirm('Сбросить?')){presets=JSON.parse(JSON.stringify(defaultPresets));savePresets();renderPresets();updateStats();showToast('Сброшено 🔄');}}
-        function saveAsPreset(){openPresetModal();document.getElementById('presetName').value=document.getElementById('ingredientName').value+'/'+document.getElementById('productName').value;document.getElementById('presetIngAmount').value=document.getElementById('baseIngredientAmount').value;document.getElementById('presetIngUnit').value=document.getElementById('baseIngredientUnit').value;document.getElementById('presetIngName').value=document.getElementById('ingredientName').value;document.getElementById('presetProdAmount').value=document.getElementById('baseProductAmount').value;document.getElementById('presetProdUnit').value=document.getElementById('baseProductUnit').value;document.getElementById('presetProdName').value=document.getElementById('productName').value;}
+// ================================================================
+//  РЕЦЕПТЫ CRUD
+// ================================================================
+let editingId=null;
+async function saveRecipe(){
+  const name=document.getElementById('rName').value.trim();
+  if(!name){toast('❌ Введите название!','var(--accent)');return}
+  let old=null;if(editingId)old=await dbGet('recipes',editingId);
+  const recipe={id:editingId||genId(),name,type:document.getElementById('rType').value,tags:document.getElementById('rTags').value.split(',').map(t=>t.trim()).filter(Boolean),photos:tempPhotos.slice(0,6),baseJar:parseInt(document.getElementById('rBaseJar').value)||1000,ingredients:getIngs(),description:document.getElementById('rDesc').value.trim(),costEnabled:costEnabledAdd,created:old?old.created:new Date().toISOString(),updated:new Date().toISOString()};
+  await dbPut('recipes',recipe);editingId=null;clearForm();navigate('recipes');toast('✅ Сохранён!');
+}
+async function editRecipe(id){
+  const r=await dbGet('recipes',id);if(!r)return;editingId=id;
+  document.getElementById('addTitle').textContent='✏️ Редактирование';
+  document.getElementById('rName').value=r.name;
+  document.getElementById('rType').value=r.type||'Другое';
+  document.getElementById('rTags').value=(r.tags||[]).join(', ');
+  document.getElementById('rBaseJar').value=r.baseJar||1000;
+  document.getElementById('rDesc').value=r.description||'';
+  // Восстановить состояние себестоимости
+  costEnabledAdd=r.costEnabled!==undefined?r.costEnabled:((r.ingredients||[]).some(i=>i.price>0));
+  document.getElementById('costToggleAdd').checked=costEnabledAdd;
+  localStorage.setItem('cost_add',costEnabledAdd?'1':'0');
+  tempPhotos=(r.photos||[]).slice();renderPhotoPreview();
+  document.getElementById('ingList').innerHTML='';
+  (r.ingredients||[]).forEach(i=>addIngRow(i));
+  refreshIngRowsVisibility();
+  navigate('add');
+}
+async function deleteRecipe(id){if(!confirm('Удалить?'))return;await dbDel('recipes',id);renderRecipes();toast('🗑️ Удалён','var(--accent)')}
+function clearForm(){
+  editingId=null;document.getElementById('addTitle').textContent='➕ Новый рецепт';
+  ['rName','rTags','rDesc'].forEach(x=>document.getElementById(x).value='');
+  document.getElementById('rBaseJar').value='1000';document.getElementById('rPhotos').value='';
+  document.getElementById('ingList').innerHTML='';tempPhotos=[];renderPhotoPreview();
+}
 
-        function calculateProportion(){
-            const baseIng=parseFloat(document.getElementById('baseIngredientAmount').value)||0;const baseIngUnit=document.getElementById('baseIngredientUnit').value;const ingName=document.getElementById('ingredientName').value||'ингредиента';const baseProd=parseFloat(document.getElementById('baseProductAmount').value)||1;const baseProdUnit=document.getElementById('baseProductUnit').value;const prodName=document.getElementById('productName').value||'продукта';const actualProd=parseFloat(document.getElementById('actualProductAmount').value)||0;
-            document.getElementById('actualProductUnitLabel').textContent=baseProdUnit;
-            let result=baseIng*(actualProd/baseProd);if(result>=100)result=Math.round(result);else if(result>=10)result=Math.round(result*10)/10;else result=Math.round(result*100)/100;
-            document.getElementById('proportionResult').textContent=result;document.getElementById('resultUnit').textContent=baseIngUnit;document.getElementById('resultIngredientName').textContent=ingName.toLowerCase();document.getElementById('resultProductAmount').textContent=actualProd;document.getElementById('resultProductUnit').textContent=baseProdUnit;document.getElementById('resultProductName').textContent=prodName.toLowerCase();
-            return{ingredientName:ingName,ingredientAmount:result,ingredientUnit:baseIngUnit,productName:prodName,productAmount:actualProd,productUnit:baseProdUnit};
-        }
+// ================================================================
+//  СПИСОК РЕЦЕПТОВ
+// ================================================================
+async function renderRecipes(){
+  const all=await dbAll('recipes');
+  const search=(document.getElementById('fSearch').value||'').toLowerCase();
+  const fT=document.getElementById('fType').value;
+  const fG=document.getElementById('fTag').value;
+  const allTags=new Set();all.forEach(r=>(r.tags||[]).forEach(t=>allTags.add(t)));
+  const ts=document.getElementById('fTag');const cv=ts.value;
+  ts.innerHTML='<option value="">Все теги</option>';
+  [...allTags].sort().forEach(t=>{ts.innerHTML+=`<option value="${t}"${t===cv?' selected':''}>${t}</option>`});
 
-        function saveToProportion(){const d=calculateProportion();savedProportions.push({id:Date.now(),name:d.ingredientName+'/'+d.productName,ingredientName:d.ingredientName,ingredientAmount:parseFloat(document.getElementById('baseIngredientAmount').value),ingredientUnit:document.getElementById('baseIngredientUnit').value,productName:d.productName,productAmount:parseFloat(document.getElementById('baseProductAmount').value),productUnit:document.getElementById('baseProductUnit').value});localStorage.setItem('dkana_proportions',JSON.stringify(savedProportions));renderSavedProportions();addToHistory(d);updateStats();showToast('Сохранено 💾');}
+  const recipes=all.filter(r=>{
+    if(search&&!r.name.toLowerCase().includes(search))return false;
+    if(fT&&r.type!==fT)return false;
+    if(fG&&!(r.tags||[]).includes(fG))return false;return true;
+  }).sort((a,b)=>new Date(b.updated)-new Date(a.updated));
 
-        function renderSavedProportions(){const list=document.getElementById('savedProportionsList');document.getElementById('clearProportionsBtn').style.display=savedProportions.length?'inline-flex':'none';if(!savedProportions.length){list.innerHTML='<p style="color:var(--text-secondary);font-size:0.8em;">Пусто</p>';return;}list.innerHTML=savedProportions.map(p=>`<div class="proportion-item"><div class="info"><h4>${p.name}</h4><p>${p.ingredientAmount}${p.ingredientUnit}/${p.productAmount}${p.productUnit}</p></div><div class="actions"><button class="btn btn-secondary btn-small" onclick="loadSavedProportion(${p.id})">📥</button><button class="btn btn-danger btn-small" onclick="deleteSavedProportion(${p.id})">🗑️</button></div></div>`).join('');}
+  const c=document.getElementById('recipesList');
+  if(!recipes.length){c.innerHTML='<div class="empty"><div class="icon">📖</div><p>Рецептов нет</p><p style="font-size:.83em;margin-top:5px">Нажмите ➕</p></div>';return}
 
-        function loadSavedProportion(id){const p=savedProportions.find(x=>x.id===id);if(!p)return;document.getElementById('baseIngredientAmount').value=p.ingredientAmount;document.getElementById('baseIngredientUnit').value=p.ingredientUnit;document.getElementById('ingredientName').value=p.ingredientName;document.getElementById('baseProductAmount').value=p.productAmount;document.getElementById('baseProductUnit').value=p.productUnit;document.getElementById('productName').value=p.productName;calculateProportion();showToast('Загружено 📥');}
-        function deleteSavedProportion(id){savedProportions=savedProportions.filter(p=>p.id!==id);localStorage.setItem('dkana_proportions',JSON.stringify(savedProportions));renderSavedProportions();updateStats();showToast('Удалено 🗑️');}
-        function clearAllProportions(){if(confirm('Очистить?')){savedProportions=[];localStorage.setItem('dkana_proportions',JSON.stringify(savedProportions));renderSavedProportions();updateStats();showToast('Очищено 🗑️');}}
-        function resetProportion(){document.getElementById('baseIngredientAmount').value=30;document.getElementById('baseIngredientUnit').value='гр';document.getElementById('ingredientName').value='Соль';document.getElementById('baseProductAmount').value=1;document.getElementById('baseProductUnit').value='кг';document.getElementById('productName').value='Мясо';document.getElementById('actualProductAmount').value=1;calculateProportion();}
+  c.innerHTML=recipes.map(r=>{
+    const photos=(r.photos||[]).map(s=>`<img src="${s}" alt="" onclick="openLightbox('${s.replace(/'/g,"\\'")}')">`).join('');
+    const tags=[`<span class="tag tag-type">${r.type||'Другое'}</span>`,...(r.tags||[]).map(t=>`<span class="tag tag-custom" onclick="document.getElementById('fTag').value='${t}';renderRecipes()">${t}</span>`)].join('');
+    const ings=(r.ingredients||[]).map(i=>`<span style="color:var(--text2);font-size:.8em">• ${esc(i.name)}: ${i.amount} ${esc(i.unit)}</span>`).join('<br>');
+    const showCost=r.costEnabled!==false;
+    const total=showCost?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;
+    const costH=total>0?`<div style="margin-top:5px;color:var(--accent2);font-size:.87em">💰 ≈ ${total.toFixed(2)} ₽</div>`:'';
+    return`<div class="card"><h3>${esc(r.name)}</h3><div class="tags">${tags}</div>
+      ${photos?`<div class="photo-strip">${photos}</div>`:''}
+      <div style="margin:5px 0">${ings}</div>
+      ${r.description?`<p style="color:var(--text2);font-size:.82em;white-space:pre-line;margin-top:5px">${esc(r.description)}</p>`:''}
+      ${costH}<div style="font-size:.72em;color:var(--text2);margin-top:5px">🫙 ${r.baseJar||1000} мл</div>
+      <div class="btn-group">
+        <button class="btn btn-sm btn-blue" onclick="openCalcFor('${r.id}')">🧮</button>
+        <button class="btn btn-sm btn-primary" onclick="editRecipe('${r.id}')">✏️</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteRecipe('${r.id}')">🗑️</button>
+      </div></div>`;
+  }).join('');
+}
+function openCalcFor(id){navigate('calc');setTimeout(()=>{document.getElementById('calcRecipe').value=id;loadCalcRecipe()},100)}
 
-        function addToHistory(d){calcHistory.unshift({text:`${d.ingredientAmount}${d.ingredientUnit}→${d.productAmount}${d.productUnit}`,time:new Date().toLocaleTimeString()});if(calcHistory.length>8)calcHistory.pop();localStorage.setItem('dkana_calc_history',JSON.stringify(calcHistory));renderCalcHistory();}
-        function renderCalcHistory(){const el=document.getElementById('calcHistory');document.getElementById('clearHistoryBtn').style.display=calcHistory.length?'inline-flex':'none';if(!calcHistory.length){el.innerHTML='<p style="color:var(--text-secondary);font-size:0.75em;">Пусто</p>';return;}el.innerHTML=calcHistory.map(h=>`<div class="history-item"><span>${h.text}</span><span>${h.time}</span></div>`).join('');}
-        function clearHistory(){if(confirm('Очистить?')){calcHistory=[];localStorage.setItem('dkana_calc_history',JSON.stringify(calcHistory));renderCalcHistory();showToast('Очищено 🗑️');}}
+// ================================================================
+//  КАЛЬКУЛЯТОР — РЕЦЕПТ
+// ================================================================
+let calcRD=null;
+async function populateCalcSelect(){
+  const all=await dbAll('recipes');const s=document.getElementById('calcRecipe');const cur=s.value;
+  s.innerHTML='<option value="">-- Выберите --</option>';
+  all.sort((a,b)=>a.name.localeCompare(b.name)).forEach(r=>{s.innerHTML+=`<option value="${r.id}"${r.id===cur?' selected':''}>${r.name}</option>`});
+}
+async function loadCalcRecipe(){
+  const id=document.getElementById('calcRecipe').value;
+  if(!id){['jarBox','propBox','costBox'].forEach(b=>document.getElementById(b).style.display='none');document.getElementById('costToggleCalcWrap').style.display='none';calcRD=null;return}
+  calcRD=await dbGet('recipes',id);if(!calcRD)return;const r=calcRD;
+  document.getElementById('jarBox').style.display='block';
+  document.getElementById('propBox').style.display='block';
+  document.getElementById('costToggleCalcWrap').style.display='flex';
+  document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';
 
-        function populateJarRecipeSelect(){document.getElementById('jarRecipeSelect').innerHTML='<option value="">-- Выберите --</option>'+recipes.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');}
-        function selectJarRecipe(){jarSelectedRecipeId=document.getElementById('jarRecipeSelect').value;if(!jarSelectedRecipeId){document.getElementById('jarRecipeView').innerHTML='<div class="empty-state"><div class="icon">📖</div><p>Выберите рецепт</p></div>';document.getElementById('calcResults').innerHTML='<h4>📊</h4><p style="color:var(--text-secondary);font-size:0.8em;">Выберите рецепт</p>';return;}const r=recipes.find(x=>x.id==jarSelectedRecipeId);if(!r)return;document.getElementById('jarRecipeView').innerHTML=`<h3 style="color:var(--accent);margin-bottom:8px;font-size:0.95em;">${r.name}</h3><p style="color:var(--text-secondary);margin-bottom:8px;font-size:0.8em;">📦${r.baseVolume}мл</p><div class="ingredients-list"><h4>🥗</h4><ul>${r.ingredients.map(i=>`<li>${i.name}: <b>${i.amount}${i.unit}</b></li>`).join('')}</ul></div>`;calculateIngredients();}
-        function selectJar(v){selectedJarVolume=parseInt(v);document.querySelectorAll('.jar-btn').forEach(b=>{const bv=parseInt(b.textContent)||parseFloat(b.textContent)*1000;b.classList.toggle('active',bv===selectedJarVolume);});calculateIngredients();}
-        function calculateIngredients(){const el=document.getElementById('calcResults');if(!jarSelectedRecipeId){el.innerHTML='<h4>📊</h4><p style="color:var(--text-secondary);font-size:0.8em;">Выберите рецепт</p>';return;}const r=recipes.find(x=>x.id==jarSelectedRecipeId);if(!r)return;const count=parseInt(document.getElementById('jarCount').value)||1;const ratio=(selectedJarVolume/r.baseVolume)*count;const calc=r.ingredients.map(i=>{let amt=i.amount*ratio;if(i.unit==='шт')amt=Math.ceil(amt);else amt=Math.round(amt*10)/10;return{name:i.name,amount:amt,unit:i.unit};});el.innerHTML=`<h4>📊 ${count}шт × ${selectedJarVolume}мл</h4><p style="color:var(--text-secondary);margin-bottom:8px;font-size:0.75em;">×${ratio.toFixed(2)}</p>${calc.map(i=>`<div class="calc-ingredient"><span>${i.name}</span><span class="amount">${i.amount}${i.unit}</span></div>`).join('')}`;}
+  const bj=r.baseJar||1000;
+  document.getElementById('baseJarInfo').textContent=`Рецепт на банку ${bj} мл`;
+  const sizes=[500,1000,1500,2000,3000];
+  document.getElementById('jarBtns').innerHTML=sizes.map(s=>`<button class="jar-btn${s===bj?' active':''}" onclick="selectJar(${s},this)">${s>=1000?(s/1000)+'л':s+'мл'}</button>`).join('');
+  document.getElementById('customJar').value='';calcJarFor(bj);
 
-        function showToast(msg){
-            const old=document.getElementById('dynamicToast');if(old)old.remove();
-            const toast=document.createElement('div');toast.id='dynamicToast';
-            toast.style.cssText=`position:fixed;bottom:90px;left:50%;transform:translateX(-50%);padding:12px 24px;background:#4ecca3;color:white;border-radius:10px;font-size:0.9em;font-weight:600;box-shadow:0 5px 20px rgba(0,0,0,0.3);z-index:9999;animation:toastIn 0.3s ease;`;
-            toast.textContent=msg;document.body.appendChild(toast);
-            if(!document.getElementById('toastStyle')){const style=document.createElement('style');style.id='toastStyle';style.textContent=`@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}@keyframes toastOut{from{opacity:1;}to{opacity:0;}}`;document.head.appendChild(style);}
-            setTimeout(()=>{toast.style.animation='toastOut 0.3s ease forwards';setTimeout(()=>toast.remove(),300);},2500);
-        }
+  document.getElementById('propInputs').innerHTML=r.ingredients.map((ing,i)=>`
+    <div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px">
+      <span style="font-size:.87em">${esc(ing.name)}</span>
+      <input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})">
+      <span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span>
+    </div>`).join('');
+  document.getElementById('propResult').style.display='none';
 
-        document.getElementById('presetModal').addEventListener('click',e=>{if(e.target.classList.contains('modal-overlay'))closePresetModal();});
-        document.getElementById('installModal').addEventListener('click',e=>{if(e.target.classList.contains('modal-overlay'))closeInstallModal();});
-        document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePresetModal();closeInstallModal();}});
-    </script>
+  document.getElementById('costInputs').innerHTML=r.ingredients.map((ing,i)=>`
+    <div class="ing-row" style="grid-template-columns:2fr 1fr 1fr 1fr;margin-bottom:5px">
+      <span style="font-size:.82em">${esc(ing.name)}</span>
+      <span style="color:var(--text2);font-size:.78em">${ing.amount} ${esc(ing.unit)}</span>
+      <input type="number" step="any" placeholder="₽/${esc(ing.unit)}" value="${ing.price||''}" id="cP${i}" oninput="updPrice(${i},this.value);calcCost()">
+      <span id="cPer${i}" style="color:var(--accent2);font-size:.82em"></span>
+    </div>`).join('');
+  document.getElementById('costJars').value=1;calcCost();
+}
+
+function selectJar(ml,el){document.querySelectorAll('.jar-btn').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('customJar').value='';calcJarFor(ml)}
+function calcJar(){const v=parseInt(document.getElementById('customJar').value);if(v>0){document.querySelectorAll('.jar-btn').forEach(b=>b.classList.remove('active'));calcJarFor(v)}}
+function calcJarFor(ml){
+  if(!calcRD)return;const r=calcRD;const ratio=ml/(r.baseJar||1000);
+  const res=document.getElementById('jarResult');res.style.display='block';
+  res.innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">🫙 ${ml>=1000?(ml/1000)+'л':ml+'мл'} (×${ratio.toFixed(2)}):</div>${r.ingredients.map(i=>`<div class="row"><span>${esc(i.name)}</span><span class="val">${(i.amount*ratio).toFixed(2)} ${esc(i.unit)}</span></div>`).join('')}`;
+}
+function calcProp(idx){
+  if(!calcRD)return;const r=calcRD;const orig=r.ingredients[idx].amount;if(!orig)return;
+  const nv=parseFloat(document.getElementById('pA'+idx).value)||0;const ratio=nv/orig;
+  const res=document.getElementById('propResult');res.style.display='block';
+  res.innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">⚖️ ×${ratio.toFixed(3)}</div>${r.ingredients.map((ing,i)=>{const v=(ing.amount*ratio).toFixed(2);if(i!==idx)document.getElementById('pA'+i).value=v;return`<div class="row"><span>${esc(ing.name)}</span><span class="val">${v} ${esc(ing.unit)}</span></div>`}).join('')}`;
+}
+async function updPrice(i,v){if(!calcRD)return;calcRD.ingredients[i].price=parseFloat(v)||0;await dbPut('recipes',calcRD)}
+function calcCost(){
+  if(!calcRD)return;const r=calcRD;const jars=parseInt(document.getElementById('costJars').value)||1;
+  let total=0;r.ingredients.forEach((ing,i)=>{const c=ing.amount*(ing.price||0);total+=c;const el=document.getElementById('cPer'+i);if(el)el.textContent=c>0?`= ${c.toFixed(2)} ₽`:''});
+  const pj=jars>0?total/jars:0;
+  document.getElementById('costResult').innerHTML=`<div class="cost-box"><h4>📊 Итого</h4><div class="cost-row"><span>Общая:</span><span class="cost-total">${total.toFixed(2)} ₽</span></div><div class="cost-row"><span>Банок:</span><span>${jars}</span></div><div class="cost-row"><span>1 банка:</span><span class="cost-total">${pj.toFixed(2)} ₽</span></div></div>`;
+}
+
+// ================================================================
+//  ШАБЛОНЫ ПРОПОРЦИЙ (CRUD)
+// ================================================================
+let ctEditId=null;
+function openCalcTplModal(id){
+  ctEditId=id||null;
+  document.getElementById('ctModalTitle').innerHTML=(id?'✏️ Редактировать':'📐 Новый')+ ' шаблон <button class="modal-close" onclick="closeCalcTplModal()">✕</button>';
+  document.getElementById('ctName').value='';document.getElementById('ctNote').value='';document.getElementById('ctIngList').innerHTML='';
+  if(id){dbGet('calcTpls',id).then(t=>{if(!t)return;document.getElementById('ctName').value=t.name;document.getElementById('ctNote').value=t.note||'';t.ingredients.forEach(i=>addCtIngRow(i));document.getElementById('ctModal').classList.add('show')})}
+  else{addCtIngRow();addCtIngRow();addCtIngRow();document.getElementById('ctModal').classList.add('show')}
+}
+function closeCalcTplModal(){document.getElementById('ctModal').classList.remove('show');ctEditId=null}
+function addCtIngRow(d={}){
+  const row=document.createElement('div');row.className='ing-row';row.style.gridTemplateColumns='2fr 1fr 90px auto';
+  row.innerHTML=`<input type="text" placeholder="Название" value="${esc(d.name||'')}"><input type="number" placeholder="Кол-во" step="any" value="${d.amount||''}">${unitSel(d.unit)}<button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('ctIngList').appendChild(row);
+}
+function getCtIngs(){return[...document.querySelectorAll('#ctIngList .ing-row')].map(r=>{const i=r.querySelectorAll('input');const s=r.querySelector('select');return{name:i[0].value.trim(),amount:parseFloat(i[1].value)||0,unit:s.value}}).filter(x=>x.name)}
+async function saveCalcTpl(){
+  const name=document.getElementById('ctName').value.trim();if(!name){toast('❌ Название!','var(--accent)');return}
+  const ings=getCtIngs();if(!ings.length){toast('❌ Ингредиенты!','var(--accent)');return}
+  await dbPut('calcTpls',{id:ctEditId||genId(),name,ingredients:ings,note:document.getElementById('ctNote').value.trim(),updated:new Date().toISOString()});
+  closeCalcTplModal();renderCalcTpls();toast('✅ Шаблон сохранён!');
+}
+async function deleteCalcTpl(id){if(!confirm('Удалить?'))return;await dbDel('calcTpls',id);renderCalcTpls();toast('🗑️','var(--accent)')}
+async function renderCalcTpls(){
+  const all=await dbAll('calcTpls');const c=document.getElementById('calcTplList');
+  if(!all.length){c.innerHTML='<div class="empty" style="padding:20px"><p style="color:var(--text2)">Нет шаблонов</p></div>';return}
+  c.innerHTML=all.map(t=>{
+    const ings=(t.ingredients||[]).map(i=>`<span style="font-size:.78em;color:var(--text2)">• ${esc(i.name)}: ${i.amount} ${esc(i.unit)}</span>`).join('<br>');
+    return`<div class="ct-card"><h4>${esc(t.name)}</h4><div style="margin:5px 0">${ings}</div>
+      ${t.note?`<p style="font-size:.8em;color:var(--text2);font-style:italic;margin-top:4px">${esc(t.note)}</p>`:''}
+      <div class="btn-group">
+        <button class="btn btn-sm btn-blue" onclick="useCalcTpl('${t.id}')">⚖️ Рассчитать</button>
+        <button class="btn btn-sm btn-primary" onclick="openCalcTplModal('${t.id}')">✏️</button>
+        <button class="btn btn-sm btn-warning" onclick="calcTplToRecipe('${t.id}')">📖 В рецепт</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteCalcTpl('${t.id}')">🗑️</button>
+      </div></div>`;
+  }).join('');
+}
+async function useCalcTpl(id){
+  const t=await dbGet('calcTpls',id);if(!t)return;
+  calcRD={id:'_tpl',name:t.name,baseJar:1000,ingredients:t.ingredients.map(i=>({...i,price:0})),description:''};
+  document.getElementById('jarBox').style.display='block';
+  document.getElementById('propBox').style.display='block';
+  document.getElementById('costToggleCalcWrap').style.display='flex';
+  document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';
+  document.getElementById('calcRecipe').value='';
+  const bj=1000;
+  document.getElementById('baseJarInfo').textContent=`Шаблон: ${t.name} (${bj} мл)`;
+  const sizes=[500,1000,1500,2000,3000];
+  document.getElementById('jarBtns').innerHTML=sizes.map(s=>`<button class="jar-btn${s===bj?' active':''}" onclick="selectJar(${s},this)">${s>=1000?(s/1000)+'л':s+'мл'}</button>`).join('');
+  document.getElementById('customJar').value='';calcJarFor(bj);
+  document.getElementById('propInputs').innerHTML=t.ingredients.map((ing,i)=>`
+    <div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px">
+      <span style="font-size:.87em">${esc(ing.name)}</span>
+      <input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})">
+      <span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span>
+    </div>`).join('');
+  document.getElementById('propResult').style.display='none';
+  if(costEnabledCalc){
+    document.getElementById('costInputs').innerHTML=t.ingredients.map((ing,i)=>`
+      <div class="ing-row" style="grid-template-columns:2fr 1fr 1fr 1fr;margin-bottom:5px">
+        <span style="font-size:.82em">${esc(ing.name)}</span>
+        <span style="color:var(--text2);font-size:.78em">${ing.amount} ${esc(ing.unit)}</span>
+        <input type="number" step="any" placeholder="₽/${esc(ing.unit)}" value="" id="cP${i}" oninput="updPrice(${i},this.value);calcCost()">
+        <span id="cPer${i}" style="color:var(--accent2);font-size:.82em"></span>
+      </div>`).join('');
+    document.getElementById('costJars').value=1;calcCost();
+  }
+  window.scrollTo({top:0,behavior:'smooth'});toast('⚖️ Шаблон загружен');
+}
+async function calcTplToRecipe(id){
+  const t=await dbGet('calcTpls',id);if(!t)return;clearForm();
+  document.getElementById('rName').value=t.name;document.getElementById('rDesc').value=t.note||'';
+  document.getElementById('ingList').innerHTML='';t.ingredients.forEach(i=>addIngRow({...i,price:0}));
+  refreshIngRowsVisibility();navigate('add');toast('📋 Из шаблона');
+}
+
+// ================================================================
+//  ШАБЛОНЫ РЕЦЕПТОВ
+// ================================================================
+const RTPLS=[
+  {name:'Огурцы маринованные',type:'Маринад',tags:['огурцы','лето'],baseJar:1000,ingredients:[{name:'Огурцы',amount:600,unit:'г'},{name:'Вода',amount:500,unit:'мл'},{name:'Соль',amount:30,unit:'г'},{name:'Сахар',amount:50,unit:'г'},{name:'Уксус 9%',amount:50,unit:'мл'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Перец горошком',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'},{name:'Укроп',amount:1,unit:'шт'}],description:'1. Замочить 3–4ч\n2. Стерилизовать банки\n3. Специи + огурцы\n4. Кипяток 15мин, слить\n5. Маринад, уксус, закатать'},
+  {name:'Варенье «Пятиминутка»',type:'Варенье',tags:['клубника','лето'],baseJar:500,ingredients:[{name:'Клубника',amount:500,unit:'г'},{name:'Сахар',amount:300,unit:'г'},{name:'Лимонный сок',amount:10,unit:'мл'}],description:'1. Засыпать сахаром 4–6ч\n2. Кипятить 5мин\n3. Лимонный сок, закатать'},
+  {name:'Томатный соус',type:'Соус',tags:['помидоры','соус'],baseJar:500,ingredients:[{name:'Помидоры',amount:1,unit:'кг'},{name:'Лук',amount:100,unit:'г'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Соль',amount:10,unit:'г'},{name:'Сахар',amount:20,unit:'г'},{name:'Масло',amount:30,unit:'мл'},{name:'Базилик',amount:5,unit:'г'}],description:'1. Ошпарить, снять кожицу\n2. Обжарить лук+чеснок\n3. Тушить 30мин, блендер\n4. Специи, 10мин, закатать'},
+  {name:'Компот из вишни',type:'Компот',tags:['вишня','лето'],baseJar:3000,ingredients:[{name:'Вишня',amount:500,unit:'г'},{name:'Сахар',amount:300,unit:'г'},{name:'Вода',amount:2.5,unit:'л'}],description:'1. Вишню в банку\n2. Кипяток 15мин\n3. Слить, сахар, вскипятить\n4. Залить, закатать'},
+  {name:'Лечо',type:'Салат',tags:['перец','помидоры'],baseJar:500,ingredients:[{name:'Перец',amount:500,unit:'г'},{name:'Помидоры',amount:500,unit:'г'},{name:'Лук',amount:100,unit:'г'},{name:'Масло',amount:50,unit:'мл'},{name:'Сахар',amount:30,unit:'г'},{name:'Соль',amount:15,unit:'г'},{name:'Уксус 9%',amount:25,unit:'мл'}],description:'1. Помидоры через мясорубку\n2. Перец соломкой\n3. Вскипятить +масло+соль+сахар\n4. Овощи 20мин, уксус, закатать'},
+  {name:'Кабачковая икра',type:'Другое',tags:['кабачки','лето'],baseJar:500,ingredients:[{name:'Кабачки',amount:1,unit:'кг'},{name:'Морковь',amount:200,unit:'г'},{name:'Лук',amount:200,unit:'г'},{name:'Том. паста',amount:50,unit:'г'},{name:'Масло',amount:80,unit:'мл'},{name:'Соль',amount:15,unit:'г'},{name:'Сахар',amount:20,unit:'г'}],description:'1. Нарезать кабачки\n2. Обжарить лук+морковь\n3. +кабачки 30мин\n4. Блендер, паста, 15мин, закатать'}
+];
+function renderTemplates(){
+  document.getElementById('templatesList').innerHTML=RTPLS.map((t,i)=>`
+    <div class="tpl-card" onclick="useRTpl(${i})">
+      <h3 style="color:var(--accent2);font-size:.95em;margin-bottom:3px">${esc(t.name)}</h3>
+      <div class="tags"><span class="tag tag-type">${t.type}</span>${t.tags.map(g=>`<span class="tag tag-custom">${g}</span>`).join('')}</div>
+      <div style="font-size:.77em;color:var(--text2);margin-top:3px">${t.ingredients.length} ингр. • ${t.baseJar} мл</div>
+    </div>`).join('');
+}
+function useRTpl(i){
+  const t=RTPLS[i];clearForm();
+  document.getElementById('rName').value=t.name;document.getElementById('rType').value=t.type;
+  document.getElementById('rTags').value=t.tags.join(', ');document.getElementById('rBaseJar').value=t.baseJar;
+  document.getElementById('rDesc').value=t.description;document.getElementById('ingList').innerHTML='';
+  t.ingredients.forEach(x=>addIngRow({...x,price:0}));refreshIngRowsVisibility();navigate('add');toast('📋 Шаблон!');
+}
+
+// ================================================================
+//  ЭКСПОРТ / ИМПОРТ
+// ================================================================
+async function exportJSON(){
+  const recipes=await dbAll('recipes');const calcTpls=await dbAll('calcTpls');
+  download('dkana_recipes.json',JSON.stringify({recipes,calcTpls},null,2),'application/json');toast('📄 JSON');
+}
+async function exportTXT(){
+  const recipes=await dbAll('recipes');
+  let txt='════════════════════════════════════════\n  В ГОСТЯХ У DKANA — РЕЦЕПТЫ\n  '+new Date().toLocaleString('ru')+'\n════════════════════════════════════════\n\n';
+  recipes.forEach((r,idx)=>{
+    txt+=`━━━ #${idx+1} ━━━━━━━━━━━━━━━━━━━\nНазвание: ${r.name}\nТип: ${r.type}\nТеги: ${(r.tags||[]).join(', ')}\nБанка: ${r.baseJar||1000} мл\nДата: ${r.created?new Date(r.created).toLocaleDateString('ru'):'—'}\n\nИнгредиенты:\n`;
+    (r.ingredients||[]).forEach(i=>{const c=i.amount*(i.price||0);txt+=`  • ${i.name}: ${i.amount} ${i.unit}`;if(r.costEnabled&&i.price)txt+=` (${i.price}₽/${i.unit}=${c.toFixed(2)}₽)`;txt+='\n'});
+    if(r.costEnabled){const t=(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0);if(t>0)txt+=`  ИТОГО: ${t.toFixed(2)}₽\n`}
+    txt+=`\n${r.description||'—'}\nФото: ${(r.photos||[]).length}\n\n`;
+  });
+  download('dkana_recipes.txt',txt,'text/plain');toast('📝 TXT');
+}
+async function exportCSV(){
+  const recipes=await dbAll('recipes');const B='\uFEFF';
+  let csv=B+'Название;Тип;Теги;Банка;Ингредиент;Кол-во;Ед.;Цена;Стоимость;Описание;Дата\n';
+  recipes.forEach(r=>{
+    const showP=r.costEnabled!==false;
+    if(!(r.ingredients||[]).length)csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"";"";"";"";"";`+`"${csvSafe(r.description)}";"${r.created?new Date(r.created).toLocaleDateString('ru'):''}"\n`;
+    else r.ingredients.forEach((ing,i)=>{const c=(ing.amount*(ing.price||0)).toFixed(2);csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"${csvSafe(ing.name)}";${ing.amount};"${ing.unit}";${showP?ing.price||0:''};${showP?c:''};`+`"${i===0?csvSafe(r.description):''}";"${i===0?(r.created?new Date(r.created).toLocaleDateString('ru'):''):''}"\n`})
+  });
+  download('dkana_recipes.csv',csv,'text/csv;charset=utf-8');toast('📊 CSV');
+}
+async function importJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  try{const data=JSON.parse(await file.text());let count=0;
+    if(data.recipes&&Array.isArray(data.recipes)){const mode=confirm(`${data.recipes.length} рецепт(ов).\nOK=Добавить | Отмена=Заменить`);if(!mode)await dbClear('recipes');for(const r of data.recipes){if(!r.id)r.id=genId();await dbPut('recipes',r);count++}}
+    if(data.calcTpls&&Array.isArray(data.calcTpls)){for(const t of data.calcTpls){if(!t.id)t.id=genId();await dbPut('calcTpls',t);count++}}
+    renderRecipes();toast(`✅ Импорт: ${count}`);
+  }catch(er){toast('❌ '+er.message,'var(--accent)')}e.target.value='';
+}
+async function clearAllData(){if(!confirm('⚠️ Удалить ВСЕ?'))return;if(!confirm('Точно?'))return;await dbClear('recipes');await dbClear('calcTpls');renderRecipes();toast('🗑️ Удалено','var(--accent)')}
+async function updateDBInfo(){
+  const all=await dbAll('recipes');const tpls=await dbAll('calcTpls');let ph=0;all.forEach(r=>ph+=(r.photos||[]).length);
+  const sa=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone===true;
+  document.getElementById('dbInfo').innerHTML=`Хранилище: <b>IndexedDB</b><br>Рецептов: <b>${all.length}</b> | Фото: <b>${ph}</b><br>Шаблонов: <b>${tpls.length}</b><br>Режим: <b>${sa?'📱 PWA':'🌐 Браузер'}</b><br>Сеть: <b>${navigator.onLine?'🟢 Онлайн':'🔴 Офлайн'}</b>`;
+}
+
+// ================================================================
+//  МИГРАЦИЯ + SEED
+// ================================================================
+async function migrate(){const old=localStorage.getItem('dkana_recipes_db');if(!old)return;try{const data=JSON.parse(old);if(data.recipes&&data.recipes.length){const ex=await dbAll('recipes');if(!ex.length){for(const r of data.recipes){if(!r.id)r.id=genId();await dbPut('recipes',r)}toast(`📦 Миграция: ${data.recipes.length}`)}}localStorage.removeItem('dkana_recipes_db')}catch(e){console.warn(e)}}
+
+async function seedCalcTpls(){
+  const ex=await dbAll('calcTpls');if(ex.length)return;
+  const seeds=[
+    {id:genId(),name:'Маринад классический (1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:2,unit:'ст.л.'},{name:'Сахар',amount:3,unit:'ст.л.'},{name:'Уксус 9%',amount:70,unit:'мл'},{name:'Перец горошком',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'}],note:'Универсальный для огурцов, помидоров',updated:new Date().toISOString()},
+    {id:genId(),name:'Сироп для компота (1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Сахар',amount:200,unit:'г'},{name:'Лимонная кислота',amount:3,unit:'г'}],note:'Сахар 150–350г по вкусу',updated:new Date().toISOString()},
+    {id:genId(),name:'Рассол для засолки (1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:50,unit:'г'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Укроп',amount:2,unit:'шт'},{name:'Лист хрена',amount:1,unit:'шт'}],note:'Холодный способ',updated:new Date().toISOString()},
+    {id:genId(),name:'Варенье базовое (1:1)',ingredients:[{name:'Ягоды',amount:1,unit:'кг'},{name:'Сахар',amount:1,unit:'кг'},{name:'Вода',amount:200,unit:'мл'}],note:'Для кислых ягод сахар до 1.2кг',updated:new Date().toISOString()},
+    {id:genId(),name:'Аджика домашняя',ingredients:[{name:'Помидоры',amount:2,unit:'кг'},{name:'Перец болгарский',amount:1,unit:'кг'},{name:'Перец острый',amount:200,unit:'г'},{name:'Чеснок',amount:200,unit:'г'},{name:'Соль',amount:50,unit:'г'},{name:'Уксус',amount:100,unit:'мл'}],note:'Острый перец по вкусу',updated:new Date().toISOString()}
+  ];
+  for(const s of seeds)await dbPut('calcTpls',s);
+}
+
+// ================================================================
+//  СТАРТ
+// ================================================================
+(async function(){
+  await openDB();await migrate();await seedCalcTpls();
+  loadCostSettings();
+  renderRecipes();renderTemplates();updateOnline();registerPWA();
+  const p=new URLSearchParams(location.search).get('page');
+  if(p&&PAGES.includes(p))navigate(p);
+})();
+</script>
 </body>
 </html>

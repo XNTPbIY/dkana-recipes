@@ -13,13 +13,12 @@
 :root{
   --bg:#1a1a2e;--bg2:#16213e;--card:#0f3460;--card2:#1a3a6e;
   --accent:#e94560;--accent2:#f5a623;--text:#eee;--text2:#aab;
-  --green:#27ae60;--blue:#3498db;--radius:14px;
+  --green:#27ae60;--blue:#3498db;--purple:#9b59b6;--radius:14px;
   --shadow:0 4px 24px rgba(0,0,0,.35);--tr:.3s ease;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;padding-bottom:80px;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:contain}
 
-/* HEADER */
 header{background:linear-gradient(135deg,var(--bg2),var(--card));padding:16px 16px 12px;text-align:center;box-shadow:var(--shadow);position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:10px}
 .header-center{flex:1;text-align:center}
 header h1{font-size:1.25em;font-weight:700}
@@ -28,47 +27,39 @@ header .sub{font-size:.72em;color:var(--text2);margin-top:2px}
 .info-btn{background:none;border:2px solid var(--blue);color:var(--blue);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1.1em;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
 .info-btn:hover{background:var(--blue);color:#fff}
 
-/* OFFLINE */
 .offline-bar{display:none;background:var(--accent);color:#fff;text-align:center;padding:5px;font-size:.78em;position:sticky;top:64px;z-index:99}
 .offline-bar.show{display:block}
 
-/* PWA BANNER */
 .pwa-banner{display:none;background:linear-gradient(135deg,var(--card),var(--card2));padding:10px 14px;margin:10px 14px;border-radius:var(--radius);border:1px solid rgba(233,69,96,.3);align-items:center;gap:10px;animation:fadeIn .3s}
 .pwa-banner.show{display:flex}
 .pwa-banner-text{flex:1;font-size:.82em}
 .pwa-banner-text b{color:var(--accent2)}
 .pwa-close{background:none;border:none;color:var(--text2);font-size:1.1em;cursor:pointer;padding:4px}
 
-/* NAV */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);display:flex;justify-content:space-around;padding:5px 0;padding-bottom:max(5px,env(safe-area-inset-bottom));box-shadow:0 -2px 20px rgba(0,0,0,.5);z-index:100}
 .bottom-nav button{background:none;border:none;color:var(--text2);font-size:.68em;padding:5px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color var(--tr);flex:1;min-width:0}
 .bottom-nav button .ni{font-size:1.5em}
 .bottom-nav button.active{color:var(--accent)}
 
-/* CONTAINER */
 .container{max-width:800px;margin:0 auto;padding:10px 14px}
 .page{display:none;animation:fadeIn .25s}
 .page.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* CARDS */
 .card{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:var(--shadow);transition:transform .15s}
 .card:active{transform:scale(.99)}
 .card h3{color:var(--accent2);margin-bottom:5px;font-size:1.05em}
 
-/* TAGS */
 .tags{display:flex;flex-wrap:wrap;gap:4px;margin:5px 0}
 .tag{padding:3px 9px;border-radius:12px;font-size:.73em;cursor:pointer;transition:all .2s}
 .tag-type{background:rgba(39,174,96,.2);color:var(--green)}
 .tag-custom{background:rgba(233,69,96,.15);color:var(--accent)}
 
-/* PHOTOS */
 .photo-strip{display:flex;gap:7px;overflow-x:auto;padding:7px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .photo-strip::-webkit-scrollbar{display:none}
 .photo-strip img{height:100px;border-radius:9px;object-fit:cover;cursor:pointer;flex-shrink:0;transition:transform .2s}
 .photo-strip img:hover{transform:scale(1.04)}
 
-/* FORMS */
 .fg{margin-bottom:12px}
 .fg label{display:block;margin-bottom:3px;color:var(--text2);font-size:.83em}
 input,textarea,select{width:100%;padding:9px 11px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:9px;color:var(--text);font-size:.92em;outline:none;transition:border var(--tr)}
@@ -76,7 +67,6 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent)}
 textarea{resize:vertical;min-height:85px;font-family:inherit}
 select option{background:var(--bg2)}
 
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 18px;border:none;border-radius:25px;cursor:pointer;font-size:.88em;font-weight:500;transition:all .2s;color:#fff}
 .btn:active{transform:scale(.96)}
 .btn-primary{background:var(--accent)}.btn-primary:hover{background:#d13a52}
@@ -84,23 +74,20 @@ select option{background:var(--bg2)}
 .btn-warning{background:var(--accent2);color:#222}
 .btn-danger{background:#c0392b}
 .btn-blue{background:var(--blue)}
+.btn-purple{background:var(--purple)}
 .btn-outline{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
 .btn-sm{padding:6px 13px;font-size:.8em}
 .btn-group{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
 
-/* INGREDIENT ROWS */
 .ing-row{display:grid;grid-template-columns:2fr 1fr 90px 1fr auto;gap:5px;margin-bottom:5px;align-items:center}
 .ing-row input,.ing-row select{padding:7px 8px;font-size:.83em}
-.ing-row-no-price{grid-template-columns:2fr 1fr 90px auto}
 .del-btn{background:rgba(192,57,43,.6);color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.95em;display:flex;align-items:center;justify-content:center}
 
-/* PHOTO PREVIEW */
 .photo-preview{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
 .photo-thumb{position:relative;width:85px;height:85px}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;border-radius:7px}
 .photo-thumb .rm{position:absolute;top:-4px;right:-4px;background:var(--accent);color:#fff;border:none;width:19px;height:19px;border-radius:50%;cursor:pointer;font-size:.65em}
 
-/* TOGGLE SWITCH */
 .toggle-wrap{display:flex;align-items:center;gap:10px;margin:10px 0}
 .toggle-wrap span{font-size:.88em;color:var(--text2)}
 .toggle{position:relative;width:48px;height:26px;cursor:pointer;flex-shrink:0}
@@ -110,7 +97,6 @@ select option{background:var(--bg2)}
 .toggle input:checked+.slider{background:var(--green)}
 .toggle input:checked+.slider:before{transform:translateX(22px);background:#fff}
 
-/* CALC */
 .calc-box{background:rgba(52,152,219,.1);border:1px solid rgba(52,152,219,.3);border-radius:var(--radius);padding:14px;margin-bottom:12px}
 .calc-box h4{color:var(--blue);margin-bottom:8px}
 .jar-btns{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
@@ -121,46 +107,50 @@ select option{background:var(--bg2)}
 .prop-result .row:last-child{border:none}
 .prop-result .val{color:var(--accent2);font-weight:600}
 
-/* COST */
+/* BATCH CALC */
+.batch-box{background:rgba(155,89,182,.1);border:1px solid rgba(155,89,182,.3);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.batch-box h4{color:var(--purple);margin-bottom:8px}
+.batch-summary{background:rgba(155,89,182,.12);border:1px solid rgba(155,89,182,.25);border-radius:10px;padding:12px;margin-top:10px}
+.batch-summary .batch-total-label{font-size:.82em;color:var(--purple);margin-bottom:6px;font-weight:600}
+.batch-summary .row{display:flex;justify-content:space-between;padding:3px 0;font-size:.88em;border-bottom:1px solid rgba(255,255,255,.04)}
+.batch-summary .row:last-child{border:none}
+.batch-summary .val{color:var(--accent2);font-weight:600}
+.batch-jars-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.batch-jars-row label{color:var(--text2);font-size:.83em;white-space:nowrap}
+.batch-jars-row input,.batch-jars-row select{width:auto;flex:none}
+.batch-jars-row input[type=number]{width:80px}
+.batch-jars-row select{width:110px}
+
 .cost-box{background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.3);border-radius:var(--radius);padding:14px;margin-top:10px}
 .cost-box h4{color:var(--green);margin-bottom:7px}
 .cost-row{display:flex;justify-content:space-between;padding:3px 0;font-size:.88em;border-bottom:1px solid rgba(255,255,255,.04)}
 .cost-total{font-size:1.12em;font-weight:bold;color:var(--accent2);padding-top:7px}
 
-/* FILTER */
 .filter-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
 .filter-bar input,.filter-bar select{flex:1;min-width:110px}
 
-/* LIGHTBOX */
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;cursor:pointer}
 .lightbox.show{display:flex}
 .lightbox img{max-width:92%;max-height:92%;border-radius:9px}
 
-/* EXPORT */
 .export-card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .export-card h3{margin-bottom:8px;color:var(--accent2);font-size:.95em}
 
-/* EMPTY */
 .empty{text-align:center;padding:45px 20px;color:var(--text2)}
 .empty .icon{font-size:2.8em;margin-bottom:8px}
 
-/* TEMPLATES */
 .tpl-card{background:var(--card2);border:1px dashed rgba(245,166,35,.3);border-radius:var(--radius);padding:12px;margin-bottom:9px;cursor:pointer;transition:all .2s}
 .tpl-card:hover{border-color:var(--accent2);background:rgba(245,166,35,.08)}
 
-/* CALC TEMPLATE */
 .ct-card{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:10px;border:1px solid rgba(52,152,219,.2)}
 .ct-card h4{color:var(--accent2);font-size:.95em;margin-bottom:6px}
 
-/* TOAST */
 .toast{position:fixed;bottom:94px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green);color:#fff;padding:10px 22px;border-radius:25px;font-size:.87em;z-index:2000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* UPDATE */
 .update-bar{display:none;position:fixed;top:0;left:0;right:0;background:var(--blue);color:#fff;text-align:center;padding:9px;z-index:2000;font-size:.87em;cursor:pointer}
 .update-bar.show{display:block}
 
-/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:900;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.show{display:flex}
 .modal{background:var(--bg2);border-radius:var(--radius);padding:20px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow)}
@@ -168,23 +158,20 @@ select option{background:var(--bg2)}
 .modal-close{background:none;border:none;color:var(--text2);font-size:1.4em;cursor:pointer;margin-left:auto;padding:0 4px;transition:color .2s}
 .modal-close:hover{color:var(--accent)}
 
-/* INFO MODAL */
 .info-section{margin-bottom:16px}
 .info-section h4{color:var(--blue);font-size:.95em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .info-section p,.info-section li{color:var(--text2);font-size:.85em;line-height:1.5}
 .info-section ul{padding-left:18px;margin-top:4px}
 .info-section li{margin-bottom:3px}
-.info-badge{display:inline-block;background:rgba(233,69,96,.15);color:var(--accent);padding:2px 8px;border-radius:8px;font-size:.75em;margin-left:4px}
 .info-divider{border:none;border-top:1px solid rgba(255,255,255,.06);margin:14px 0}
 
-/* RESPONSIVE */
 @media(max-width:500px){
   .ing-row{grid-template-columns:1fr 1fr}
   .ing-row input:first-child{grid-column:1/-1}
-  .ing-row-no-price{grid-template-columns:1fr 1fr}
-  .ing-row-no-price input:first-child{grid-column:1/-1}
   header h1{font-size:1.08em}
   .info-btn{width:32px;height:32px;font-size:.95em}
+  .batch-jars-row{flex-direction:column;align-items:stretch}
+  .batch-jars-row input[type=number],.batch-jars-row select{width:100%}
 }
 @media(display-mode:standalone){
   header{padding-top:max(16px,env(safe-area-inset-top))}
@@ -195,7 +182,6 @@ select option{background:var(--bg2)}
 
 <div id="updateBar" class="update-bar" onclick="applyUpdate()">🔄 Новая версия! Нажмите для обновления</div>
 
-<!-- HEADER -->
 <header>
   <div class="header-center">
     <h1>🏡 В гостях у <span>DKana</span></h1>
@@ -214,27 +200,23 @@ select option{background:var(--bg2)}
 
 <div class="container">
 
-<!-- ===== РЕЦЕПТЫ ===== -->
+<!-- РЕЦЕПТЫ -->
 <div id="pg-recipes" class="page active">
   <div class="filter-bar">
     <input type="text" id="fSearch" placeholder="🔍 Поиск..." oninput="renderRecipes()">
     <select id="fType" onchange="renderRecipes()">
       <option value="">Все типы</option>
-      <option value="Варенье">🍓 Варенье</option>
-      <option value="Маринад">🥒 Маринад</option>
-      <option value="Соление">🧂 Соление</option>
-      <option value="Компот">🥤 Компот</option>
-      <option value="Соус">🍅 Соус</option>
-      <option value="Джем">🫙 Джем</option>
-      <option value="Салат">🥗 Салат</option>
-      <option value="Другое">📦 Другое</option>
+      <option value="Варенье">🍓 Варенье</option><option value="Маринад">🥒 Маринад</option>
+      <option value="Соление">🧂 Соление</option><option value="Компот">🥤 Компот</option>
+      <option value="Соус">🍅 Соус</option><option value="Джем">🫙 Джем</option>
+      <option value="Салат">🥗 Салат</option><option value="Другое">📦 Другое</option>
     </select>
     <select id="fTag" onchange="renderRecipes()"><option value="">Все теги</option></select>
   </div>
   <div id="recipesList"></div>
 </div>
 
-<!-- ===== ДОБАВЛЕНИЕ ===== -->
+<!-- ДОБАВЛЕНИЕ -->
 <div id="pg-add" class="page">
   <h2 style="margin-bottom:12px" id="addTitle">➕ Новый рецепт</h2>
   <div class="fg"><label>📝 Название</label><input type="text" id="rName" placeholder="Огурцы маринованные «Хрустящие»"></div>
@@ -253,13 +235,10 @@ select option{background:var(--bg2)}
     <div id="photoPreview" class="photo-preview"></div>
   </div>
   <div class="fg"><label>🫙 Базовая банка (мл)</label><input type="number" id="rBaseJar" value="1000" min="100" step="100"></div>
-
-  <!-- ПЕРЕКЛЮЧАТЕЛЬ СЕБЕСТОИМОСТИ -->
   <div class="toggle-wrap">
     <label class="toggle"><input type="checkbox" id="costToggleAdd" onchange="toggleCostAdd()"><span class="slider"></span></label>
     <span>💰 Расчёт себестоимости</span>
   </div>
-
   <div class="fg">
     <label>🥕 Ингредиенты <span style="color:var(--text2);font-size:.78em">(на базовую банку)</span></label>
     <div id="ingList"></div>
@@ -272,21 +251,48 @@ select option{background:var(--bg2)}
   </div>
 </div>
 
-<!-- ===== КАЛЬКУЛЯТОР ===== -->
+<!-- КАЛЬКУЛЯТОР -->
 <div id="pg-calc" class="page">
   <h2 style="margin-bottom:12px">🧮 Калькулятор</h2>
   <div class="fg"><label>Выберите рецепт</label>
     <select id="calcRecipe" onchange="loadCalcRecipe()"><option value="">-- Выберите --</option></select>
   </div>
 
+  <!-- Банки -->
   <div class="calc-box" id="jarBox" style="display:none">
-    <h4>🫙 Калькулятор банок</h4>
+    <h4>🫙 На одну банку</h4>
     <p style="font-size:.82em;color:var(--text2);margin-bottom:7px" id="baseJarInfo"></p>
     <div class="jar-btns" id="jarBtns"></div>
     <div class="fg" style="margin-top:8px"><label>Произвольный (мл)</label><input type="number" id="customJar" min="100" step="100" placeholder="750" oninput="calcJar()"></div>
     <div id="jarResult" class="prop-result" style="display:none"></div>
   </div>
 
+  <!-- ПАРТИЯ — РАСЧЁТ ПО КОЛИЧЕСТВУ БАНОК -->
+  <div class="batch-box" id="batchBox" style="display:none">
+    <h4>📦 Расчёт на партию банок</h4>
+    <p style="font-size:.82em;color:var(--text2);margin-bottom:8px">Сколько продукта нужно на заданное количество банок</p>
+
+    <div class="batch-jars-row">
+      <label>Объём банки:</label>
+      <select id="batchJarSize" onchange="calcBatch()" style="width:110px">
+        <option value="500">500 мл</option>
+        <option value="1000" selected>1 л</option>
+        <option value="1500">1.5 л</option>
+        <option value="2000">2 л</option>
+        <option value="3000">3 л</option>
+        <option value="custom">Другой</option>
+      </select>
+      <input type="number" id="batchCustomSize" min="100" step="100" placeholder="мл" style="width:90px;display:none" oninput="calcBatch()">
+    </div>
+    <div class="batch-jars-row">
+      <label>Количество банок:</label>
+      <input type="number" id="batchCount" value="1" min="1" max="999" style="width:80px" oninput="calcBatch()">
+    </div>
+
+    <div id="batchResult"></div>
+  </div>
+
+  <!-- Пропорции -->
   <div class="calc-box" id="propBox" style="display:none">
     <h4>⚖️ Пропорции</h4>
     <p style="font-size:.82em;color:var(--text2);margin-bottom:7px">Измените один — остальные пересчитаются</p>
@@ -294,10 +300,10 @@ select option{background:var(--bg2)}
     <div id="propResult" class="prop-result" style="display:none"></div>
   </div>
 
-  <!-- ПЕРЕКЛЮЧАТЕЛЬ СЕБЕСТОИМОСТИ В КАЛЬКУЛЯТОРЕ -->
+  <!-- Себестоимость toggle -->
   <div class="toggle-wrap" id="costToggleCalcWrap" style="display:none">
     <label class="toggle"><input type="checkbox" id="costToggleCalc" onchange="toggleCostCalc()"><span class="slider"></span></label>
-    <span>💰 Показать расчёт себестоимости</span>
+    <span>💰 Показать себестоимость</span>
   </div>
 
   <div class="calc-box" id="costBox" style="display:none;border-color:rgba(39,174,96,.3);background:rgba(39,174,96,.06)">
@@ -307,7 +313,7 @@ select option{background:var(--bg2)}
     <div id="costResult"></div>
   </div>
 
-  <!-- ШАБЛОНЫ КАЛЬКУЛЯТОРА -->
+  <!-- Шаблоны -->
   <div style="margin-top:18px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
       <h3 style="color:var(--accent2);font-size:1em">📐 Шаблоны пропорций</h3>
@@ -317,14 +323,14 @@ select option{background:var(--bg2)}
   </div>
 </div>
 
-<!-- ===== ШАБЛОНЫ РЕЦЕПТОВ ===== -->
+<!-- ШАБЛОНЫ -->
 <div id="pg-templates" class="page">
   <h2 style="margin-bottom:12px">📋 Шаблоны рецептов</h2>
   <p style="color:var(--text2);font-size:.85em;margin-bottom:12px">Выберите и настройте под себя</p>
   <div id="templatesList"></div>
 </div>
 
-<!-- ===== ДАННЫЕ ===== -->
+<!-- ДАННЫЕ -->
 <div id="pg-export" class="page">
   <h2 style="margin-bottom:12px">📦 Данные</h2>
   <div class="export-card"><h3>📤 Экспорт</h3>
@@ -341,7 +347,6 @@ select option{background:var(--bg2)}
 
 </div>
 
-<!-- NAV -->
 <nav class="bottom-nav">
   <button class="active" onclick="navigate('recipes')"><span class="ni">📖</span>Рецепты</button>
   <button onclick="navigate('add')"><span class="ni">➕</span>Добавить</button>
@@ -350,117 +355,70 @@ select option{background:var(--bg2)}
   <button onclick="navigate('export')"><span class="ni">📦</span>Данные</button>
 </nav>
 
-<!-- LIGHTBOX -->
 <div id="lightbox" class="lightbox" onclick="this.classList.remove('show')"><img id="lbImg" src="" alt=""></div>
-
-<!-- TOAST -->
 <div id="toast" class="toast"></div>
 
-<!-- ===== МОДАЛКА — ИНФОРМАЦИЯ О ПРИЛОЖЕНИИ ===== -->
+<!-- INFO MODAL -->
 <div id="infoModal" class="modal-overlay" onclick="if(event.target===this)closeInfoModal()">
   <div class="modal">
     <h3>ℹ️ О приложении <button class="modal-close" onclick="closeInfoModal()">✕</button></h3>
-
-    <div class="info-section">
-      <h4>🏡 В гостях у DKana</h4>
-      <p>Универсальное приложение для домашних заготовок и рецептов. Работает офлайн, устанавливается на телефон как обычное приложение.</p>
-    </div>
-
+    <div class="info-section"><h4>🏡 В гостях у DKana</h4><p>Универсальное приложение для домашних заготовок. Работает офлайн, устанавливается на телефон.</p></div>
     <hr class="info-divider">
-
-    <div class="info-section">
-      <h4>📖 Рецепты</h4>
-      <ul>
-        <li>Создание, редактирование и удаление рецептов</li>
-        <li>Добавление до 6 фотографий к каждому рецепту</li>
-        <li>Категории: варенье, маринад, соление, компот, соус, джем, салат и другое</li>
-        <li>Произвольные теги для удобной организации</li>
-        <li>Поиск по названию, фильтрация по типу и тегам</li>
-      </ul>
-    </div>
-
+    <div class="info-section"><h4>📖 Рецепты</h4><ul>
+      <li>Создание, редактирование и удаление рецептов</li>
+      <li>До 6 фотографий к каждому рецепту</li>
+      <li>Категории и произвольные теги</li>
+      <li>Поиск по названию, фильтрация по типу и тегам</li>
+    </ul></div>
     <hr class="info-divider">
-
-    <div class="info-section">
-      <h4>🧮 Калькулятор</h4>
-      <ul>
-        <li><b>Калькулятор банок</b> — пересчёт ингредиентов на любой объём банки (500мл, 1л, 1.5л, 2л, 3л или произвольный)</li>
-        <li><b>Калькулятор пропорций</b> — измените количество одного ингредиента, и все остальные пересчитаются автоматически</li>
-        <li><b>Себестоимость</b> — расчёт стоимости партии и одной банки (можно включить/выключить)</li>
-      </ul>
-    </div>
-
+    <div class="info-section"><h4>🧮 Калькулятор</h4><ul>
+      <li><b>На одну банку</b> — пересчёт на 500мл, 1л, 1.5л, 2л, 3л или произвольный объём</li>
+      <li><b>На партию банок</b> — выберите объём и количество банок, получите общий список продуктов</li>
+      <li><b>Пропорции</b> — измените один ингредиент, остальные пересчитаются</li>
+      <li><b>Себестоимость</b> — стоимость партии и одной банки (вкл/выкл)</li>
+    </ul></div>
     <hr class="info-divider">
-
-    <div class="info-section">
-      <h4>📐 Шаблоны пропорций</h4>
-      <ul>
-        <li>Готовые шаблоны маринадов, сиропов, рассолов</li>
-        <li>Создание, редактирование и удаление своих шаблонов</li>
-        <li>Быстрый расчёт прямо из шаблона</li>
-        <li>Превращение шаблона в полноценный рецепт</li>
-      </ul>
-    </div>
-
+    <div class="info-section"><h4>📦 Расчёт на партию</h4><ul>
+      <li>Выберите объём банки и количество</li>
+      <li>Получите точный список ингредиентов на всю партию</li>
+      <li>Итоговая стоимость партии (если включена себестоимость)</li>
+    </ul></div>
     <hr class="info-divider">
-
-    <div class="info-section">
-      <h4>📏 Единицы измерения</h4>
-      <p>Поддерживаемые единицы: <b>г</b>, <b>кг</b>, <b>мл</b>, <b>л</b>, <b>шт</b>, <b>ст.л.</b>, <b>ч.л.</b>, <b>зуб.</b>, <b>щеп.</b>, <b>пуч.</b></p>
-    </div>
-
+    <div class="info-section"><h4>📐 Шаблоны пропорций</h4><ul>
+      <li>Готовые шаблоны маринадов, сиропов, рассолов</li>
+      <li>Создание, редактирование, удаление своих</li>
+      <li>Быстрый расчёт и превращение в рецепт</li>
+    </ul></div>
     <hr class="info-divider">
-
-    <div class="info-section">
-      <h4>💰 Себестоимость</h4>
-      <ul>
-        <li>Включается/выключается переключателем в рецепте и в калькуляторе</li>
-        <li>Указывайте цену за единицу каждого ингредиента</li>
-        <li>Автоматический расчёт стоимости партии и одной банки</li>
-        <li>Себестоимость отображается в карточке рецепта</li>
-      </ul>
-    </div>
-
+    <div class="info-section"><h4>📏 Единицы измерения</h4><p><b>г</b>, <b>кг</b>, <b>мл</b>, <b>л</b>, <b>шт</b>, <b>ст.л.</b>, <b>ч.л.</b>, <b>зуб.</b>, <b>щеп.</b>, <b>пуч.</b></p></div>
     <hr class="info-divider">
-
-    <div class="info-section">
-      <h4>📦 Данные</h4>
-      <ul>
-        <li><b>Экспорт</b> — JSON (полная база с фото), TXT (текстовый), CSV (для Excel)</li>
-        <li><b>Импорт</b> — загрузка из JSON файла (добавить или заменить)</li>
-        <li><b>Хранение</b> — IndexedDB (без ограничений localStorage)</li>
-        <li>Автоматическая миграция старых данных</li>
-      </ul>
-    </div>
-
+    <div class="info-section"><h4>💰 Себестоимость</h4><ul>
+      <li>Включается переключателем в рецепте и калькуляторе</li>
+      <li>Цена за единицу каждого ингредиента</li>
+      <li>Автоматический расчёт стоимости партии и одной банки</li>
+    </ul></div>
     <hr class="info-divider">
-
-    <div class="info-section">
-      <h4>📱 PWA</h4>
-      <ul>
-        <li>Устанавливается на Android и iOS как обычное приложение</li>
-        <li>Полностью работает без интернета</li>
-        <li>Автоматические обновления</li>
-      </ul>
-    </div>
-
+    <div class="info-section"><h4>📦 Данные</h4><ul>
+      <li>Экспорт: JSON, TXT, CSV (Excel)</li><li>Импорт из JSON</li><li>Хранение: IndexedDB</li>
+    </ul></div>
     <hr class="info-divider">
-
+    <div class="info-section"><h4>📱 PWA</h4><ul>
+      <li>Установка на Android и iOS</li><li>Полный офлайн</li><li>Автообновления</li>
+    </ul></div>
+    <hr class="info-divider">
     <div class="info-section" style="text-align:center;margin-bottom:0">
-      <p style="color:var(--accent2)">🏡 В гостях у DKana — v2.3</p>
+      <p style="color:var(--accent2)">🏡 В гостях у DKana — v2.4</p>
       <p style="font-size:.78em;color:var(--text2);margin-top:4px">Сделано с ❤️ для домашних заготовок</p>
     </div>
   </div>
 </div>
 
-<!-- ===== МОДАЛКА — ШАБЛОН КАЛЬКУЛЯТОРА ===== -->
+<!-- CALC TPL MODAL -->
 <div id="ctModal" class="modal-overlay" onclick="if(event.target===this)closeCalcTplModal()">
   <div class="modal">
     <h3 id="ctModalTitle">📐 Новый шаблон <button class="modal-close" onclick="closeCalcTplModal()">✕</button></h3>
     <div class="fg"><label>Название</label><input type="text" id="ctName" placeholder="Маринад классический"></div>
-    <div class="fg">
-      <label>Ингредиенты</label>
-      <div id="ctIngList"></div>
+    <div class="fg"><label>Ингредиенты</label><div id="ctIngList"></div>
       <button class="btn btn-sm btn-success" onclick="addCtIngRow()" style="margin-top:5px">+ Ингредиент</button>
     </div>
     <div class="fg"><label>📝 Заметка</label><textarea id="ctNote" style="min-height:50px" placeholder="Универсальный маринад..."></textarea></div>
@@ -472,77 +430,39 @@ select option{background:var(--bg2)}
 </div>
 
 <script>
-// ================================================================
-//  ЕДИНИЦЫ ИЗМЕРЕНИЯ
-// ================================================================
+// ===== UNITS =====
 const UNITS=['г','кг','мл','л','шт','ст.л.','ч.л.','зуб.','щеп.','пуч.'];
 function unitSel(val,cls){return`<select class="${cls||''}" style="min-width:70px">${UNITS.map(u=>`<option${u===(val||'г')?' selected':''}>${u}</option>`).join('')}</select>`}
 
-// ================================================================
-//  СЕБЕСТОИМОСТЬ — TOGGLE
-// ================================================================
-let costEnabledAdd=false;
-let costEnabledCalc=false;
+// ===== COST TOGGLE =====
+let costEnabledAdd=false,costEnabledCalc=false;
+function loadCostSettings(){costEnabledAdd=localStorage.getItem('cost_add')==='1';costEnabledCalc=localStorage.getItem('cost_calc')==='1';document.getElementById('costToggleAdd').checked=costEnabledAdd;document.getElementById('costToggleCalc').checked=costEnabledCalc;refreshIngVis()}
+function toggleCostAdd(){costEnabledAdd=document.getElementById('costToggleAdd').checked;localStorage.setItem('cost_add',costEnabledAdd?'1':'0');refreshIngVis()}
+function toggleCostCalc(){costEnabledCalc=document.getElementById('costToggleCalc').checked;localStorage.setItem('cost_calc',costEnabledCalc?'1':'0');document.getElementById('costBox').style.display=costEnabledCalc?'block':'none'}
+function refreshIngVis(){document.querySelectorAll('#ingList .ing-row').forEach(r=>{const p=r.querySelector('.price-input');if(p)p.style.display=costEnabledAdd?'':'none';r.style.gridTemplateColumns=costEnabledAdd?'2fr 1fr 90px 1fr auto':'2fr 1fr 90px auto'})}
 
-function loadCostSettings(){
-  costEnabledAdd=localStorage.getItem('cost_add')==='1';
-  costEnabledCalc=localStorage.getItem('cost_calc')==='1';
-  document.getElementById('costToggleAdd').checked=costEnabledAdd;
-  document.getElementById('costToggleCalc').checked=costEnabledCalc;
-  refreshIngRowsVisibility();
-}
-
-function toggleCostAdd(){
-  costEnabledAdd=document.getElementById('costToggleAdd').checked;
-  localStorage.setItem('cost_add',costEnabledAdd?'1':'0');
-  refreshIngRowsVisibility();
-}
-
-function toggleCostCalc(){
-  costEnabledCalc=document.getElementById('costToggleCalc').checked;
-  localStorage.setItem('cost_calc',costEnabledCalc?'1':'0');
-  document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';
-}
-
-function refreshIngRowsVisibility(){
-  document.querySelectorAll('#ingList .ing-row').forEach(row=>{
-    const priceInput=row.querySelector('.price-input');
-    if(priceInput)priceInput.style.display=costEnabledAdd?'':'none';
-    if(costEnabledAdd){
-      row.style.gridTemplateColumns='2fr 1fr 90px 1fr auto';
-    }else{
-      row.style.gridTemplateColumns='2fr 1fr 90px auto';
-    }
-  });
-}
-
-// ================================================================
-//  IndexedDB
-// ================================================================
+// ===== IndexedDB =====
 const DB_NAME='DKanaDB',DB_VER=2;let db=null;
-function openDB(){return new Promise((ok,no)=>{const r=indexedDB.open(DB_NAME,DB_VER);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('recipes')){const s=d.createObjectStore('recipes',{keyPath:'id'});s.createIndex('type','type',{unique:false})}if(!d.objectStoreNames.contains('calcTpls'))d.createObjectStore('calcTpls',{keyPath:'id'})};r.onsuccess=e=>{db=e.target.result;ok(db)};r.onerror=e=>no(e.target.error)})}
+function openDB(){return new Promise((ok,no)=>{const r=indexedDB.open(DB_NAME,DB_VER);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('recipes')){d.createObjectStore('recipes',{keyPath:'id'}).createIndex('type','type',{unique:false})}if(!d.objectStoreNames.contains('calcTpls'))d.createObjectStore('calcTpls',{keyPath:'id'})};r.onsuccess=e=>{db=e.target.result;ok(db)};r.onerror=e=>no(e.target.error)})}
 function dbAll(s){return new Promise((ok,no)=>{const r=db.transaction(s,'readonly').objectStore(s).getAll();r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
 function dbGet(s,id){return new Promise((ok,no)=>{const r=db.transaction(s,'readonly').objectStore(s).get(id);r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
 function dbPut(s,o){return new Promise((ok,no)=>{const r=db.transaction(s,'readwrite').objectStore(s).put(o);r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
 function dbDel(s,id){return new Promise((ok,no)=>{const r=db.transaction(s,'readwrite').objectStore(s).delete(id);r.onsuccess=()=>ok();r.onerror=()=>no(r.error)})}
 function dbClear(s){return new Promise((ok,no)=>{const r=db.transaction(s,'readwrite').objectStore(s).clear();r.onsuccess=()=>ok();r.onerror=()=>no(r.error)})}
 
-// ================================================================
-//  PWA INLINE
-// ================================================================
+// ===== PWA =====
 let swReg=null,swWaiting=null;
 function registerPWA(){
   const manifest={name:"В гостях у DKana — Рецепты",short_name:"DKana Рецепты",description:"Домашние рецепты и заготовки",start_url:location.href.split('?')[0],display:"standalone",orientation:"portrait",background_color:"#1a1a2e",theme_color:"#1a1a2e",lang:"ru",icons:[72,96,128,144,152,192,384,512].map(s=>({src:makeIcon(s),sizes:s+'x'+s,type:'image/png',purpose:'any maskable'}))};
   const ml=document.createElement('link');ml.rel='manifest';ml.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'}));document.head.appendChild(ml);
   if('serviceWorker' in navigator){
-    const swC=`const CN='dkana-v3';self.addEventListener('install',e=>{e.waitUntil(caches.open(CN).then(c=>c.addAll(['${location.href.split('?')[0]}'])).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CN).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.open(CN).then(c=>c.match(e.request).then(r=>{const f=fetch(e.request).then(nr=>{if(nr&&nr.status===200)c.put(e.request,nr.clone());return nr}).catch(()=>{});return r||f})))});self.addEventListener('message',e=>{if(e.data==='skipWaiting')self.skipWaiting()});`;
-    navigator.serviceWorker.register(URL.createObjectURL(new Blob([swC],{type:'application/javascript'}))).then(reg=>{swReg=reg;reg.addEventListener('updatefound',()=>{const nw=reg.installing;nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller){swWaiting=nw;document.getElementById('updateBar').classList.add('show')}})})}).catch(e=>console.warn('SW:',e));
+    const sw=`const C='dkana-v4';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['${location.href.split('?')[0]}'])).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.open(C).then(c=>c.match(e.request).then(r=>{const f=fetch(e.request).then(n=>{if(n&&n.status===200)c.put(e.request,n.clone());return n}).catch(()=>{});return r||f})))});self.addEventListener('message',e=>{if(e.data==='skipWaiting')self.skipWaiting()});`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).then(reg=>{swReg=reg;reg.addEventListener('updatefound',()=>{const nw=reg.installing;nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller){swWaiting=nw;document.getElementById('updateBar').classList.add('show')}})})}).catch(e=>console.warn('SW:',e));
     let rf=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!rf){rf=true;location.reload()}});
   }
 }
 function makeIcon(sz){const c=document.createElement('canvas');c.width=sz;c.height=sz;const x=c.getContext('2d');const g=x.createLinearGradient(0,0,sz,sz);g.addColorStop(0,'#1a1a2e');g.addColorStop(1,'#0f3460');x.fillStyle=g;const r=sz*.18;x.beginPath();x.moveTo(r,0);x.lineTo(sz-r,0);x.quadraticCurveTo(sz,0,sz,r);x.lineTo(sz,sz-r);x.quadraticCurveTo(sz,sz,sz-r,sz);x.lineTo(r,sz);x.quadraticCurveTo(0,sz,0,sz-r);x.lineTo(0,r);x.quadraticCurveTo(0,0,r,0);x.closePath();x.fill();x.font=`${sz*.35}px serif`;x.textAlign='center';x.textBaseline='middle';x.fillText('🏡',sz/2,sz*.35);x.fillStyle='#e94560';x.font=`bold ${sz*.22}px sans-serif`;x.fillText('DK',sz/2,sz*.68);x.strokeStyle='#f5a623';x.lineWidth=sz*.02;x.beginPath();x.moveTo(sz*.25,sz*.78);x.lineTo(sz*.75,sz*.78);x.stroke();return c.toDataURL('image/png')}
 function applyUpdate(){if(swWaiting)swWaiting.postMessage('skipWaiting');document.getElementById('updateBar').classList.remove('show')}
-
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!localStorage.getItem('pwa_d'))document.getElementById('pwaBanner').classList.add('show')});
 window.addEventListener('appinstalled',()=>{deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show');toast('✅ Установлено!')});
@@ -551,36 +471,15 @@ function dismissInstall(){document.getElementById('pwaBanner').classList.remove(
 function updateOnline(){document.getElementById('offlineBar').classList.toggle('show',!navigator.onLine)}
 window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);
 
-// ================================================================
-//  INFO MODAL
-// ================================================================
+// ===== INFO =====
 function openInfoModal(){document.getElementById('infoModal').classList.add('show')}
 function closeInfoModal(){document.getElementById('infoModal').classList.remove('show')}
 
-// ================================================================
-//  НАВИГАЦИЯ
-// ================================================================
+// ===== NAV =====
 const PAGES=['recipes','add','calc','templates','export'];let curPage='recipes';
-function navigate(p){
-  curPage=p;
-  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
-  document.getElementById('pg-'+p).classList.add('active');
-  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.bottom-nav button')[PAGES.indexOf(p)].classList.add('active');
-  if(p==='recipes')renderRecipes();
-  if(p==='calc'){populateCalcSelect();renderCalcTpls()}
-  if(p==='templates')renderTemplates();
-  if(p==='export')updateDBInfo();
-  if(p==='add'){
-    if(!document.querySelectorAll('#ingList .ing-row').length){addIngRow();addIngRow();addIngRow()}
-    refreshIngRowsVisibility();
-  }
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+function navigate(p){curPage=p;document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.bottom-nav button')[PAGES.indexOf(p)].classList.add('active');if(p==='recipes')renderRecipes();if(p==='calc'){populateCalcSelect();renderCalcTpls()}if(p==='templates')renderTemplates();if(p==='export')updateDBInfo();if(p==='add'){if(!document.querySelectorAll('#ingList .ing-row').length){addIngRow();addIngRow();addIngRow()}refreshIngVis()}window.scrollTo({top:0,behavior:'smooth'})}
 
-// ================================================================
-//  УТИЛИТЫ
-// ================================================================
+// ===== UTILS =====
 const genId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc=s=>{const d=document.createElement('div');d.textContent=s||'';return d.innerHTML};
 const csvSafe=s=>(s||'').replace(/"/g,'""').replace(/\n/g,' ');
@@ -589,128 +488,50 @@ function download(n,c,m){const b=new Blob([c],{type:m}),a=document.createElement
 function compressImg(file,max=800,q=.7){return new Promise(ok=>{const r=new FileReader;r.onload=e=>{const img=new Image;img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=h*max/w;w=max}else{w=w*max/h;h=max}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);ok(c.toDataURL('image/jpeg',q))};img.src=e.target.result};r.readAsDataURL(file)})}
 function openLightbox(s){document.getElementById('lbImg').src=s;document.getElementById('lightbox').classList.add('show')}
 
-// ================================================================
-//  ФОТОГРАФИИ
-// ================================================================
+// ===== PHOTOS =====
 let tempPhotos=[];
 async function previewPhotos(e){const files=[...e.target.files].slice(0,6-tempPhotos.length);for(const f of files){if(tempPhotos.length>=6)break;tempPhotos.push(await compressImg(f))}renderPhotoPreview()}
 function renderPhotoPreview(){document.getElementById('photoPreview').innerHTML=tempPhotos.map((s,i)=>`<div class="photo-thumb"><img src="${s}" alt=""><button class="rm" onclick="tempPhotos.splice(${i},1);renderPhotoPreview()">✕</button></div>`).join('')}
 
-// ================================================================
-//  ИНГРЕДИЕНТЫ (рецепт)
-// ================================================================
-function addIngRow(d={}){
-  const row=document.createElement('div');row.className='ing-row';
-  const showPrice=costEnabledAdd;
-  row.style.gridTemplateColumns=showPrice?'2fr 1fr 90px 1fr auto':'2fr 1fr 90px auto';
-  row.innerHTML=`
-    <input type="text" placeholder="Название" value="${esc(d.name||'')}">
-    <input type="number" placeholder="Кол-во" step="any" value="${d.amount||''}">
-    ${unitSel(d.unit)}
-    <input type="number" class="price-input" placeholder="₽/ед." step="any" value="${d.price||''}" style="display:${showPrice?'':'none'}">
-    <button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;
-  document.getElementById('ingList').appendChild(row);
-}
-function getIngs(){
-  return[...document.querySelectorAll('#ingList .ing-row')].map(r=>{
-    const i=r.querySelectorAll('input');const s=r.querySelector('select');
-    return{name:i[0].value.trim(),amount:parseFloat(i[1].value)||0,unit:s.value,price:parseFloat(i[2].value)||0}}).filter(x=>x.name);
-}
+// ===== INGREDIENTS =====
+function addIngRow(d={}){const row=document.createElement('div');row.className='ing-row';const sp=costEnabledAdd;row.style.gridTemplateColumns=sp?'2fr 1fr 90px 1fr auto':'2fr 1fr 90px auto';row.innerHTML=`<input type="text" placeholder="Название" value="${esc(d.name||'')}"><input type="number" placeholder="Кол-во" step="any" value="${d.amount||''}">${unitSel(d.unit)}<input type="number" class="price-input" placeholder="₽/ед." step="any" value="${d.price||''}" style="display:${sp?'':'none'}"><button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;document.getElementById('ingList').appendChild(row)}
+function getIngs(){return[...document.querySelectorAll('#ingList .ing-row')].map(r=>{const i=r.querySelectorAll('input');const s=r.querySelector('select');return{name:i[0].value.trim(),amount:parseFloat(i[1].value)||0,unit:s.value,price:parseFloat(i[2].value)||0}}).filter(x=>x.name)}
 
-// ================================================================
-//  РЕЦЕПТЫ CRUD
-// ================================================================
+// ===== RECIPES CRUD =====
 let editingId=null;
-async function saveRecipe(){
-  const name=document.getElementById('rName').value.trim();
-  if(!name){toast('❌ Введите название!','var(--accent)');return}
-  let old=null;if(editingId)old=await dbGet('recipes',editingId);
-  const recipe={id:editingId||genId(),name,type:document.getElementById('rType').value,tags:document.getElementById('rTags').value.split(',').map(t=>t.trim()).filter(Boolean),photos:tempPhotos.slice(0,6),baseJar:parseInt(document.getElementById('rBaseJar').value)||1000,ingredients:getIngs(),description:document.getElementById('rDesc').value.trim(),costEnabled:costEnabledAdd,created:old?old.created:new Date().toISOString(),updated:new Date().toISOString()};
-  await dbPut('recipes',recipe);editingId=null;clearForm();navigate('recipes');toast('✅ Сохранён!');
-}
-async function editRecipe(id){
-  const r=await dbGet('recipes',id);if(!r)return;editingId=id;
-  document.getElementById('addTitle').textContent='✏️ Редактирование';
-  document.getElementById('rName').value=r.name;
-  document.getElementById('rType').value=r.type||'Другое';
-  document.getElementById('rTags').value=(r.tags||[]).join(', ');
-  document.getElementById('rBaseJar').value=r.baseJar||1000;
-  document.getElementById('rDesc').value=r.description||'';
-  // Восстановить состояние себестоимости
-  costEnabledAdd=r.costEnabled!==undefined?r.costEnabled:((r.ingredients||[]).some(i=>i.price>0));
-  document.getElementById('costToggleAdd').checked=costEnabledAdd;
-  localStorage.setItem('cost_add',costEnabledAdd?'1':'0');
-  tempPhotos=(r.photos||[]).slice();renderPhotoPreview();
-  document.getElementById('ingList').innerHTML='';
-  (r.ingredients||[]).forEach(i=>addIngRow(i));
-  refreshIngRowsVisibility();
-  navigate('add');
-}
+async function saveRecipe(){const name=document.getElementById('rName').value.trim();if(!name){toast('❌ Название!','var(--accent)');return}let old=null;if(editingId)old=await dbGet('recipes',editingId);const recipe={id:editingId||genId(),name,type:document.getElementById('rType').value,tags:document.getElementById('rTags').value.split(',').map(t=>t.trim()).filter(Boolean),photos:tempPhotos.slice(0,6),baseJar:parseInt(document.getElementById('rBaseJar').value)||1000,ingredients:getIngs(),description:document.getElementById('rDesc').value.trim(),costEnabled:costEnabledAdd,created:old?old.created:new Date().toISOString(),updated:new Date().toISOString()};await dbPut('recipes',recipe);editingId=null;clearForm();navigate('recipes');toast('✅ Сохранён!')}
+async function editRecipe(id){const r=await dbGet('recipes',id);if(!r)return;editingId=id;document.getElementById('addTitle').textContent='✏️ Редактирование';document.getElementById('rName').value=r.name;document.getElementById('rType').value=r.type||'Другое';document.getElementById('rTags').value=(r.tags||[]).join(', ');document.getElementById('rBaseJar').value=r.baseJar||1000;document.getElementById('rDesc').value=r.description||'';costEnabledAdd=r.costEnabled!==undefined?r.costEnabled:((r.ingredients||[]).some(i=>i.price>0));document.getElementById('costToggleAdd').checked=costEnabledAdd;localStorage.setItem('cost_add',costEnabledAdd?'1':'0');tempPhotos=(r.photos||[]).slice();renderPhotoPreview();document.getElementById('ingList').innerHTML='';(r.ingredients||[]).forEach(i=>addIngRow(i));refreshIngVis();navigate('add')}
 async function deleteRecipe(id){if(!confirm('Удалить?'))return;await dbDel('recipes',id);renderRecipes();toast('🗑️ Удалён','var(--accent)')}
-function clearForm(){
-  editingId=null;document.getElementById('addTitle').textContent='➕ Новый рецепт';
-  ['rName','rTags','rDesc'].forEach(x=>document.getElementById(x).value='');
-  document.getElementById('rBaseJar').value='1000';document.getElementById('rPhotos').value='';
-  document.getElementById('ingList').innerHTML='';tempPhotos=[];renderPhotoPreview();
-}
+function clearForm(){editingId=null;document.getElementById('addTitle').textContent='➕ Новый рецепт';['rName','rTags','rDesc'].forEach(x=>document.getElementById(x).value='');document.getElementById('rBaseJar').value='1000';document.getElementById('rPhotos').value='';document.getElementById('ingList').innerHTML='';tempPhotos=[];renderPhotoPreview()}
 
-// ================================================================
-//  СПИСОК РЕЦЕПТОВ
-// ================================================================
+// ===== RECIPES LIST =====
 async function renderRecipes(){
-  const all=await dbAll('recipes');
-  const search=(document.getElementById('fSearch').value||'').toLowerCase();
-  const fT=document.getElementById('fType').value;
-  const fG=document.getElementById('fTag').value;
-  const allTags=new Set();all.forEach(r=>(r.tags||[]).forEach(t=>allTags.add(t)));
-  const ts=document.getElementById('fTag');const cv=ts.value;
-  ts.innerHTML='<option value="">Все теги</option>';
-  [...allTags].sort().forEach(t=>{ts.innerHTML+=`<option value="${t}"${t===cv?' selected':''}>${t}</option>`});
-
-  const recipes=all.filter(r=>{
-    if(search&&!r.name.toLowerCase().includes(search))return false;
-    if(fT&&r.type!==fT)return false;
-    if(fG&&!(r.tags||[]).includes(fG))return false;return true;
-  }).sort((a,b)=>new Date(b.updated)-new Date(a.updated));
-
+  const all=await dbAll('recipes');const search=(document.getElementById('fSearch').value||'').toLowerCase();const fT=document.getElementById('fType').value;const fG=document.getElementById('fTag').value;
+  const allTags=new Set();all.forEach(r=>(r.tags||[]).forEach(t=>allTags.add(t)));const ts=document.getElementById('fTag');const cv=ts.value;ts.innerHTML='<option value="">Все теги</option>';[...allTags].sort().forEach(t=>{ts.innerHTML+=`<option value="${t}"${t===cv?' selected':''}>${t}</option>`});
+  const recipes=all.filter(r=>{if(search&&!r.name.toLowerCase().includes(search))return false;if(fT&&r.type!==fT)return false;if(fG&&!(r.tags||[]).includes(fG))return false;return true}).sort((a,b)=>new Date(b.updated)-new Date(a.updated));
   const c=document.getElementById('recipesList');
   if(!recipes.length){c.innerHTML='<div class="empty"><div class="icon">📖</div><p>Рецептов нет</p><p style="font-size:.83em;margin-top:5px">Нажмите ➕</p></div>';return}
-
   c.innerHTML=recipes.map(r=>{
     const photos=(r.photos||[]).map(s=>`<img src="${s}" alt="" onclick="openLightbox('${s.replace(/'/g,"\\'")}')">`).join('');
     const tags=[`<span class="tag tag-type">${r.type||'Другое'}</span>`,...(r.tags||[]).map(t=>`<span class="tag tag-custom" onclick="document.getElementById('fTag').value='${t}';renderRecipes()">${t}</span>`)].join('');
     const ings=(r.ingredients||[]).map(i=>`<span style="color:var(--text2);font-size:.8em">• ${esc(i.name)}: ${i.amount} ${esc(i.unit)}</span>`).join('<br>');
-    const showCost=r.costEnabled!==false;
-    const total=showCost?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;
+    const showCost=r.costEnabled!==false;const total=showCost?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;
     const costH=total>0?`<div style="margin-top:5px;color:var(--accent2);font-size:.87em">💰 ≈ ${total.toFixed(2)} ₽</div>`:'';
-    return`<div class="card"><h3>${esc(r.name)}</h3><div class="tags">${tags}</div>
-      ${photos?`<div class="photo-strip">${photos}</div>`:''}
-      <div style="margin:5px 0">${ings}</div>
-      ${r.description?`<p style="color:var(--text2);font-size:.82em;white-space:pre-line;margin-top:5px">${esc(r.description)}</p>`:''}
-      ${costH}<div style="font-size:.72em;color:var(--text2);margin-top:5px">🫙 ${r.baseJar||1000} мл</div>
-      <div class="btn-group">
-        <button class="btn btn-sm btn-blue" onclick="openCalcFor('${r.id}')">🧮</button>
-        <button class="btn btn-sm btn-primary" onclick="editRecipe('${r.id}')">✏️</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteRecipe('${r.id}')">🗑️</button>
-      </div></div>`;
+    return`<div class="card"><h3>${esc(r.name)}</h3><div class="tags">${tags}</div>${photos?`<div class="photo-strip">${photos}</div>`:''}<div style="margin:5px 0">${ings}</div>${r.description?`<p style="color:var(--text2);font-size:.82em;white-space:pre-line;margin-top:5px">${esc(r.description)}</p>`:''}${costH}<div style="font-size:.72em;color:var(--text2);margin-top:5px">🫙 ${r.baseJar||1000} мл</div><div class="btn-group"><button class="btn btn-sm btn-blue" onclick="openCalcFor('${r.id}')">🧮</button><button class="btn btn-sm btn-primary" onclick="editRecipe('${r.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteRecipe('${r.id}')">🗑️</button></div></div>`
   }).join('');
 }
 function openCalcFor(id){navigate('calc');setTimeout(()=>{document.getElementById('calcRecipe').value=id;loadCalcRecipe()},100)}
 
-// ================================================================
-//  КАЛЬКУЛЯТОР — РЕЦЕПТ
-// ================================================================
+// ===== CALCULATOR =====
 let calcRD=null;
-async function populateCalcSelect(){
-  const all=await dbAll('recipes');const s=document.getElementById('calcRecipe');const cur=s.value;
-  s.innerHTML='<option value="">-- Выберите --</option>';
-  all.sort((a,b)=>a.name.localeCompare(b.name)).forEach(r=>{s.innerHTML+=`<option value="${r.id}"${r.id===cur?' selected':''}>${r.name}</option>`});
-}
+async function populateCalcSelect(){const all=await dbAll('recipes');const s=document.getElementById('calcRecipe');const cur=s.value;s.innerHTML='<option value="">-- Выберите --</option>';all.sort((a,b)=>a.name.localeCompare(b.name)).forEach(r=>{s.innerHTML+=`<option value="${r.id}"${r.id===cur?' selected':''}>${r.name}</option>`})}
+
 async function loadCalcRecipe(){
   const id=document.getElementById('calcRecipe').value;
-  if(!id){['jarBox','propBox','costBox'].forEach(b=>document.getElementById(b).style.display='none');document.getElementById('costToggleCalcWrap').style.display='none';calcRD=null;return}
+  if(!id){['jarBox','batchBox','propBox','costBox'].forEach(b=>document.getElementById(b).style.display='none');document.getElementById('costToggleCalcWrap').style.display='none';calcRD=null;return}
   calcRD=await dbGet('recipes',id);if(!calcRD)return;const r=calcRD;
   document.getElementById('jarBox').style.display='block';
+  document.getElementById('batchBox').style.display='block';
   document.getElementById('propBox').style.display='block';
   document.getElementById('costToggleCalcWrap').style.display='flex';
   document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';
@@ -721,127 +542,120 @@ async function loadCalcRecipe(){
   document.getElementById('jarBtns').innerHTML=sizes.map(s=>`<button class="jar-btn${s===bj?' active':''}" onclick="selectJar(${s},this)">${s>=1000?(s/1000)+'л':s+'мл'}</button>`).join('');
   document.getElementById('customJar').value='';calcJarFor(bj);
 
-  document.getElementById('propInputs').innerHTML=r.ingredients.map((ing,i)=>`
-    <div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px">
-      <span style="font-size:.87em">${esc(ing.name)}</span>
-      <input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})">
-      <span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span>
-    </div>`).join('');
+  // Batch — set default jar size
+  document.getElementById('batchJarSize').value='1000';
+  document.getElementById('batchCustomSize').style.display='none';
+  document.getElementById('batchCount').value=1;
+  calcBatch();
+
+  // Proportions
+  document.getElementById('propInputs').innerHTML=r.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px"><span style="font-size:.87em">${esc(ing.name)}</span><input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})"><span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span></div>`).join('');
   document.getElementById('propResult').style.display='none';
 
-  document.getElementById('costInputs').innerHTML=r.ingredients.map((ing,i)=>`
-    <div class="ing-row" style="grid-template-columns:2fr 1fr 1fr 1fr;margin-bottom:5px">
-      <span style="font-size:.82em">${esc(ing.name)}</span>
-      <span style="color:var(--text2);font-size:.78em">${ing.amount} ${esc(ing.unit)}</span>
-      <input type="number" step="any" placeholder="₽/${esc(ing.unit)}" value="${ing.price||''}" id="cP${i}" oninput="updPrice(${i},this.value);calcCost()">
-      <span id="cPer${i}" style="color:var(--accent2);font-size:.82em"></span>
-    </div>`).join('');
+  // Cost
+  document.getElementById('costInputs').innerHTML=r.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 1fr 1fr;margin-bottom:5px"><span style="font-size:.82em">${esc(ing.name)}</span><span style="color:var(--text2);font-size:.78em">${ing.amount} ${esc(ing.unit)}</span><input type="number" step="any" placeholder="₽/${esc(ing.unit)}" value="${ing.price||''}" id="cP${i}" oninput="updPrice(${i},this.value);calcCost()"><span id="cPer${i}" style="color:var(--accent2);font-size:.82em"></span></div>`).join('');
   document.getElementById('costJars').value=1;calcCost();
 }
 
+// Single jar
 function selectJar(ml,el){document.querySelectorAll('.jar-btn').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('customJar').value='';calcJarFor(ml)}
 function calcJar(){const v=parseInt(document.getElementById('customJar').value);if(v>0){document.querySelectorAll('.jar-btn').forEach(b=>b.classList.remove('active'));calcJarFor(v)}}
-function calcJarFor(ml){
-  if(!calcRD)return;const r=calcRD;const ratio=ml/(r.baseJar||1000);
-  const res=document.getElementById('jarResult');res.style.display='block';
-  res.innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">🫙 ${ml>=1000?(ml/1000)+'л':ml+'мл'} (×${ratio.toFixed(2)}):</div>${r.ingredients.map(i=>`<div class="row"><span>${esc(i.name)}</span><span class="val">${(i.amount*ratio).toFixed(2)} ${esc(i.unit)}</span></div>`).join('')}`;
-}
-function calcProp(idx){
-  if(!calcRD)return;const r=calcRD;const orig=r.ingredients[idx].amount;if(!orig)return;
-  const nv=parseFloat(document.getElementById('pA'+idx).value)||0;const ratio=nv/orig;
-  const res=document.getElementById('propResult');res.style.display='block';
-  res.innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">⚖️ ×${ratio.toFixed(3)}</div>${r.ingredients.map((ing,i)=>{const v=(ing.amount*ratio).toFixed(2);if(i!==idx)document.getElementById('pA'+i).value=v;return`<div class="row"><span>${esc(ing.name)}</span><span class="val">${v} ${esc(ing.unit)}</span></div>`}).join('')}`;
-}
-async function updPrice(i,v){if(!calcRD)return;calcRD.ingredients[i].price=parseFloat(v)||0;await dbPut('recipes',calcRD)}
-function calcCost(){
-  if(!calcRD)return;const r=calcRD;const jars=parseInt(document.getElementById('costJars').value)||1;
-  let total=0;r.ingredients.forEach((ing,i)=>{const c=ing.amount*(ing.price||0);total+=c;const el=document.getElementById('cPer'+i);if(el)el.textContent=c>0?`= ${c.toFixed(2)} ₽`:''});
-  const pj=jars>0?total/jars:0;
-  document.getElementById('costResult').innerHTML=`<div class="cost-box"><h4>📊 Итого</h4><div class="cost-row"><span>Общая:</span><span class="cost-total">${total.toFixed(2)} ₽</span></div><div class="cost-row"><span>Банок:</span><span>${jars}</span></div><div class="cost-row"><span>1 банка:</span><span class="cost-total">${pj.toFixed(2)} ₽</span></div></div>`;
+function calcJarFor(ml){if(!calcRD)return;const r=calcRD;const ratio=ml/(r.baseJar||1000);const res=document.getElementById('jarResult');res.style.display='block';res.innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">🫙 ${ml>=1000?(ml/1000)+'л':ml+'мл'} (×${ratio.toFixed(2)}):</div>${r.ingredients.map(i=>`<div class="row"><span>${esc(i.name)}</span><span class="val">${+(i.amount*ratio).toFixed(2)} ${esc(i.unit)}</span></div>`).join('')}`}
+
+// ===== BATCH — РАСЧЁТ НА ПАРТИЮ БАНОК =====
+document.getElementById('batchJarSize').addEventListener('change',function(){
+  document.getElementById('batchCustomSize').style.display=this.value==='custom'?'':'none';
+  calcBatch();
+});
+
+function calcBatch(){
+  if(!calcRD)return;
+  const r=calcRD;
+  const base=r.baseJar||1000;
+
+  // Объём банки
+  const selVal=document.getElementById('batchJarSize').value;
+  let jarMl;
+  if(selVal==='custom'){
+    jarMl=parseInt(document.getElementById('batchCustomSize').value)||0;
+    if(!jarMl){document.getElementById('batchResult').innerHTML='';return}
+  }else{
+    jarMl=parseInt(selVal);
+  }
+
+  const count=parseInt(document.getElementById('batchCount').value)||0;
+  if(!count){document.getElementById('batchResult').innerHTML='';return}
+
+  const ratio=jarMl/base;
+  const totalRatio=ratio*count;
+
+  // Стоимость партии
+  const showCost=costEnabledCalc;
+  let totalCost=0;
+
+  const rows=r.ingredients.map(i=>{
+    const amt=+(i.amount*totalRatio).toFixed(2);
+    const cost=showCost?(amt*(i.price||0)):0;
+    totalCost+=cost;
+    return{name:i.name,amount:amt,unit:i.unit,cost};
+  });
+
+  const jarLabel=jarMl>=1000?(jarMl/1000)+'л':jarMl+'мл';
+
+  let html=`<div class="batch-summary">
+    <div class="batch-total-label">📦 На ${count} банок${count>1?'':'у'} по ${jarLabel} (×${totalRatio.toFixed(2)} от базы):</div>
+    ${rows.map(r=>`<div class="row"><span>${esc(r.name)}</span><span class="val">${r.amount} ${esc(r.unit)}${showCost&&r.cost>0?' <small style="color:var(--text2);font-weight:400">('+r.cost.toFixed(2)+' ₽)</small>':''}</span></div>`).join('')}`;
+
+  if(showCost&&totalCost>0){
+    const perJar=totalCost/count;
+    html+=`<div style="border-top:1px solid rgba(155,89,182,.2);margin-top:8px;padding-top:8px">
+      <div class="row"><span style="color:var(--purple);font-weight:600">💰 Стоимость партии:</span><span class="val">${totalCost.toFixed(2)} ₽</span></div>
+      <div class="row"><span style="color:var(--purple);font-weight:600">🫙 Одна банка:</span><span class="val">${perJar.toFixed(2)} ₽</span></div>
+    </div>`;
+  }
+  html+='</div>';
+  document.getElementById('batchResult').innerHTML=html;
 }
 
-// ================================================================
-//  ШАБЛОНЫ ПРОПОРЦИЙ (CRUD)
-// ================================================================
+// Proportions
+function calcProp(idx){if(!calcRD)return;const r=calcRD;const orig=r.ingredients[idx].amount;if(!orig)return;const nv=parseFloat(document.getElementById('pA'+idx).value)||0;const ratio=nv/orig;const res=document.getElementById('propResult');res.style.display='block';res.innerHTML=`<div style="margin-bottom:5px;font-size:.82em;color:var(--text2)">⚖️ ×${ratio.toFixed(3)}</div>${r.ingredients.map((ing,i)=>{const v=+(ing.amount*ratio).toFixed(2);if(i!==idx)document.getElementById('pA'+i).value=v;return`<div class="row"><span>${esc(ing.name)}</span><span class="val">${v} ${esc(ing.unit)}</span></div>`}).join('')}`}
+
+// Cost
+async function updPrice(i,v){if(!calcRD)return;calcRD.ingredients[i].price=parseFloat(v)||0;await dbPut('recipes',calcRD)}
+function calcCost(){if(!calcRD)return;const r=calcRD;const jars=parseInt(document.getElementById('costJars').value)||1;let total=0;r.ingredients.forEach((ing,i)=>{const c=ing.amount*(ing.price||0);total+=c;const el=document.getElementById('cPer'+i);if(el)el.textContent=c>0?`= ${c.toFixed(2)} ₽`:''});const pj=jars>0?total/jars:0;document.getElementById('costResult').innerHTML=`<div class="cost-box"><h4>📊 Итого</h4><div class="cost-row"><span>Общая:</span><span class="cost-total">${total.toFixed(2)} ₽</span></div><div class="cost-row"><span>Банок:</span><span>${jars}</span></div><div class="cost-row"><span>1 банка:</span><span class="cost-total">${pj.toFixed(2)} ₽</span></div></div>`}
+
+// ===== CALC TPL =====
 let ctEditId=null;
-function openCalcTplModal(id){
-  ctEditId=id||null;
-  document.getElementById('ctModalTitle').innerHTML=(id?'✏️ Редактировать':'📐 Новый')+ ' шаблон <button class="modal-close" onclick="closeCalcTplModal()">✕</button>';
-  document.getElementById('ctName').value='';document.getElementById('ctNote').value='';document.getElementById('ctIngList').innerHTML='';
-  if(id){dbGet('calcTpls',id).then(t=>{if(!t)return;document.getElementById('ctName').value=t.name;document.getElementById('ctNote').value=t.note||'';t.ingredients.forEach(i=>addCtIngRow(i));document.getElementById('ctModal').classList.add('show')})}
-  else{addCtIngRow();addCtIngRow();addCtIngRow();document.getElementById('ctModal').classList.add('show')}
-}
+function openCalcTplModal(id){ctEditId=id||null;document.getElementById('ctModalTitle').innerHTML=(id?'✏️ Редактировать':'📐 Новый')+' шаблон <button class="modal-close" onclick="closeCalcTplModal()">✕</button>';document.getElementById('ctName').value='';document.getElementById('ctNote').value='';document.getElementById('ctIngList').innerHTML='';if(id){dbGet('calcTpls',id).then(t=>{if(!t)return;document.getElementById('ctName').value=t.name;document.getElementById('ctNote').value=t.note||'';t.ingredients.forEach(i=>addCtIngRow(i));document.getElementById('ctModal').classList.add('show')})}else{addCtIngRow();addCtIngRow();addCtIngRow();document.getElementById('ctModal').classList.add('show')}}
 function closeCalcTplModal(){document.getElementById('ctModal').classList.remove('show');ctEditId=null}
-function addCtIngRow(d={}){
-  const row=document.createElement('div');row.className='ing-row';row.style.gridTemplateColumns='2fr 1fr 90px auto';
-  row.innerHTML=`<input type="text" placeholder="Название" value="${esc(d.name||'')}"><input type="number" placeholder="Кол-во" step="any" value="${d.amount||''}">${unitSel(d.unit)}<button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;
-  document.getElementById('ctIngList').appendChild(row);
-}
+function addCtIngRow(d={}){const row=document.createElement('div');row.className='ing-row';row.style.gridTemplateColumns='2fr 1fr 90px auto';row.innerHTML=`<input type="text" placeholder="Название" value="${esc(d.name||'')}"><input type="number" placeholder="Кол-во" step="any" value="${d.amount||''}">${unitSel(d.unit)}<button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;document.getElementById('ctIngList').appendChild(row)}
 function getCtIngs(){return[...document.querySelectorAll('#ctIngList .ing-row')].map(r=>{const i=r.querySelectorAll('input');const s=r.querySelector('select');return{name:i[0].value.trim(),amount:parseFloat(i[1].value)||0,unit:s.value}}).filter(x=>x.name)}
-async function saveCalcTpl(){
-  const name=document.getElementById('ctName').value.trim();if(!name){toast('❌ Название!','var(--accent)');return}
-  const ings=getCtIngs();if(!ings.length){toast('❌ Ингредиенты!','var(--accent)');return}
-  await dbPut('calcTpls',{id:ctEditId||genId(),name,ingredients:ings,note:document.getElementById('ctNote').value.trim(),updated:new Date().toISOString()});
-  closeCalcTplModal();renderCalcTpls();toast('✅ Шаблон сохранён!');
-}
+async function saveCalcTpl(){const name=document.getElementById('ctName').value.trim();if(!name){toast('❌ Название!','var(--accent)');return}const ings=getCtIngs();if(!ings.length){toast('❌ Ингредиенты!','var(--accent)');return}await dbPut('calcTpls',{id:ctEditId||genId(),name,ingredients:ings,note:document.getElementById('ctNote').value.trim(),updated:new Date().toISOString()});closeCalcTplModal();renderCalcTpls();toast('✅ Шаблон!')}
 async function deleteCalcTpl(id){if(!confirm('Удалить?'))return;await dbDel('calcTpls',id);renderCalcTpls();toast('🗑️','var(--accent)')}
-async function renderCalcTpls(){
-  const all=await dbAll('calcTpls');const c=document.getElementById('calcTplList');
-  if(!all.length){c.innerHTML='<div class="empty" style="padding:20px"><p style="color:var(--text2)">Нет шаблонов</p></div>';return}
-  c.innerHTML=all.map(t=>{
-    const ings=(t.ingredients||[]).map(i=>`<span style="font-size:.78em;color:var(--text2)">• ${esc(i.name)}: ${i.amount} ${esc(i.unit)}</span>`).join('<br>');
-    return`<div class="ct-card"><h4>${esc(t.name)}</h4><div style="margin:5px 0">${ings}</div>
-      ${t.note?`<p style="font-size:.8em;color:var(--text2);font-style:italic;margin-top:4px">${esc(t.note)}</p>`:''}
-      <div class="btn-group">
-        <button class="btn btn-sm btn-blue" onclick="useCalcTpl('${t.id}')">⚖️ Рассчитать</button>
-        <button class="btn btn-sm btn-primary" onclick="openCalcTplModal('${t.id}')">✏️</button>
-        <button class="btn btn-sm btn-warning" onclick="calcTplToRecipe('${t.id}')">📖 В рецепт</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteCalcTpl('${t.id}')">🗑️</button>
-      </div></div>`;
-  }).join('');
-}
+async function renderCalcTpls(){const all=await dbAll('calcTpls');const c=document.getElementById('calcTplList');if(!all.length){c.innerHTML='<div class="empty" style="padding:20px"><p style="color:var(--text2)">Нет шаблонов</p></div>';return}c.innerHTML=all.map(t=>{const ings=(t.ingredients||[]).map(i=>`<span style="font-size:.78em;color:var(--text2)">• ${esc(i.name)}: ${i.amount} ${esc(i.unit)}</span>`).join('<br>');return`<div class="ct-card"><h4>${esc(t.name)}</h4><div style="margin:5px 0">${ings}</div>${t.note?`<p style="font-size:.8em;color:var(--text2);font-style:italic;margin-top:4px">${esc(t.note)}</p>`:''}<div class="btn-group"><button class="btn btn-sm btn-blue" onclick="useCalcTpl('${t.id}')">⚖️ Рассчитать</button><button class="btn btn-sm btn-primary" onclick="openCalcTplModal('${t.id}')">✏️</button><button class="btn btn-sm btn-warning" onclick="calcTplToRecipe('${t.id}')">📖 В рецепт</button><button class="btn btn-sm btn-danger" onclick="deleteCalcTpl('${t.id}')">🗑️</button></div></div>`}).join('')}
+
 async function useCalcTpl(id){
   const t=await dbGet('calcTpls',id);if(!t)return;
   calcRD={id:'_tpl',name:t.name,baseJar:1000,ingredients:t.ingredients.map(i=>({...i,price:0})),description:''};
   document.getElementById('jarBox').style.display='block';
+  document.getElementById('batchBox').style.display='block';
   document.getElementById('propBox').style.display='block';
   document.getElementById('costToggleCalcWrap').style.display='flex';
   document.getElementById('costBox').style.display=costEnabledCalc?'block':'none';
   document.getElementById('calcRecipe').value='';
   const bj=1000;
   document.getElementById('baseJarInfo').textContent=`Шаблон: ${t.name} (${bj} мл)`;
-  const sizes=[500,1000,1500,2000,3000];
-  document.getElementById('jarBtns').innerHTML=sizes.map(s=>`<button class="jar-btn${s===bj?' active':''}" onclick="selectJar(${s},this)">${s>=1000?(s/1000)+'л':s+'мл'}</button>`).join('');
+  document.getElementById('jarBtns').innerHTML=[500,1000,1500,2000,3000].map(s=>`<button class="jar-btn${s===bj?' active':''}" onclick="selectJar(${s},this)">${s>=1000?(s/1000)+'л':s+'мл'}</button>`).join('');
   document.getElementById('customJar').value='';calcJarFor(bj);
-  document.getElementById('propInputs').innerHTML=t.ingredients.map((ing,i)=>`
-    <div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px">
-      <span style="font-size:.87em">${esc(ing.name)}</span>
-      <input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})">
-      <span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span>
-    </div>`).join('');
+  document.getElementById('batchJarSize').value='1000';document.getElementById('batchCustomSize').style.display='none';document.getElementById('batchCount').value=1;calcBatch();
+  document.getElementById('propInputs').innerHTML=t.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 80px;margin-bottom:6px"><span style="font-size:.87em">${esc(ing.name)}</span><input type="number" step="any" value="${ing.amount}" id="pA${i}" oninput="calcProp(${i})"><span style="color:var(--text2);font-size:.82em">${esc(ing.unit)}</span></div>`).join('');
   document.getElementById('propResult').style.display='none';
-  if(costEnabledCalc){
-    document.getElementById('costInputs').innerHTML=t.ingredients.map((ing,i)=>`
-      <div class="ing-row" style="grid-template-columns:2fr 1fr 1fr 1fr;margin-bottom:5px">
-        <span style="font-size:.82em">${esc(ing.name)}</span>
-        <span style="color:var(--text2);font-size:.78em">${ing.amount} ${esc(ing.unit)}</span>
-        <input type="number" step="any" placeholder="₽/${esc(ing.unit)}" value="" id="cP${i}" oninput="updPrice(${i},this.value);calcCost()">
-        <span id="cPer${i}" style="color:var(--accent2);font-size:.82em"></span>
-      </div>`).join('');
-    document.getElementById('costJars').value=1;calcCost();
-  }
-  window.scrollTo({top:0,behavior:'smooth'});toast('⚖️ Шаблон загружен');
+  if(costEnabledCalc){document.getElementById('costInputs').innerHTML=t.ingredients.map((ing,i)=>`<div class="ing-row" style="grid-template-columns:2fr 1fr 1fr 1fr;margin-bottom:5px"><span style="font-size:.82em">${esc(ing.name)}</span><span style="color:var(--text2);font-size:.78em">${ing.amount} ${esc(ing.unit)}</span><input type="number" step="any" placeholder="₽/${esc(ing.unit)}" value="" id="cP${i}" oninput="updPrice(${i},this.value);calcCost()"><span id="cPer${i}" style="color:var(--accent2);font-size:.82em"></span></div>`).join('');document.getElementById('costJars').value=1;calcCost()}
+  window.scrollTo({top:0,behavior:'smooth'});toast('⚖️ Шаблон загружен')
 }
-async function calcTplToRecipe(id){
-  const t=await dbGet('calcTpls',id);if(!t)return;clearForm();
-  document.getElementById('rName').value=t.name;document.getElementById('rDesc').value=t.note||'';
-  document.getElementById('ingList').innerHTML='';t.ingredients.forEach(i=>addIngRow({...i,price:0}));
-  refreshIngRowsVisibility();navigate('add');toast('📋 Из шаблона');
-}
+async function calcTplToRecipe(id){const t=await dbGet('calcTpls',id);if(!t)return;clearForm();document.getElementById('rName').value=t.name;document.getElementById('rDesc').value=t.note||'';document.getElementById('ingList').innerHTML='';t.ingredients.forEach(i=>addIngRow({...i,price:0}));refreshIngVis();navigate('add');toast('📋 Из шаблона')}
 
-// ================================================================
-//  ШАБЛОНЫ РЕЦЕПТОВ
-// ================================================================
+// ===== RECIPE TEMPLATES =====
 const RTPLS=[
   {name:'Огурцы маринованные',type:'Маринад',tags:['огурцы','лето'],baseJar:1000,ingredients:[{name:'Огурцы',amount:600,unit:'г'},{name:'Вода',amount:500,unit:'мл'},{name:'Соль',amount:30,unit:'г'},{name:'Сахар',amount:50,unit:'г'},{name:'Уксус 9%',amount:50,unit:'мл'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Перец горошком',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'},{name:'Укроп',amount:1,unit:'шт'}],description:'1. Замочить 3–4ч\n2. Стерилизовать банки\n3. Специи + огурцы\n4. Кипяток 15мин, слить\n5. Маринад, уксус, закатать'},
   {name:'Варенье «Пятиминутка»',type:'Варенье',tags:['клубника','лето'],baseJar:500,ingredients:[{name:'Клубника',amount:500,unit:'г'},{name:'Сахар',amount:300,unit:'г'},{name:'Лимонный сок',amount:10,unit:'мл'}],description:'1. Засыпать сахаром 4–6ч\n2. Кипятить 5мин\n3. Лимонный сок, закатать'},
@@ -850,92 +664,23 @@ const RTPLS=[
   {name:'Лечо',type:'Салат',tags:['перец','помидоры'],baseJar:500,ingredients:[{name:'Перец',amount:500,unit:'г'},{name:'Помидоры',amount:500,unit:'г'},{name:'Лук',amount:100,unit:'г'},{name:'Масло',amount:50,unit:'мл'},{name:'Сахар',amount:30,unit:'г'},{name:'Соль',amount:15,unit:'г'},{name:'Уксус 9%',amount:25,unit:'мл'}],description:'1. Помидоры через мясорубку\n2. Перец соломкой\n3. Вскипятить +масло+соль+сахар\n4. Овощи 20мин, уксус, закатать'},
   {name:'Кабачковая икра',type:'Другое',tags:['кабачки','лето'],baseJar:500,ingredients:[{name:'Кабачки',amount:1,unit:'кг'},{name:'Морковь',amount:200,unit:'г'},{name:'Лук',amount:200,unit:'г'},{name:'Том. паста',amount:50,unit:'г'},{name:'Масло',amount:80,unit:'мл'},{name:'Соль',amount:15,unit:'г'},{name:'Сахар',amount:20,unit:'г'}],description:'1. Нарезать кабачки\n2. Обжарить лук+морковь\n3. +кабачки 30мин\n4. Блендер, паста, 15мин, закатать'}
 ];
-function renderTemplates(){
-  document.getElementById('templatesList').innerHTML=RTPLS.map((t,i)=>`
-    <div class="tpl-card" onclick="useRTpl(${i})">
-      <h3 style="color:var(--accent2);font-size:.95em;margin-bottom:3px">${esc(t.name)}</h3>
-      <div class="tags"><span class="tag tag-type">${t.type}</span>${t.tags.map(g=>`<span class="tag tag-custom">${g}</span>`).join('')}</div>
-      <div style="font-size:.77em;color:var(--text2);margin-top:3px">${t.ingredients.length} ингр. • ${t.baseJar} мл</div>
-    </div>`).join('');
-}
-function useRTpl(i){
-  const t=RTPLS[i];clearForm();
-  document.getElementById('rName').value=t.name;document.getElementById('rType').value=t.type;
-  document.getElementById('rTags').value=t.tags.join(', ');document.getElementById('rBaseJar').value=t.baseJar;
-  document.getElementById('rDesc').value=t.description;document.getElementById('ingList').innerHTML='';
-  t.ingredients.forEach(x=>addIngRow({...x,price:0}));refreshIngRowsVisibility();navigate('add');toast('📋 Шаблон!');
-}
+function renderTemplates(){document.getElementById('templatesList').innerHTML=RTPLS.map((t,i)=>`<div class="tpl-card" onclick="useRTpl(${i})"><h3 style="color:var(--accent2);font-size:.95em;margin-bottom:3px">${esc(t.name)}</h3><div class="tags"><span class="tag tag-type">${t.type}</span>${t.tags.map(g=>`<span class="tag tag-custom">${g}</span>`).join('')}</div><div style="font-size:.77em;color:var(--text2);margin-top:3px">${t.ingredients.length} ингр. • ${t.baseJar} мл</div></div>`).join('')}
+function useRTpl(i){const t=RTPLS[i];clearForm();document.getElementById('rName').value=t.name;document.getElementById('rType').value=t.type;document.getElementById('rTags').value=t.tags.join(', ');document.getElementById('rBaseJar').value=t.baseJar;document.getElementById('rDesc').value=t.description;document.getElementById('ingList').innerHTML='';t.ingredients.forEach(x=>addIngRow({...x,price:0}));refreshIngVis();navigate('add');toast('📋 Шаблон!')}
 
-// ================================================================
-//  ЭКСПОРТ / ИМПОРТ
-// ================================================================
-async function exportJSON(){
-  const recipes=await dbAll('recipes');const calcTpls=await dbAll('calcTpls');
-  download('dkana_recipes.json',JSON.stringify({recipes,calcTpls},null,2),'application/json');toast('📄 JSON');
-}
-async function exportTXT(){
-  const recipes=await dbAll('recipes');
-  let txt='════════════════════════════════════════\n  В ГОСТЯХ У DKANA — РЕЦЕПТЫ\n  '+new Date().toLocaleString('ru')+'\n════════════════════════════════════════\n\n';
-  recipes.forEach((r,idx)=>{
-    txt+=`━━━ #${idx+1} ━━━━━━━━━━━━━━━━━━━\nНазвание: ${r.name}\nТип: ${r.type}\nТеги: ${(r.tags||[]).join(', ')}\nБанка: ${r.baseJar||1000} мл\nДата: ${r.created?new Date(r.created).toLocaleDateString('ru'):'—'}\n\nИнгредиенты:\n`;
-    (r.ingredients||[]).forEach(i=>{const c=i.amount*(i.price||0);txt+=`  • ${i.name}: ${i.amount} ${i.unit}`;if(r.costEnabled&&i.price)txt+=` (${i.price}₽/${i.unit}=${c.toFixed(2)}₽)`;txt+='\n'});
-    if(r.costEnabled){const t=(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0);if(t>0)txt+=`  ИТОГО: ${t.toFixed(2)}₽\n`}
-    txt+=`\n${r.description||'—'}\nФото: ${(r.photos||[]).length}\n\n`;
-  });
-  download('dkana_recipes.txt',txt,'text/plain');toast('📝 TXT');
-}
-async function exportCSV(){
-  const recipes=await dbAll('recipes');const B='\uFEFF';
-  let csv=B+'Название;Тип;Теги;Банка;Ингредиент;Кол-во;Ед.;Цена;Стоимость;Описание;Дата\n';
-  recipes.forEach(r=>{
-    const showP=r.costEnabled!==false;
-    if(!(r.ingredients||[]).length)csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"";"";"";"";"";`+`"${csvSafe(r.description)}";"${r.created?new Date(r.created).toLocaleDateString('ru'):''}"\n`;
-    else r.ingredients.forEach((ing,i)=>{const c=(ing.amount*(ing.price||0)).toFixed(2);csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"${csvSafe(ing.name)}";${ing.amount};"${ing.unit}";${showP?ing.price||0:''};${showP?c:''};`+`"${i===0?csvSafe(r.description):''}";"${i===0?(r.created?new Date(r.created).toLocaleDateString('ru'):''):''}"\n`})
-  });
-  download('dkana_recipes.csv',csv,'text/csv;charset=utf-8');toast('📊 CSV');
-}
-async function importJSON(e){
-  const file=e.target.files[0];if(!file)return;
-  try{const data=JSON.parse(await file.text());let count=0;
-    if(data.recipes&&Array.isArray(data.recipes)){const mode=confirm(`${data.recipes.length} рецепт(ов).\nOK=Добавить | Отмена=Заменить`);if(!mode)await dbClear('recipes');for(const r of data.recipes){if(!r.id)r.id=genId();await dbPut('recipes',r);count++}}
-    if(data.calcTpls&&Array.isArray(data.calcTpls)){for(const t of data.calcTpls){if(!t.id)t.id=genId();await dbPut('calcTpls',t);count++}}
-    renderRecipes();toast(`✅ Импорт: ${count}`);
-  }catch(er){toast('❌ '+er.message,'var(--accent)')}e.target.value='';
-}
+// ===== EXPORT/IMPORT =====
+async function exportJSON(){const recipes=await dbAll('recipes');const calcTpls=await dbAll('calcTpls');download('dkana_recipes.json',JSON.stringify({recipes,calcTpls},null,2),'application/json');toast('📄 JSON')}
+async function exportTXT(){const recipes=await dbAll('recipes');let txt='════════════════════════════════════════\n  В ГОСТЯХ У DKANA — РЕЦЕПТЫ\n  '+new Date().toLocaleString('ru')+'\n════════════════════════════════════════\n\n';recipes.forEach((r,idx)=>{txt+=`━━━ #${idx+1} ━━━━━━━━━━━━━━━━━━━\nНазвание: ${r.name}\nТип: ${r.type}\nТеги: ${(r.tags||[]).join(', ')}\nБанка: ${r.baseJar||1000} мл\nДата: ${r.created?new Date(r.created).toLocaleDateString('ru'):'—'}\n\nИнгредиенты:\n`;(r.ingredients||[]).forEach(i=>{const c=i.amount*(i.price||0);txt+=`  • ${i.name}: ${i.amount} ${i.unit}`;if(r.costEnabled&&i.price)txt+=` (${i.price}₽/${i.unit}=${c.toFixed(2)}₽)`;txt+='\n'});if(r.costEnabled){const t=(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0);if(t>0)txt+=`  ИТОГО: ${t.toFixed(2)}₽\n`}txt+=`\n${r.description||'—'}\nФото: ${(r.photos||[]).length}\n\n`});download('dkana_recipes.txt',txt,'text/plain');toast('📝 TXT')}
+async function exportCSV(){const recipes=await dbAll('recipes');const B='\uFEFF';let csv=B+'Название;Тип;Теги;Банка;Ингредиент;Кол-во;Ед.;Цена;Стоимость;Описание;Дата\n';recipes.forEach(r=>{const sp=r.costEnabled!==false;if(!(r.ingredients||[]).length)csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"";"";"";"";"";`+`"${csvSafe(r.description)}";"${r.created?new Date(r.created).toLocaleDateString('ru'):''}"\n`;else r.ingredients.forEach((ing,i)=>{const c=(ing.amount*(ing.price||0)).toFixed(2);csv+=`"${csvSafe(r.name)}";"${r.type}";"${(r.tags||[]).join(', ')}";${r.baseJar||1000};"${csvSafe(ing.name)}";${ing.amount};"${ing.unit}";${sp?ing.price||0:''};${sp?c:''};`+`"${i===0?csvSafe(r.description):''}";"${i===0?(r.created?new Date(r.created).toLocaleDateString('ru'):''):''}"\n`})});download('dkana_recipes.csv',csv,'text/csv;charset=utf-8');toast('📊 CSV')}
+async function importJSON(e){const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());let count=0;if(data.recipes&&Array.isArray(data.recipes)){const mode=confirm(`${data.recipes.length} рецепт(ов).\nOK=Добавить | Отмена=Заменить`);if(!mode)await dbClear('recipes');for(const r of data.recipes){if(!r.id)r.id=genId();await dbPut('recipes',r);count++}}if(data.calcTpls&&Array.isArray(data.calcTpls)){for(const t of data.calcTpls){if(!t.id)t.id=genId();await dbPut('calcTpls',t);count++}}renderRecipes();toast(`✅ Импорт: ${count}`)}catch(er){toast('❌ '+er.message,'var(--accent)')}e.target.value=''}
 async function clearAllData(){if(!confirm('⚠️ Удалить ВСЕ?'))return;if(!confirm('Точно?'))return;await dbClear('recipes');await dbClear('calcTpls');renderRecipes();toast('🗑️ Удалено','var(--accent)')}
-async function updateDBInfo(){
-  const all=await dbAll('recipes');const tpls=await dbAll('calcTpls');let ph=0;all.forEach(r=>ph+=(r.photos||[]).length);
-  const sa=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone===true;
-  document.getElementById('dbInfo').innerHTML=`Хранилище: <b>IndexedDB</b><br>Рецептов: <b>${all.length}</b> | Фото: <b>${ph}</b><br>Шаблонов: <b>${tpls.length}</b><br>Режим: <b>${sa?'📱 PWA':'🌐 Браузер'}</b><br>Сеть: <b>${navigator.onLine?'🟢 Онлайн':'🔴 Офлайн'}</b>`;
-}
+async function updateDBInfo(){const all=await dbAll('recipes');const tpls=await dbAll('calcTpls');let ph=0;all.forEach(r=>ph+=(r.photos||[]).length);const sa=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone===true;document.getElementById('dbInfo').innerHTML=`Хранилище: <b>IndexedDB</b><br>Рецептов: <b>${all.length}</b> | Фото: <b>${ph}</b><br>Шаблонов: <b>${tpls.length}</b><br>Режим: <b>${sa?'📱 PWA':'🌐 Браузер'}</b><br>Сеть: <b>${navigator.onLine?'🟢 Онлайн':'🔴 Офлайн'}</b>`}
 
-// ================================================================
-//  МИГРАЦИЯ + SEED
-// ================================================================
+// ===== MIGRATION + SEED =====
 async function migrate(){const old=localStorage.getItem('dkana_recipes_db');if(!old)return;try{const data=JSON.parse(old);if(data.recipes&&data.recipes.length){const ex=await dbAll('recipes');if(!ex.length){for(const r of data.recipes){if(!r.id)r.id=genId();await dbPut('recipes',r)}toast(`📦 Миграция: ${data.recipes.length}`)}}localStorage.removeItem('dkana_recipes_db')}catch(e){console.warn(e)}}
+async function seedCalcTpls(){const ex=await dbAll('calcTpls');if(ex.length)return;const seeds=[{id:genId(),name:'Маринад классический (1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:2,unit:'ст.л.'},{name:'Сахар',amount:3,unit:'ст.л.'},{name:'Уксус 9%',amount:70,unit:'мл'},{name:'Перец горошком',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'}],note:'Универсальный для огурцов, помидоров',updated:new Date().toISOString()},{id:genId(),name:'Сироп для компота (1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Сахар',amount:200,unit:'г'},{name:'Лимонная кислота',amount:3,unit:'г'}],note:'Сахар 150–350г по вкусу',updated:new Date().toISOString()},{id:genId(),name:'Рассол для засолки (1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:50,unit:'г'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Укроп',amount:2,unit:'шт'},{name:'Лист хрена',amount:1,unit:'шт'}],note:'Холодный способ',updated:new Date().toISOString()},{id:genId(),name:'Варенье базовое (1:1)',ingredients:[{name:'Ягоды',amount:1,unit:'кг'},{name:'Сахар',amount:1,unit:'кг'},{name:'Вода',amount:200,unit:'мл'}],note:'Для кислых ягод сахар до 1.2кг',updated:new Date().toISOString()},{id:genId(),name:'Аджика домашняя',ingredients:[{name:'Помидоры',amount:2,unit:'кг'},{name:'Перец болгарский',amount:1,unit:'кг'},{name:'Перец острый',amount:200,unit:'г'},{name:'Чеснок',amount:200,unit:'г'},{name:'Соль',amount:50,unit:'г'},{name:'Уксус',amount:100,unit:'мл'}],note:'Острый перец по вкусу',updated:new Date().toISOString()}];for(const s of seeds)await dbPut('calcTpls',s)}
 
-async function seedCalcTpls(){
-  const ex=await dbAll('calcTpls');if(ex.length)return;
-  const seeds=[
-    {id:genId(),name:'Маринад классический (1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:2,unit:'ст.л.'},{name:'Сахар',amount:3,unit:'ст.л.'},{name:'Уксус 9%',amount:70,unit:'мл'},{name:'Перец горошком',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'}],note:'Универсальный для огурцов, помидоров',updated:new Date().toISOString()},
-    {id:genId(),name:'Сироп для компота (1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Сахар',amount:200,unit:'г'},{name:'Лимонная кислота',amount:3,unit:'г'}],note:'Сахар 150–350г по вкусу',updated:new Date().toISOString()},
-    {id:genId(),name:'Рассол для засолки (1л воды)',ingredients:[{name:'Вода',amount:1,unit:'л'},{name:'Соль',amount:50,unit:'г'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Укроп',amount:2,unit:'шт'},{name:'Лист хрена',amount:1,unit:'шт'}],note:'Холодный способ',updated:new Date().toISOString()},
-    {id:genId(),name:'Варенье базовое (1:1)',ingredients:[{name:'Ягоды',amount:1,unit:'кг'},{name:'Сахар',amount:1,unit:'кг'},{name:'Вода',amount:200,unit:'мл'}],note:'Для кислых ягод сахар до 1.2кг',updated:new Date().toISOString()},
-    {id:genId(),name:'Аджика домашняя',ingredients:[{name:'Помидоры',amount:2,unit:'кг'},{name:'Перец болгарский',amount:1,unit:'кг'},{name:'Перец острый',amount:200,unit:'г'},{name:'Чеснок',amount:200,unit:'г'},{name:'Соль',amount:50,unit:'г'},{name:'Уксус',amount:100,unit:'мл'}],note:'Острый перец по вкусу',updated:new Date().toISOString()}
-  ];
-  for(const s of seeds)await dbPut('calcTpls',s);
-}
-
-// ================================================================
-//  СТАРТ
-// ================================================================
-(async function(){
-  await openDB();await migrate();await seedCalcTpls();
-  loadCostSettings();
-  renderRecipes();renderTemplates();updateOnline();registerPWA();
-  const p=new URLSearchParams(location.search).get('page');
-  if(p&&PAGES.includes(p))navigate(p);
-})();
+// ===== START =====
+(async function(){await openDB();await migrate();await seedCalcTpls();loadCostSettings();renderRecipes();renderTemplates();updateOnline();registerPWA();const p=new URLSearchParams(location.search).get('page');if(p&&PAGES.includes(p))navigate(p)})();
 </script>
 </body>
 </html>

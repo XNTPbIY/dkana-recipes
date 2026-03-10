@@ -27,7 +27,7 @@
             --border: #2a2a4a;
         }
 
-        html { font-size: 16px; }
+        html { font-size: 16px; overflow-x: hidden; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -39,6 +39,12 @@
             padding-bottom: max(70px, calc(60px + env(safe-area-inset-bottom)));
             line-height: 1.4;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Глобальное правило для исправления переполнения в гридах */
+        input, select, textarea {
+            min-width: 0;
+            max-width: 100%;
         }
 
         .container { max-width: 1400px; margin: 0 auto; }
@@ -83,7 +89,7 @@
         .header-btn.success { background: linear-gradient(45deg, var(--success), #45b393); border: none; }
         .header-btn.info { background: linear-gradient(45deg, var(--info), #20c9e0); border: none; }
 
-        .logo { font-size: 1.8em; }
+        .logo { font-size: 1.8em; flex-shrink: 0; }
         
         .header h1 {
             font-size: 1.3em;
@@ -148,7 +154,7 @@
             color: var(--accent);
         }
 
- .about-header {
+        .about-header {
             text-align: center;
             margin-bottom: 20px;
             padding: 15px;
@@ -276,7 +282,7 @@
 
         .ingredient-row {
             display: grid;
-            grid-template-columns: 1fr 55px 65px 32px;
+            grid-template-columns: 1fr 60px 70px 35px;
             gap: 5px;
             margin-bottom: 8px;
             align-items: center;
@@ -284,12 +290,13 @@
 
         .ingredient-row input,
         .ingredient-row select {
-            padding: 10px 6px;
+            padding: 10px 4px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 8px;
             color: var(--text-primary);
             font-size: 14px;
+            min-width: 0;
         }
 
         .btn-remove {
@@ -298,8 +305,9 @@
             color: var(--accent);
             font-size: 1.1em;
             cursor: pointer;
-            padding: 8px;
+            padding: 8px 0;
             border-radius: 8px;
+            text-align: center;
         }
 
         .btn {
@@ -418,17 +426,19 @@
         .proportion-section-title { color: var(--text-secondary); font-size: 0.75em; margin-bottom: 8px; text-align: center; }
 
         .proportion-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .proportion-input-group { display: flex; flex-direction: column; gap: 4px; }
-        .proportion-input-group label { font-size: 0.7em; color: var(--text-secondary); }
+        .proportion-input-group { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .proportion-input-group label { font-size: 0.7em; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .proportion-input-group input,
         .proportion-input-group select {
-            padding: 10px 8px;
+            padding: 10px 6px;
             background: var(--bg-primary);
             border: 1px solid var(--border);
             border-radius: 8px;
             color: var(--text-primary);
-            font-size: 16px;
+            font-size: 15px;
+            min-width: 0;
+            width: 100%;
         }
 
         .proportion-input-group.full-width { grid-column: 1 / -1; }
@@ -450,7 +460,7 @@
             text-align: center;
         }
 
-        .product-amount-input-wrap { display: flex; gap: 10px; align-items: center; }
+        .product-amount-input-wrap { display: flex; gap: 10px; align-items: center; width: 100%; }
 
         .product-amount-input-wrap input {
             flex: 1;
@@ -473,6 +483,7 @@
             padding: 15px 10px;
             text-align: center;
             margin-bottom: 10px;
+            overflow-wrap: break-word;
         }
 
         .proportion-result .result-label { color: var(--text-secondary); font-size: 0.8em; }
@@ -499,11 +510,12 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 10px;
+            min-width: 0;
         }
 
-        .preset-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-        .preset-item .preset-icon { font-size: 1.2em; }
-        .preset-item .preset-name { font-weight: 600; font-size: 0.85em; flex: 1; }
+        .preset-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; min-width: 0; }
+        .preset-item .preset-icon { font-size: 1.2em; flex-shrink: 0; }
+        .preset-item .preset-name { font-weight: 600; font-size: 0.85em; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .preset-item .preset-ratio {
             font-size: 0.75em;
@@ -526,10 +538,11 @@
             padding: 10px;
             margin-bottom: 8px;
             border: 1px solid var(--border);
+            min-width: 0;
         }
 
-        .proportion-item .info { margin-bottom: 8px; }
-        .proportion-item .info h4 { font-size: 0.85em; margin-bottom: 3px; }
+        .proportion-item .info { margin-bottom: 8px; min-width: 0; }
+        .proportion-item .info h4 { font-size: 0.85em; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .proportion-item .info p { font-size: 0.75em; color: var(--text-secondary); }
         .proportion-item .actions { display: flex; gap: 6px; }
         .proportion-item .actions button { flex: 1; }
@@ -774,9 +787,10 @@
         @media (max-width: 350px) {
             .header h1 { font-size: 1.1em; }
             .nav-item { padding: 6px 10px; font-size: 0.65em; }
-            .ingredient-row { grid-template-columns: 1fr 50px 55px 30px; }
+            .ingredient-row { grid-template-columns: 1fr 50px 60px 30px; }
             .proportion-result .result-value { font-size: 1.5em; }
             .header-buttons { flex-wrap: wrap; }
+            .proportion-input-group input, .proportion-input-group select { font-size: 13px; padding: 10px 4px; }
         }
        .tech-badge {
             display: inline-block;
@@ -1150,7 +1164,7 @@
             <div class="about-header">
                 <div class="logo">🍳🏠</div>
                 <h2>В гостях у DKana</h2>
-                <p class="version">Версия 1.8 | PWA Приложение</p>
+                <p class="version">Версия 1.9 | PWA Приложение</p>
                 <p style="color: var(--text-secondary); font-size: 0.8em; margin-top: 5px;">Умный помощник для кулинаров</p>
             </div>
 
@@ -1161,126 +1175,6 @@
                 </p>
             </div>
         </section>
-				  
-		  
-
-							
-																		 
-										  
-									   
-				 
-																	  
-											
-										   
-				 
-															   
-										  
-								   
-				 
-																   
-											
-									 
-				 
-
-		  
-
-												 
-						   
-									  
-												
-																					 
-				  
-											  
-											  
-					
-																						  
-													 
-												   
-					 
-				  
-											  
-											 
-					
-																						  
-																						   
-																			   
-					 
-				  
-									  
-																									 
-				  
-			  
-		  
-
-												
-						   
-									  
-																											   
-																					
-				  
-								  
-													   
-										
-											   
-																 
-																														  
-					  
-										
-												   
-																
-					  
-									  
-											
-												  
-																					  
-						  
-											
-											
-												   
-															  
-															  
-															  
-															  
-								 
-						  
-					  
-										
-													   
-																   
-					  
-									  
-											
-													   
-																					   
-						  
-											
-											
-													
-															  
-															  
-														  
-															  
-								 
-						  
-					  
-										
-												 
-																	
-					  
-				   
-									  
-																									
-											   
-				  
-			  
-		  
-
-			
-																			  
-																						   
-																			  
-																					   
-								   
     </div>
 
     <nav class="bottom-nav">
@@ -1683,4 +1577,4 @@
         document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePresetModal();closeInstallModal();}});
     </script>
 </body>
-    </html>
+</html>

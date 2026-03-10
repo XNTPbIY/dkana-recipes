@@ -214,14 +214,25 @@ select option{background:var(--bg2)}
     <input type="text" id="fSearch" placeholder="🔍 Поиск..." oninput="renderRecipes()">
     <select id="fType" onchange="renderRecipes()">
       <option value="">Все типы</option>
-      <option value="Варенье">🍓 Варенье</option><option value="Маринад">🥒 Маринад</option>
-      <option value="Соление">🧂 Соление</option><option value="Компот">🥤 Компот</option>
-      <option value="Соус">🍅 Соус</option><option value="Джем">🫙 Джем</option>
-      <option value="Салат">🥗 Салат</option><option value="Другое">📦 Другое</option>
+      <option value="Варенье">🍓 Варенье</option>
+      <option value="Маринад">🥒 Маринад</option>
+      <option value="Соление">🧂 Соление</option>
+      <option value="Компот">🥤 Компот</option>
+      <option value="Соус">🍅 Соус</option>
+      <option value="Джем">🫙 Джем</option>
+      <option value="Салат">🥗 Салат</option>
+      <option value="Су-вид">🥩 Су-вид</option>
+      <option value="Автоклав">🥫 Автоклав</option>
+      <option value="Другое">📦 Другое</option>
     </select>
     <select id="fTag" onchange="renderRecipes()"><option value="">Все теги</option></select>
   </div>
   <div id="recipesList"></div>
+  <!-- Кнопка Показать ещё -->
+  <div id="recipesMoreWrap" style="display:none;text-align:center;margin:14px 0;">
+    <button class="btn btn-blue" onclick="showMoreRecipes()">Показать ещё</button>
+    <div id="recipesMoreInfo" style="margin-top:8px;color:var(--text2);font-size:.82em"></div>
+  </div>
 </div>
 
 <!-- ==================== ДОБАВЛЕНИЕ ==================== -->
@@ -229,7 +240,18 @@ select option{background:var(--bg2)}
   <h2 style="margin-bottom:12px" id="addTitle">➕ Новый рецепт</h2>
   <div class="fg"><label>📝 Название</label><input type="text" id="rName" placeholder="Огурцы маринованные «Хрустящие»"></div>
   <div class="fg"><label>📂 Тип заготовки</label>
-    <select id="rType"><option value="Варенье">🍓 Варенье</option><option value="Маринад" selected>🥒 Маринад</option><option value="Соление">🧂 Соление</option><option value="Компот">🥤 Компот</option><option value="Соус">🍅 Соус</option><option value="Джем">🫙 Джем</option><option value="Салат">🥗 Салат</option><option value="Другое">📦 Другое</option></select>
+    <select id="rType">
+      <option value="Варенье">🍓 Варенье</option>
+      <option value="Маринад" selected>🥒 Маринад</option>
+      <option value="Соление">🧂 Соление</option>
+      <option value="Компот">🥤 Компот</option>
+      <option value="Соус">🍅 Соус</option>
+      <option value="Джем">🫙 Джем</option>
+      <option value="Салат">🥗 Салат</option>
+      <option value="Су-вид">🥩 Су-вид</option>
+      <option value="Автоклав">🥫 Автоклав</option>
+      <option value="Другое">📦 Другое</option>
+    </select>
   </div>
   <div class="fg"><label>🏷️ Теги (через запятую)</label><input type="text" id="rTags" placeholder="огурцы, лето, хрустящие"></div>
   <div class="fg"><label>📸 Фотографии (до 6)</label><input type="file" id="rPhotos" accept="image/*" multiple style="padding:7px" onchange="previewPhotos(event)"><div id="photoPreview" class="photo-preview"></div></div>
@@ -283,6 +305,25 @@ select option{background:var(--bg2)}
     <input type="file" id="importFile" accept=".json,.txt,.csv" style="padding:7px" onchange="importFile(event)">
   </div>
 
+  <!-- Настройки отображения -->
+  <div class="export-card">
+    <h3>⚙️ Настройки отображения</h3>
+    <p>Сколько рецептов показывать на вкладке «Рецепты»</p>
+    <div class="fg" style="margin-top:10px">
+      <label>Лимит вывода</label>
+      <select id="recipesLimitSelect" onchange="setRecipesLimit(this.value)">
+        <option value="5">5 (по умолчанию)</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="0">Все</option>
+      </select>
+    </div>
+    <div class="btn-group" style="margin-top:10px">
+      <button class="btn btn-sm btn-warning" onclick="resetRecipesLimit()">Сбросить (5)</button>
+    </div>
+  </div>
+
   <div class="export-card">
     <h3>ℹ️ О базе данных</h3>
     <p id="dbInfo">Загрузка...</p>
@@ -313,113 +354,18 @@ select option{background:var(--bg2)}
 <div id="infoModal" class="modal-overlay" onclick="if(event.target===this)closeInfoModal()">
 <div class="modal">
   <h3>ℹ️ О приложении <button class="modal-close" onclick="closeInfoModal()">✕</button></h3>
-
-  <div class="info-section">
-    <h4>🏡 В гостях у DKana</h4>
-    <p>Универсальное приложение для домашних заготовок и рецептов. Работает офлайн, устанавливается на телефон как обычное приложение.</p>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📖 Рецепты</h4>
-    <ul>
-      <li>Создание, редактирование и удаление рецептов</li>
-      <li>Добавление до 6 фотографий к каждому рецепту</li>
-      <li>Категории: варенье, маринад, соление, компот, соус, джем, салат и другое</li>
-      <li>Произвольные теги для удобной организации</li>
-      <li>Поиск по названию, фильтрация по типу и тегам</li>
-      <li>Отдельные блоки: ингредиенты, шаги приготовления, заметки</li>
-      <li>Поделиться рецептом как картинка (JPG/PNG) или текст (TXT)</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>🧮 Калькулятор</h4>
-    <ul>
-      <li><b>Калькулятор банок</b> — пересчёт ингредиентов на любой объём банки (500мл, 1л, 1.5л, 2л, 3л или произвольный)</li>
-      <li><b>Расчёт на партию</b> — выберите объём и количество банок, получите полный список продуктов на всю партию</li>
-      <li><b>Калькулятор пропорций</b> — измените количество одного ингредиента, и все остальные пересчитаются автоматически</li>
-      <li><b>Себестоимость</b> — расчёт стоимости партии и одной банки (можно включить/выключить)</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📐 Шаблоны пропорций</h4>
-    <ul>
-      <li>Готовые шаблоны маринадов, сиропов, рассолов</li>
-      <li>Создание, редактирование и удаление своих шаблонов</li>
-      <li>Быстрый расчёт прямо из шаблона</li>
-      <li>Превращение шаблона в полноценный рецепт</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📋 Шаблоны рецептов</h4>
-    <ul>
-      <li>6 готовых шаблонов для быстрого старта</li>
-      <li>Возможность удалять ненужные шаблоны</li>
-      <li>Шаблоны хранятся в базе данных</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📏 Единицы измерения</h4>
-    <p>Поддерживаемые единицы: <b>г</b>, <b>кг</b>, <b>мл</b>, <b>л</b>, <b>шт</b>, <b>ст.л.</b>, <b>ч.л.</b>, <b>зуб.</b>, <b>щеп.</b>, <b>пуч.</b></p>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>💰 Себестоимость</h4>
-    <ul>
-      <li>Включается/выключается переключателем в рецепте и в калькуляторе</li>
-      <li>Указывайте цену за единицу каждого ингредиента</li>
-      <li>Автоматический расчёт стоимости партии и одной банки</li>
-      <li>Себестоимость отображается в карточке рецепта</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📦 Данные</h4>
-    <ul>
-      <li><b>Экспорт</b> — JSON (полная база с фото), TXT (текстовый), CSV (для Excel)</li>
-      <li><b>Импорт</b> — загрузка из JSON, TXT или CSV файла</li>
-      <li><b>Хранение</b> — IndexedDB (без ограничений localStorage)</li>
-      <li>Автоматическая миграция старых данных из localStorage</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📤 Поделиться рецептом</h4>
-    <ul>
-      <li>Выберите формат: JPG (картинка), PNG (картинка) или TXT (текст)</li>
-      <li>Нажмите «Поделиться» — откроется системное меню выбора приложения</li>
-      <li>Или скачайте файл кнопкой «Скачать»</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section">
-    <h4>📱 PWA</h4>
-    <ul>
-      <li>Устанавливается на Android и iOS как обычное приложение</li>
-      <li>Полностью работает без интернета</li>
-      <li>Автоматические обновления при подключении к сети</li>
-    </ul>
-  </div>
-  <hr class="info-divider">
-
-  <div class="info-section" style="text-align:center;margin-bottom:0">
-    <p style="color:var(--accent2);font-size:1em">🏡 В гостях у DKana — v2.3</p>
-    <p style="font-size:.78em;color:var(--text2);margin-top:4px">Сделано с ❤️ для домашних заготовок</p>
-  </div>
-</div>
-</div>
+  <div class="info-section"><h4>🏡 В гостях у DKana</h4><p>Универсальное приложение для домашних заготовок и рецептов. Работает офлайн, устанавливается на телефон как обычное приложение.</p></div><hr class="info-divider">
+  <div class="info-section"><h4>📖 Рецепты</h4><ul><li>Создание, редактирование и удаление рецептов</li><li>Добавление до 6 фотографий к каждому рецепту</li><li>Категории: варенье, маринад, соление, компот, соус, джем, салат, су-вид, автоклав и другое</li><li>Произвольные теги для удобной организации</li><li>Поиск по названию, фильтрация по типу и тегам</li><li>Отдельные блоки: ингредиенты, шаги приготовления, заметки</li><li>Поделиться рецептом как картинка (JPG/PNG) или текст (TXT)</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>🧮 Калькулятор</h4><ul><li><b>Калькулятор банок</b> — пересчёт ингредиентов на любой объём банки (500мл, 1л, 1.5л, 2л, 3л или произвольный)</li><li><b>Расчёт на партию</b> — выберите объём и количество банок, получите полный список продуктов на всю партию</li><li><b>Калькулятор пропорций</b> — измените количество одного ингредиента, и все остальные пересчитаются автоматически</li><li><b>Себестоимость</b> — расчёт стоимости партии и одной банки (можно включить/выключить)</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📐 Шаблоны пропорций</h4><ul><li>Готовые шаблоны маринадов, сиропов, рассолов</li><li>Создание, редактирование и удаление своих шаблонов</li><li>Быстрый расчёт прямо из шаблона</li><li>Превращение шаблона в полноценный рецепт</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📋 Шаблоны рецептов</h4><ul><li>6 готовых шаблонов для быстрого старта</li><li>Возможность удалять ненужные шаблоны</li><li>Шаблоны хранятся в базе данных</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📏 Единицы измерения</h4><p>Поддерживаемые единицы: <b>г</b>, <b>кг</b>, <b>мл</b>, <b>л</b>, <b>шт</b>, <b>ст.л.</b>, <b>ч.л.</b>, <b>зуб.</b>, <b>щеп.</b>, <b>пуч.</b></p></div><hr class="info-divider">
+  <div class="info-section"><h4>💰 Себестоимость</h4><ul><li>Включается/выключается переключателем в рецепте и в калькуляторе</li><li>Указывайте цену за единицу каждого ингредиента</li><li>Автоматический расчёт стоимости партии и одной банки</li><li>Себестоимость отображается в карточке рецепта</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📦 Данные</h4><ul><li><b>Экспорт</b> — JSON (полная база с фото), TXT (текстовый), CSV (для Excel)</li><li><b>Импорт</b> — загрузка из JSON, TXT или CSV файла</li><li><b>Хранение</b> — IndexedDB (без ограничений localStorage)</li><li>Автоматическая миграция старых данных из localStorage</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📤 Поделиться рецептом</h4><ul><li>Выберите формат: JPG (картинка), PNG (картинка) или TXT (текст)</li><li>Нажмите «Поделиться» — откроется системное меню выбора приложения</li><li>Или скачайте файл кнопкой «Скачать»</li></ul></div><hr class="info-divider">
+  <div class="info-section"><h4>📱 PWA</h4><ul><li>Устанавливается на Android и iOS как обычное приложение</li><li>Полностью работает без интернета</li><li>Автоматические обновления при подключении к сети</li></ul></div><hr class="info-divider">
+  <div class="info-section" style="text-align:center;margin-bottom:0"><p style="color:var(--accent2);font-size:1em">🏡 В гостях у DKana — v2.5</p><p style="font-size:.78em;color:var(--text2);margin-top:4px">Сделано с ❤️ для домашних заготовок</p></div>
+</div></div>
 
 <!-- ==================== CALC TPL MODAL ==================== -->
 <div id="ctModal" class="modal-overlay" onclick="if(event.target===this)closeCalcTplModal()">
@@ -436,7 +382,6 @@ select option{background:var(--bg2)}
 <div id="shareModal" class="modal-overlay" onclick="if(event.target===this)closeShareModal()">
 <div class="modal">
   <h3>📤 Поделиться рецептом <button class="modal-close" onclick="closeShareModal()">✕</button></h3>
-
   <div class="share-format-row">
     <label>Формат:</label>
     <select id="shareFormat" onchange="generateSharePreview()">
@@ -445,18 +390,14 @@ select option{background:var(--bg2)}
       <option value="txt">📝 TXT (текст)</option>
     </select>
   </div>
-
   <div id="sharePreview" style="text-align:center"></div>
-
   <div class="btn-group" style="justify-content:center;margin-top:14px">
     <button class="btn btn-purple" onclick="shareFile()">📲 Поделиться</button>
     <button class="btn btn-blue" onclick="downloadFile()">💾 Скачать</button>
   </div>
-
   <div id="shareStatus" style="text-align:center;font-size:.82em;color:var(--green);margin-top:10px;min-height:20px"></div>
 </div>
 </div>
-
 <canvas id="shareCanvas" style="display:none"></canvas>
 
 <script>
@@ -467,15 +408,39 @@ const UNITS=['г','кг','мл','л','шт','ст.л.','ч.л.','зуб.','ще�
 function unitSel(v){return`<select style="min-width:70px">${UNITS.map(u=>`<option${u===(v||'г')?' selected':''}>${u}</option>`).join('')}</select>`}
 
 // ================================================================
-//  СЕБЕСТОИМОСТЬ TOGGLE
+//  SETTINGS & LIMITS
 // ================================================================
 let costEnabledAdd=false,costEnabledCalc=false;
+const RECIPES_LIMIT_KEY='dkana_recipes_limit';
+let recipesLimit=5;
+let recipesShown=0;
+let lastFilteredRecipes=[];
+
 function loadCostSettings(){
   costEnabledAdd=localStorage.getItem('cost_add')==='1';
   costEnabledCalc=localStorage.getItem('cost_calc')==='1';
   document.getElementById('costToggleAdd').checked=costEnabledAdd;
   document.getElementById('costToggleCalc').checked=costEnabledCalc;
   refreshIngVis();
+}
+function loadRecipesLimit(){
+  const v=localStorage.getItem(RECIPES_LIMIT_KEY);
+  recipesLimit=v===null?5:(parseInt(v,10)||0);
+  const sel=document.getElementById('recipesLimitSelect');
+  if(sel)sel.value=String(recipesLimit);
+}
+function setRecipesLimit(v){
+  recipesLimit=parseInt(v,10)||0;
+  localStorage.setItem(RECIPES_LIMIT_KEY,String(recipesLimit));
+  recipesShown=0;
+  renderRecipes(false);
+  toast('✅ Лимит вывода сохранён');
+}
+function resetRecipesLimit(){setRecipesLimit(5)}
+function showMoreRecipes(){
+  const step=recipesLimit>0?recipesLimit:lastFilteredRecipes.length;
+  recipesShown+=step;
+  renderRecipes(true);
 }
 function toggleCostAdd(){costEnabledAdd=document.getElementById('costToggleAdd').checked;localStorage.setItem('cost_add',costEnabledAdd?'1':'0');refreshIngVis()}
 function toggleCostCalc(){costEnabledCalc=document.getElementById('costToggleCalc').checked;localStorage.setItem('cost_calc',costEnabledCalc?'1':'0');document.getElementById('costBox').style.display=costEnabledCalc?'block':'none'}
@@ -500,7 +465,7 @@ function registerPWA(){
   const m={name:"В гостях у DKana — Рецепты",short_name:"DKana Рецепты",description:"Домашние рецепты, заготовки, калькулятор пропорций и банок",start_url:location.href.split('?')[0],display:"standalone",orientation:"portrait",background_color:"#1a1a2e",theme_color:"#1a1a2e",lang:"ru",icons:[72,96,128,144,152,192,384,512].map(s=>({src:makeIcon(s),sizes:s+'x'+s,type:'image/png',purpose:'any maskable'}))};
   const ml=document.createElement('link');ml.rel='manifest';ml.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(ml);
   if('serviceWorker' in navigator){
-    const sw=`const C='dkana-v7';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['${location.href.split('?')[0]}'])).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.open(C).then(c=>c.match(e.request).then(r=>{const f=fetch(e.request).then(n=>{if(n&&n.status===200)c.put(e.request,n.clone());return n}).catch(()=>{});return r||f})))});self.addEventListener('message',e=>{if(e.data==='skipWaiting')self.skipWaiting()});`;
+    const sw=`const C='dkana-v9';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['${location.href.split('?')[0]}'])).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.open(C).then(c=>c.match(e.request).then(r=>{const f=fetch(e.request).then(n=>{if(n&&n.status===200)c.put(e.request,n.clone());return n}).catch(()=>{});return r||f})))});self.addEventListener('message',e=>{if(e.data==='skipWaiting')self.skipWaiting()});`;
     navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).then(reg=>{swReg=reg;reg.addEventListener('updatefound',()=>{const nw=reg.installing;nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller){swWaiting=nw;document.getElementById('updateBar').classList.add('show')}})})}).catch(e=>console.warn('SW:',e));
     let rf=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!rf){rf=true;location.reload()}});
   }
@@ -509,8 +474,8 @@ function makeIcon(sz){const c=document.createElement('canvas');c.width=sz;c.heig
 function applyUpdate(){if(swWaiting)swWaiting.postMessage('skipWaiting');document.getElementById('updateBar').classList.remove('show')}
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!localStorage.getItem('pwa_d'))document.getElementById('pwaBanner').classList.add('show')});
-window.addEventListener('appinstalled',()=>{deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show');toast('✅ Приложение установлено!')});
-async function installPWA(){if(!deferredPrompt){toast('ℹ️ Откройте меню → На главный экран','var(--blue)');return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show')}
+window.addEventListener('appinstalled',()=>{deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show');toast('✅ Установлено!')});
+async function installPWA(){if(!deferredPrompt){toast('ℹ️ Меню → На главный экран','var(--blue)');return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show')}
 function dismissInstall(){document.getElementById('pwaBanner').classList.remove('show');localStorage.setItem('pwa_d','1')}
 function updateOnline(){document.getElementById('offlineBar').classList.toggle('show',!navigator.onLine)}
 window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);
@@ -596,48 +561,53 @@ function clearForm(){editingId=null;document.getElementById('addTitle').textCont
 // ================================================================
 //  СПИСОК РЕЦЕПТОВ
 // ================================================================
-async function renderRecipes(){
+function recipeCardHtml(r){
+  const photos=(r.photos||[]).map(s=>`<img src="${s}" onclick="openLightbox('${s.replace(/'/g,"\\'")}')">`).join('');
+  const tags=[`<span class="tag tag-type">${r.type||'Другое'}</span>`,...(r.tags||[]).map(t=>`<span class="tag tag-custom" onclick="document.getElementById('fTag').value='${t}';renderRecipes(false)">${t}</span>`)].join('');
+  const ingsH=(r.ingredients||[]).map(i=>`<div style="padding:2px 0">• ${esc(i.name)}: <b>${i.amount}</b> ${esc(i.unit)}</div>`).join('');
+  const stepsH=r.description?`<div class="rc-section rc-steps"><div class="rc-label">📋 Шаги приготовления</div><div style="white-space:pre-line">${esc(r.description)}</div></div>`:'';
+  const notesH=r.notes?`<div class="rc-section rc-notes"><div class="rc-label">📌 Заметки</div><div style="white-space:pre-line">${esc(r.notes)}</div></div>`:'';
+  const showC=r.costEnabled!==false;const total=showC?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;
+  const costH=total>0?`<div style="margin-top:5px;color:var(--accent2);font-size:.87em">💰 ≈ ${total.toFixed(2)} ₽</div>`:'';
+  return`<div class="card"><h3>${esc(r.name)}</h3><div class="tags">${tags}</div>
+    ${photos?`<div class="photo-strip">${photos}</div>`:''}
+    <div class="rc-section rc-ingredients"><div class="rc-label">🥕 Ингредиенты (на ${r.baseJar||1000} мл)</div>${ingsH}</div>
+    ${stepsH}${notesH}${costH}
+    <div class="btn-group">
+      <button class="btn btn-sm btn-blue" onclick="openCalcFor('${r.id}')">🧮</button>
+      <button class="btn btn-sm btn-purple" onclick="openShareModal('${r.id}')">📤</button>
+      <button class="btn btn-sm btn-primary" onclick="editRecipe('${r.id}')">✏️</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteRecipe('${r.id}')">🗑️</button>
+    </div></div>`;
+}
+
+async function renderRecipes(append=false){
+  loadRecipesLimit();
   const all=await dbAll('recipes');
   const search=(document.getElementById('fSearch').value||'').toLowerCase();
   const fT=document.getElementById('fType').value;
   const fG=document.getElementById('fTag').value;
-
   const allTags=new Set();all.forEach(r=>(r.tags||[]).forEach(t=>allTags.add(t)));
   const ts=document.getElementById('fTag');const cv=ts.value;
   ts.innerHTML='<option value="">Все теги</option>';
-  [...allTags].sort().forEach(t=>{ts.innerHTML+=`<option value="${t}"${t===cv?' selected':''}>${t}</option>`});
-
-  const recipes=all.filter(r=>{
+  [...allTags].sort().forEach(t=>{ts.innerHTML+=`<option value="${t}" ${t===cv?'selected':''}>${t}</option>`});
+  const filtered=all.filter(r=>{
     if(search&&!r.name.toLowerCase().includes(search))return false;
     if(fT&&r.type!==fT)return false;
-    if(fG&&!(r.tags||[]).includes(fG))return false;
-    return true;
+    if(fG&&!(r.tags||[]).includes(fG))return false;return true;
   }).sort((a,b)=>new Date(b.updated)-new Date(a.updated));
-
+  lastFilteredRecipes=filtered;
   const c=document.getElementById('recipesList');
-  if(!recipes.length){c.innerHTML='<div class="empty"><div class="icon">📖</div><p>Рецептов пока нет</p><p style="font-size:.83em;margin-top:5px">Нажмите ➕ чтобы добавить</p></div>';return}
-
-  c.innerHTML=recipes.map(r=>{
-    const photos=(r.photos||[]).map(s=>`<img src="${s}" onclick="openLightbox('${s.replace(/'/g,"\\'")}')">`).join('');
-    const tags=[`<span class="tag tag-type">${r.type||'Другое'}</span>`,...(r.tags||[]).map(t=>`<span class="tag tag-custom" onclick="document.getElementById('fTag').value='${t}';renderRecipes()">${t}</span>`)].join('');
-    const ingsH=(r.ingredients||[]).map(i=>`<div style="padding:2px 0">• ${esc(i.name)}: <b>${i.amount}</b> ${esc(i.unit)}</div>`).join('');
-    const showC=r.costEnabled!==false;
-    const total=showC?(r.ingredients||[]).reduce((s,i)=>s+i.amount*(i.price||0),0):0;
-    const costH=total>0?`<div style="margin-top:5px;color:var(--accent2);font-size:.87em">💰 ≈ ${total.toFixed(2)} ₽</div>`:'';
-    const stepsH=r.description?`<div class="rc-section rc-steps"><div class="rc-label">📋 Шаги приготовления</div><div style="white-space:pre-line">${esc(r.description)}</div></div>`:'';
-    const notesH=r.notes?`<div class="rc-section rc-notes"><div class="rc-label">📌 Заметки</div><div style="white-space:pre-line">${esc(r.notes)}</div></div>`:'';
-
-    return`<div class="card"><h3>${esc(r.name)}</h3><div class="tags">${tags}</div>
-      ${photos?`<div class="photo-strip">${photos}</div>`:''}
-      <div class="rc-section rc-ingredients"><div class="rc-label">🥕 Ингредиенты (на ${r.baseJar||1000} мл)</div>${ingsH}</div>
-      ${stepsH}${notesH}${costH}
-      <div class="btn-group">
-        <button class="btn btn-sm btn-blue" onclick="openCalcFor('${r.id}')">🧮</button>
-        <button class="btn btn-sm btn-purple" onclick="openShareModal('${r.id}')">📤</button>
-        <button class="btn btn-sm btn-primary" onclick="editRecipe('${r.id}')">✏️</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteRecipe('${r.id}')">🗑️</button>
-      </div></div>`;
-  }).join('');
+  const moreW=document.getElementById('recipesMoreWrap');
+  if(!filtered.length){c.innerHTML='<div class="empty"><div class="icon">📖</div><p>Рецептов нет</p></div>';moreW.style.display='none';recipesShown=0;return}
+  if(!append){recipesShown=0;c.innerHTML=''}
+  const step=recipesLimit>0?recipesLimit:filtered.length;
+  if(recipesShown===0)recipesShown=step;
+  const slice=filtered.slice(0,recipesShown);
+  c.innerHTML+=slice.map(recipeCardHtml).join('');
+  const hasMore=recipesLimit>0&&recipesShown<filtered.length;
+  moreW.style.display=hasMore?'block':'none';
+  if(hasMore)document.getElementById('recipesMoreInfo').textContent=`Показано: ${Math.min(recipesShown,filtered.length)} из ${filtered.length}`;
 }
 function openCalcFor(id){navigate('calc');setTimeout(()=>{document.getElementById('calcRecipe').value=id;loadCalcRecipe()},100)}
 
@@ -889,7 +859,7 @@ async function useCalcTpl(id){
 async function calcTplToRecipe(id){const t=await dbGet('calcTpls',id);if(!t)return;clearForm();document.getElementById('rName').value=t.name;document.getElementById('rDesc').value=t.note||'';document.getElementById('ingList').innerHTML='';t.ingredients.forEach(i=>addIngRow({...i,price:0}));refreshIngVis();navigate('add');toast('📋 Заполнено из шаблона')}
 
 // ================================================================
-//  ШАБЛОНЫ РЕЦЕПТОВ (в IndexedDB, удаляемые)
+//  ШАБЛОНЫ РЕЦЕПТОВ
 // ================================================================
 const SEED_RTPLS=[
   {name:'Огурцы маринованные «Классические»',type:'Маринад',tags:['огурцы','лето','маринад'],baseJar:1000,ingredients:[{name:'Огурцы',amount:600,unit:'г'},{name:'Вода',amount:500,unit:'мл'},{name:'Соль',amount:30,unit:'г'},{name:'Сахар',amount:50,unit:'г'},{name:'Уксус 9%',amount:50,unit:'мл'},{name:'Чеснок',amount:3,unit:'шт'},{name:'Перец горошком',amount:5,unit:'шт'},{name:'Лавровый лист',amount:2,unit:'шт'},{name:'Укроп (зонтик)',amount:1,unit:'шт'}],description:'1. Огурцы замочить на 3–4 часа в холодной воде\n2. Банки стерилизовать\n3. Уложить специи на дно, затем огурцы\n4. Залить кипятком на 15 мин, слить\n5. Из слитой воды сварить маринад с солью, сахаром\n6. Залить маринад, добавить уксус\n7. Закатать, перевернуть, укутать',notes:''},
@@ -986,7 +956,7 @@ async function exportCSV(){
 }
 
 // ================================================================
-//  ИМПОРТ (JSON, TXT, CSV)
+//  ИМПОРТ
 // ================================================================
 async function importFile(e){
   const file=e.target.files[0];if(!file)return;
@@ -1122,7 +1092,8 @@ async function seedCalcTpls(){
   await seedCalcTpls();
   await seedRecipeTpls();
   loadCostSettings();
-  renderRecipes();
+  loadRecipesLimit();
+  renderRecipes(false);
   renderTemplates();
   updateOnline();
   registerPWA();
